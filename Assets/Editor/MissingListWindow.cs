@@ -22,14 +22,11 @@ public class MissingListWindow : EditorWindow {
 
 	[MenuItem("Assets/MissingList in Scene")]
 	private static void ShowMissingListInScene() {
-		GetAllObjectsInScene();
+		SearchObjectInScene();
 
-
-//		SearchObjectInScene();
-//
-//		// ウィンドウを表示
-//		var window = GetWindow<MissingListWindow>();
-//		window.minSize = new Vector2(900, 300);
+		// ウィンドウを表示
+		var window = GetWindow<MissingListWindow>();
+		window.minSize = new Vector2(900, 300);
 	}
 
 	/// <summary>
@@ -110,30 +107,21 @@ public class MissingListWindow : EditorWindow {
 		foreach (AssetParameterData data in missingList) {
 			EditorGUILayout.BeginHorizontal();
 			EditorGUILayout.ObjectField(data.obj, data.obj.GetType (), true, GUILayout.Width(200));
-			EditorGUILayout.TextField(data.property.name, GUILayout.Width(200));
+			EditorGUILayout.TextField(data.property.displayName, GUILayout.Width(200));
 			EditorGUILayout.TextField(data.path);
 			EditorGUILayout.EndHorizontal();
 		}
 		EditorGUILayout.EndScrollView();
 	}
 
-	private static void GetAllObjectsInScene() {
-		string list = "GameObjects in scene:";
-
-		Object[] objs = UnityEngine.Resources.FindObjectsOfTypeAll(typeof(GameObject));
-		for (int i = 0; i < objs.Length; i++) {
-			string path = AssetDatabase.GetAssetOrScenePath(objs[i]);
-			if (path.Contains(".unity")) {
-				list += "\n\t"+objs[i].name;
-			}
-		}
-		Debug.Log(list);
-	}
-
+	/// <summary>
+	/// シーン内のゲームオブジェクトでコンポーネントのプロパティがMissingになっているものを表示
+	/// </summary>	
 	private static void SearchObjectInScene() {
 		Object[] objs = UnityEngine.Resources.FindObjectsOfTypeAll(typeof(GameObject));
 		int length = objs.Length;
 		int count = 0;
+
 		// Typeで指定した型の全てのオブジェクトを配列で取得し,その要素数分繰り返す.
 		for (int i = 0; i < length; i++) {
 			EditorUtility.DisplayProgressBar("Search Missing in Scene", (i+1)+"/"+length, (float)i / length);
@@ -141,40 +129,11 @@ public class MissingListWindow : EditorWindow {
 			string path = AssetDatabase.GetAssetOrScenePath(objs[i]);
 			bool isScene = path.Contains(".unity");
 			if (isScene) {
-				if (objs[i] is GameObject) {
-
-				}
-//				Debug.Log("name:"+objs[i].name);
-				checkObject((GameObject)objs[i], path);
-			} else {
-//				Debug.Log("path:"+path+" name:"+((GameObject)objs[i]).name);
+				checkObject(objs[i], path);
 			}
 			count++;
 		}
-//
-//
-//
-//		foreach (GameObject obj in UnityEngine.Resources.FindObjectsOfTypeAll(typeof(GameObject)))
-//		{
-//			EditorUtility.DisplayProgressBar("Search Missing in Scene", (count+1)+"/"+length, (float)count / length);
-//
-//			// アセットからパスを取得.シーン上に存在するオブジェクトの場合,シーンファイル（.unity）のパスを取得.
-//			string path = AssetDatabase.GetAssetOrScenePath(obj);
-//
-//			// シーン上に存在するオブジェクトかどうか文字列で判定.
-//			bool isScene = path.Contains(".unity");
-//			// シーン上に存在するオブジェクトならば処理.
-//			if (isScene)
-//			{
-//				// GameObjectの名前を表示.
-//				Debug.Log("path: "+path + "\nname: "+obj.name);
-//				checkObject(obj, path);
-//			} 
-////			else {
-////				Debug.Log ("NOT IN SCENE path: "+path);
-////			}
-//			count++;
-//		}
+
 		// プログレスバーを消す
 		EditorUtility.ClearProgressBar();
 	}
@@ -186,32 +145,41 @@ public class MissingListWindow : EditorWindow {
 		if (obj.name == "Deprecated EditorExtensionImpl") {
 			return;
 		}
-		
-		// SerializedObjectを通してアセットのプロパティを取得する
-		SerializedObject sobj = new SerializedObject(obj);
-		SerializedProperty property = sobj.GetIterator();
 
 		string log = "log of "+obj.name;
 
-		while (property.Next(true)) {
-			log += "\n"+property.displayName+"("+property.propertyType+")";
-			// プロパティの種類がオブジェクト（アセット）への参照で、
-			// その参照がnullなのにもかかわらず、参照先インスタンスIDが0でないものはMissing状態！
-			if (property.propertyType == SerializedPropertyType.ObjectReference &&
-			    property.objectReferenceValue == null	&&
-			    property.objectReferenceInstanceIDValue != 0) 
-			{
-				Debug.Log("MISSING!!\nobj: "+ obj.name + "\npath: "+path+"\n"
-				          + "property displayname: "+property.displayName + "\n"
-				          + "property name: "+property.name);
-				// Missing状態のプロパティリストに追加する
-				missingList.Add(new AssetParameterData() {
-					obj = obj,
-					path = path,
-					property = property
-				});
+		if (obj is GameObject) {
+			var go = obj as GameObject;
+			List<SerializedObject> sObjs = new List<SerializedObject>();
+			sObjs.AddRange(go.GetComponents<Component>().Select(x => new SerializedObject(x)));
+
+			foreach (SerializedObject so in sObjs) {
+				log += "\ntarget: "+so.targetObject;
+
+				SerializedProperty property = so.GetIterator();
+				while(property.Next(true)) {
+					log += "\n"+property.displayName+" ("+property.propertyType+")";
+
+					if (property.propertyType == SerializedPropertyType.ObjectReference &&
+					    property.objectReferenceValue == null	&&
+					    property.objectReferenceInstanceIDValue != 0) 
+					{
+						Debug.Log("<color=red>MISSING!!</color>\nobj: "+ obj.name
+						          + "\nproperty displayname: "+property.displayName + "\n"
+						          + "\nproperty name: "+property.name);
+						// Missing状態のプロパティリストに追加する
+						AssetParameterData data = new AssetParameterData() {
+							obj = obj,
+							path = path,
+							property = property
+						};
+						missingList.Add(data);
+						break;
+					}
+				}
 			}
 		}
+
 		Debug.Log (log);
 	}
 }
