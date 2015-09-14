@@ -9,13 +9,14 @@ public class GameCtrl : MonoBehaviour {
 	public float timeLeft;
 
 	float score = 0;
-	int comboCount = 0;
+	public int comboCount = 0;
 	int maxCombo = 0;
-	public Text scoreText;
-	public Text comboText;
-	public Text timeText;
-	public Text resultText;
+	public TextMesh scoreText;
+	public TextMesh comboText;
+	public TextMesh timeText;
+	public TextMesh resultText;
 	public GameObject cubeObj;
+	public GameObject comboShowTextObj;
 
 	float TIME = 20;
 	int HEIGHT = 5;
@@ -50,10 +51,13 @@ public class GameCtrl : MonoBehaviour {
 	public STATE state;
 	float CHANGE_TIME = 3;
 	float changeTimeLeft;
-	
+
+	string TARGET_CUBE = "TARGET_CUBE";
+
 	// Use this for initialization
 	void Start () {
 		state = STATE.READY;
+		comboCount = 0;
 
 		scoreText.text = "SCORE : "+score;
 		comboText.text = "";
@@ -65,7 +69,7 @@ public class GameCtrl : MonoBehaviour {
 	}
 
 	void StartGame() {
-		resultText.enabled = false;
+		resultText.gameObject.SetActive(false);
 
 		changeTimeLeft = CHANGE_TIME;
 		targetColor = (Colors)Random.Range(0,5);
@@ -93,7 +97,7 @@ public class GameCtrl : MonoBehaviour {
 			}
 		} else if (state == STATE.RESULT && canGoNext) {
 			if (Input.GetMouseButtonDown(0)) {
-				Application.LoadLevel("main");
+				Application.LoadLevel(Application.loadedLevelName);
 			}
 		}
 	}
@@ -105,7 +109,7 @@ public class GameCtrl : MonoBehaviour {
 		canGoNext = false;
 
 		resultText.text = "RESULT\n"+"SCORE:"+score+"\nMAX COMBO:"+maxCombo;
-		resultText.enabled = true;
+		resultText.gameObject.SetActive(true);
 
 		yield return new WaitForSeconds(2);
 
@@ -161,12 +165,20 @@ public class GameCtrl : MonoBehaviour {
 		}
 
 		targetCube = Instantiate(cubeObj);
-		targetCube.transform.position = new Vector3(2, 5.5f, 0);
-		targetCube.GetComponent<BoxCollider>().enabled = false;
+		targetCube.transform.position = new Vector3(2, 6.5f, 0);
+		enableCollider(targetCube, false);
 		targetCubeCtrl = targetCube.GetComponent<CubeCtrl>();
 		targetCubeCtrl.setGameCtrl(this);
 		targetCubeCtrl.setColor((int)targetColor);
-		targetCubeCtrl.gameObject.name = "TARGET_CUBE";
+		targetCubeCtrl.gameObject.name = TARGET_CUBE;
+	}
+
+	void enableCollider(GameObject iObj, bool iFlg) {
+		if (iObj.GetComponent<BoxCollider>()) {
+			iObj.GetComponent<BoxCollider>().enabled = iFlg;
+		} else if (iObj.GetComponent<SphereCollider>()) {
+			iObj.GetComponent<SphereCollider>().enabled = iFlg;
+		}
 	}
 
 	public void createNew(Vector3 pPosition, int pId) {
@@ -184,6 +196,12 @@ public class GameCtrl : MonoBehaviour {
 
 		if (comboCount >= 2) {
 			comboText.text = comboCount + " COMBO!!";
+
+			Vector3 textPosition = pPosition + new Vector3(0, 0, -5f);
+			GameObject textObj = Instantiate(comboShowTextObj,						
+			                                 textPosition,
+			                                 gameObject.transform.rotation) as GameObject;
+			comboShowTextObj.GetComponent<TextMesh>().text = comboCount + "\nCOMBO!";
 		}
 
 		score += basePoint * comboCount;

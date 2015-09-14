@@ -7,10 +7,13 @@ public class CubeCtrl : MonoBehaviour {
 
 	GameCtrl.Colors myColor;
 	GameCtrl _GameCtrl;
-	Vector3 myPosition;
 
 	void init() {
-		gameObject.GetComponent<BoxCollider>().enabled = true;
+		setCollider();
+
+		if (gameObject.name == "TARGET_CUBE") {
+			gameObject.transform.localScale = gameObject.transform.localScale * 3;
+		}
 
 		iTween.ScaleFrom(gameObject, iTween.Hash(
 			"scale", new Vector3(0,0,0),
@@ -22,7 +25,11 @@ public class CubeCtrl : MonoBehaviour {
 	}
 
 	void setCollider() {
-		gameObject.GetComponent<BoxCollider>().enabled = true;
+		if (gameObject.GetComponent<BoxCollider>()) {
+			gameObject.GetComponent<BoxCollider>().enabled = true;
+		} else if (gameObject.GetComponent<SphereCollider>()) {
+			gameObject.GetComponent<SphereCollider>().enabled = true;
+		}
 	}
 
 	void Awake() {
@@ -31,7 +38,7 @@ public class CubeCtrl : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		myPosition = this.transform.position;
+
 	}
 	
 	// Update is called once per frame
