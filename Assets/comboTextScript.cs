@@ -26,9 +26,4 @@ public class comboTextScript : MonoBehaviour {
 	void DestroySelf() {
 		Destroy(gameObject);
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
 }

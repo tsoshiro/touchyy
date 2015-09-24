@@ -7,6 +7,7 @@ public class GameCtrl : MonoBehaviour {
 	public GameObject sample;
 
 	public float timeLeft;
+	public float frameRate = 30;
 
 	float score = 0;
 	public int comboCount = 0;
@@ -28,6 +29,7 @@ public class GameCtrl : MonoBehaviour {
 	int SE_GOOD = 0;
 	int SE_BAD = 1;
 
+	public GameObject _cubes;
 	GameObject targetCube;
 	CubeCtrl targetCubeCtrl;
 
@@ -57,7 +59,6 @@ public class GameCtrl : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		state = STATE.READY;
-		comboCount = 0;
 
 		scoreText.text = "SCORE : "+score;
 		comboText.text = "";
@@ -69,6 +70,7 @@ public class GameCtrl : MonoBehaviour {
 	}
 
 	void StartGame() {
+		comboCount = 0;
 		resultText.gameObject.SetActive(false);
 
 		changeTimeLeft = CHANGE_TIME;
@@ -84,6 +86,13 @@ public class GameCtrl : MonoBehaviour {
 				StartGame();
 			}
 		} else if (state == STATE.PLAYING) {
+			if (mistakePenaltyFlg) {
+				mistakePenaltyTimeLeft -= Time.deltaTime;
+				if (mistakePenaltyTimeLeft <= 0) {
+					mistakePenaltyFlg = false;
+				}
+			}
+
 			timeLeft -= Time.deltaTime;
 			timeText.text = "TIME :"+timeLeft.ToString("F2");
 			if (timeLeft <= 0) {
@@ -144,8 +153,11 @@ public class GameCtrl : MonoBehaviour {
 	CubeCtrl createCube(Vector3 pPosition) {
 		GameObject obj = Instantiate(cubeObj);
 		obj.transform.position = pPosition;
+		obj.transform.parent = _cubes.transform;
+		obj.transform.name = TARGET_CUBE;
 
 		CubeCtrl cubeCtrl = obj.GetComponent<CubeCtrl>();
+		cubeCtrl.init();
 		cubeCtrl.setGameCtrl(this);
 		cubeCtrl.setColor(Random.Range(0,5));
 
@@ -195,13 +207,15 @@ public class GameCtrl : MonoBehaviour {
 		}
 
 		if (comboCount >= 2) {
-			comboText.text = comboCount + " COMBO!!";
+			comboText.text = comboCount.ToString() + " COMBO!!";
+
+			string comboShowTextStr = comboCount.ToString() + "\nCOMBO!!";
 
 			Vector3 textPosition = pPosition + new Vector3(0, 0, -5f);
 			GameObject textObj = Instantiate(comboShowTextObj,						
 			                                 textPosition,
 			                                 gameObject.transform.rotation) as GameObject;
-			comboShowTextObj.GetComponent<TextMesh>().text = comboCount + "\nCOMBO!";
+			textObj.GetComponent<TextMesh>().text = comboShowTextStr;
 		}
 
 		score += basePoint * comboCount;
@@ -212,10 +226,16 @@ public class GameCtrl : MonoBehaviour {
 		}
 	}
 
+	public bool mistakePenaltyFlg = false;
+	public float mistakePenaltyTime =  .5f;
+	float mistakePenaltyTimeLeft;
+
 	public void wrongAnswer() {
 		_audioMgr.play(SE_BAD);
 
 		comboCount = 0;
 		comboText.text = "";
+		mistakePenaltyFlg = true;
+		mistakePenaltyTimeLeft = mistakePenaltyTime;
 	}
 }

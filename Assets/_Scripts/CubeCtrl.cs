@@ -8,11 +8,11 @@ public class CubeCtrl : MonoBehaviour {
 	GameCtrl.Colors myColor;
 	GameCtrl _GameCtrl;
 
-	void init() {
+	public void init() {
 		setCollider();
 
 		if (gameObject.name == "TARGET_CUBE") {
-			gameObject.transform.localScale = gameObject.transform.localScale * 3;
+//			gameObject.transform.localScale = gameObject.transform.localScale * 3;
 		}
 
 		iTween.ScaleFrom(gameObject, iTween.Hash(
@@ -33,16 +33,26 @@ public class CubeCtrl : MonoBehaviour {
 	}
 
 	void Awake() {
-		init ();
+//		init ();
 	}
 
 	// Use this for initialization
 	void Start () {
 
 	}
-	
+
+	float timer = 0;
+	float frameRate = 60;
+	bool mistakePenalty = false;
+
 	// Update is called once per frame
 	void Update () {
+		timer++;
+
+		if (_GameCtrl.mistakePenaltyFlg) {
+			return;
+		}
+
 		if (_GameCtrl.state != GameCtrl.STATE.PLAYING) {
 			return;
 		}
