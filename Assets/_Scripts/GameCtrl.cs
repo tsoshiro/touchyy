@@ -4,8 +4,6 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class GameCtrl : MonoBehaviour {
-	public GameObject sample;
-
 	public float timeLeft;
 	public float frameRate = 30;
 
@@ -17,6 +15,7 @@ public class GameCtrl : MonoBehaviour {
 	public TextMesh timeText;
 	public TextMesh resultText;
 	public GameObject cubeObj;
+	public GameObject bombObj;
 	public GameObject comboShowTextObj;
 
 	float TIME = 20;
@@ -29,11 +28,11 @@ public class GameCtrl : MonoBehaviour {
 	int SE_GOOD = 0;
 	int SE_BAD = 1;
 
-	public GameObject _cubes;
+	public GameObject cubeGroup;
 	GameObject targetCube;
 	CubeCtrl targetCubeCtrl;
 
-	List<CubeCtrl> cubes = new List<CubeCtrl>();
+	public List<CubeCtrl> cubes = new List<CubeCtrl>();
 
 	public Colors targetColor;
 	public enum Colors {
@@ -62,6 +61,7 @@ public class GameCtrl : MonoBehaviour {
 
 		scoreText.text = "SCORE : "+score;
 		comboText.text = "";
+		comboCount = 0;
 
 		timeLeft = TIME;
 		timeText.text = "TIME : "+timeLeft;
@@ -70,7 +70,6 @@ public class GameCtrl : MonoBehaviour {
 	}
 
 	void StartGame() {
-		comboCount = 0;
 		resultText.gameObject.SetActive(false);
 
 		changeTimeLeft = CHANGE_TIME;
@@ -82,32 +81,44 @@ public class GameCtrl : MonoBehaviour {
 
 	void Update() {
 		if (state == STATE.READY) {
-			if (Input.GetMouseButtonDown(0)) {
-				StartGame();
-			}
+			updateReady();
 		} else if (state == STATE.PLAYING) {
-			if (mistakePenaltyFlg) {
-				mistakePenaltyTimeLeft -= Time.deltaTime;
-				if (mistakePenaltyTimeLeft <= 0) {
-					mistakePenaltyFlg = false;
-				}
-			}
-
-			timeLeft -= Time.deltaTime;
-			timeText.text = "TIME :"+timeLeft.ToString("F2");
-			if (timeLeft <= 0) {
-				//GAME OVER
-				StartCoroutine(StopGame());
-			}
-
-			changeTimeLeft -= Time.deltaTime;
-			if (changeTimeLeft <= 0) {
-				changeTargetColor();
-			}
+			updatePlaying();
 		} else if (state == STATE.RESULT && canGoNext) {
-			if (Input.GetMouseButtonDown(0)) {
-				Application.LoadLevel(Application.loadedLevelName);
+			updateResult ();
+		}
+	}
+
+	void updateReady() {
+		if (Input.GetMouseButtonDown(0)) {
+			StartGame();
+		}
+	}
+
+	void updatePlaying() {
+		if (mistakePenaltyFlg) {
+			mistakePenaltyTimeLeft -= Time.deltaTime;
+			if (mistakePenaltyTimeLeft <= 0) {
+				mistakePenaltyFlg = false;
 			}
+		}
+		
+		timeLeft -= Time.deltaTime;
+		timeText.text = "TIME :"+timeLeft.ToString("F2");
+		if (timeLeft <= 0) {
+			//GAME OVER
+			StartCoroutine(StopGame());
+		}
+		
+		changeTimeLeft -= Time.deltaTime;
+		if (changeTimeLeft <= 0) {
+			changeTargetColor();
+		}
+	}
+
+	void updateResult() {
+		if (Input.GetMouseButtonDown(0)) {
+			Application.LoadLevel(Application.loadedLevelName);
 		}
 	}
 
@@ -149,11 +160,24 @@ public class GameCtrl : MonoBehaviour {
 		}
 		return false;
 	}
-	
+
+	bool isBomb() {
+		float rate = Random.Range (0,100);
+		if (rate <= 10) {
+			return true;
+		}
+		return false;
+	}
+
 	CubeCtrl createCube(Vector3 pPosition) {
-		GameObject obj = Instantiate(cubeObj);
+		GameObject obj;
+		if (isBomb()){
+			obj = Instantiate(bombObj);
+		} else {
+			obj = Instantiate(cubeObj);
+		}
 		obj.transform.position = pPosition;
-		obj.transform.parent = _cubes.transform;
+		obj.transform.parent = cubeGroup.transform;
 		obj.transform.name = TARGET_CUBE;
 
 		CubeCtrl cubeCtrl = obj.GetComponent<CubeCtrl>();
@@ -165,13 +189,13 @@ public class GameCtrl : MonoBehaviour {
 	}
 	
 	void setCubes() {
-		int cubeId = 0;
+		int cubeId = 1;
 		for (int i = 0; i < WIDTH; i++) {
 			for (int j = 0; j < HEIGHT; j++) {
 				Vector3 position = new Vector3(i,j,0);
 				cubes.Add(createCube(position));
-				cubes[cubeId].setId(cubeId);
-				cubes[cubeId].gameObject.name = "CUBE_"+cubeId.ToString("D2");
+				cubes[cubeId-1].setId(cubeId);
+				cubes[cubeId-1].gameObject.name = "CUBE_"+cubeId.ToString("D2");
 				cubeId++;
 			}
 		}
@@ -196,9 +220,9 @@ public class GameCtrl : MonoBehaviour {
 	public void createNew(Vector3 pPosition, int pId) {
 		_audioMgr.play(SE_GOOD);
 
-		cubes[pId] = createCube(pPosition);
-		cubes[pId].setId(pId);
-		cubes[pId].gameObject.name = "CUBE_"+pId.ToString("D2");
+		cubes[pId-1] = createCube(pPosition);
+		cubes[pId-1].setId(pId);
+		cubes[pId-1].gameObject.name = "CUBE_"+pId.ToString("D2");
 
 		comboCount++;
 

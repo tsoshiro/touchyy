@@ -41,13 +41,8 @@ public class CubeCtrl : MonoBehaviour {
 
 	}
 
-	float timer = 0;
-	float frameRate = 60;
-	bool mistakePenalty = false;
-
 	// Update is called once per frame
 	void Update () {
-		timer++;
 
 		if (_GameCtrl.mistakePenaltyFlg) {
 			return;
@@ -81,7 +76,18 @@ public class CubeCtrl : MonoBehaviour {
 
 	public GameCtrl.Colors getColor() { return myColor; }
 
-	void vanish() {
+	bool isBomb() {
+		if (GetComponent<BombCtrl>()) {
+			return true;
+		}
+		return false;
+	}
+
+	public void vanish() {
+		if (isBomb()) {
+			GetComponent<BombCtrl>().explode(cubeId);
+		}
+
 		_GameCtrl.createNew(this.transform.position, cubeId);
 		Destroy(this.gameObject);
 	}
@@ -94,6 +100,10 @@ public class CubeCtrl : MonoBehaviour {
 		cubeId = pId;
 	}
 
+	public int getId() {
+		return cubeId;
+	}
+
 	public void setColor(int pColor) {
 		this.gameObject.GetComponent<Renderer>().material = materials[pColor];
 		myColor = (GameCtrl.Colors)pColor;
@@ -101,5 +111,9 @@ public class CubeCtrl : MonoBehaviour {
 
 	public void setGameCtrl(GameCtrl pGameCtrl) {
 		_GameCtrl = pGameCtrl;
+	}
+
+	public GameCtrl getGameCtrl() {
+		return _GameCtrl;
 	}
 }

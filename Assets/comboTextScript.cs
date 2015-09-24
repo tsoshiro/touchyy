@@ -2,7 +2,6 @@
 using System.Collections;
 
 public class comboTextScript : MonoBehaviour {
-	float timeToShow = .5f;
 	float timeToFade = .5f;
 
 	// Use this for initialization
