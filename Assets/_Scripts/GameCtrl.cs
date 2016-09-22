@@ -55,21 +55,50 @@ public class GameCtrl : MonoBehaviour {
 
 	string TARGET_CUBE = "TARGET_CUBE";
 
+	public GoogleAnalyticsV3 googleAnalytics;
+	string SCENE_TITLE  = "TEST_TITLE";
+	string SCENE_MAIN   = "TEST_MAIN";
+	string SCENE_RESULT = "TEST_RESULT";
+
 	// Use this for initialization
 	void Start () {
-		state = STATE.READY;
+		// GOOGLE ANALYTICS
+		Debug.Log("Start Session");
 
+		googleAnalytics.StartSession();
+
+		SetGame();
+	}
+
+	void SetGame() {
+		// GA
+		Debug.Log("LogScreen (SCENE_TITLE)");
+		googleAnalytics.LogScreen(SCENE_TITLE);
+
+		state = STATE.READY;
+		
 		scoreText.text = "SCORE : "+score;
 		comboText.text = "";
 		comboCount = 0;
-
+		
 		timeLeft = TIME;
 		timeText.text = "TIME : "+timeLeft;
-
+		
 		resultText.text = "TAP\nTO\nSTART";
 	}
 
 	void StartGame() {
+		if (cubeGroup.transform.childCount > 0) {
+			for (int i = 0; i < cubeGroup.transform.childCount; i++) {
+				Destroy (cubeGroup.transform.GetChild(i).gameObject);
+			}
+			cubes.Clear();
+			Destroy (targetCube);
+		}
+
+		Debug.Log("LogScreen (SCENE_MAIN)");
+		googleAnalytics.LogScreen(SCENE_MAIN);
+
 		resultText.gameObject.SetActive(false);
 
 		changeTimeLeft = CHANGE_TIME;
@@ -118,18 +147,30 @@ public class GameCtrl : MonoBehaviour {
 
 	void updateResult() {
 		if (Input.GetMouseButtonDown(0)) {
-			Application.LoadLevel(Application.loadedLevelName);
+			Debug.Log("LogScreen (SCENE_RESULT)");
+			googleAnalytics.LogScreen(SCENE_RESULT);
+			// SETTING
+			SetGame();
+//			Application.LoadLevel(Application.loadedLevelName);
 		}
 	}
 
 	bool canGoNext = false;
 
 	IEnumerator StopGame() {
+		googleAnalytics.LogScreen(SCENE_RESULT);
+
 		state = STATE.RESULT;
 		canGoNext = false;
 
 		resultText.text = "RESULT\n"+"SCORE:"+score+"\nMAX COMBO:"+maxCombo;
 		resultText.gameObject.SetActive(true);
+
+		Debug.Log("LogEvent");
+		googleAnalytics.LogEvent("TEST",
+		                         "SCORE",
+		                         "EASY MODE",
+		                         (long)Mathf.RoundToInt(score));
 
 		yield return new WaitForSeconds(2);
 
@@ -162,6 +203,7 @@ public class GameCtrl : MonoBehaviour {
 	}
 
 	bool isBomb() {
+		return false;
 		float rate = Random.Range (0,100);
 		if (rate <= 10) {
 			return true;
@@ -240,6 +282,7 @@ public class GameCtrl : MonoBehaviour {
 			                                 textPosition,
 			                                 gameObject.transform.rotation) as GameObject;
 			textObj.GetComponent<TextMesh>().text = comboShowTextStr;
+			textObj.GetComponent<TextCtrl> ().init (2, 1);
 		}
 
 		score += basePoint * comboCount;
