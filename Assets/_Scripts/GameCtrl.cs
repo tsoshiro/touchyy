@@ -7,20 +7,37 @@ public class GameCtrl : MonoBehaviour {
 	public float timeLeft;
 	public float frameRate = 30;
 
+
 	float score = 0;
 	public int comboCount = 0;
 	int maxCombo = 0;
+
+	#region UI
 	public TextMesh scoreText;
 	public TextMesh comboText;
 	public TextMesh timeText;
+	public GameObject timeGauge;
+	public GameObject colorTimeGauge;
 	public TextMesh resultText;
 	public GameObject cubeObj;
 	public GameObject bombObj;
 	public GameObject comboShowTextObj;
+	public GameObject countDownTextObj;
+	public GameObject touchableSign;
 
-	float TIME = 20;
-	int HEIGHT = 5;
-	int WIDTH = 5;
+	float timeGaugeBaseWidth;
+	float colorTimeGaugeBaseWidth;
+	Vector3 colorTimeGaugeBaseScaleSphere;
+	#endregion
+
+	#region timerflg
+	int COUNT_DOWN_NUM = 3;
+	int countDownNum;
+	#endregion
+
+	public float TIME = 20;
+	public int HEIGHT = 5;
+	public int WIDTH = 5;
 	float basePoint = 10;
 
 	//AUDIO
@@ -67,6 +84,10 @@ public class GameCtrl : MonoBehaviour {
 
 		googleAnalytics.StartSession();
 
+		timeGaugeBaseWidth = timeGauge.transform.localScale.x;
+		colorTimeGaugeBaseWidth = colorTimeGauge.transform.localScale.x;
+		countDownTextObj.SetActive (false);
+
 		SetGame();
 	}
 
@@ -83,8 +104,29 @@ public class GameCtrl : MonoBehaviour {
 		
 		timeLeft = TIME;
 		timeText.text = "TIME : "+timeLeft;
+		setTimeGaugeRate ();
 		
 		resultText.text = "TAP\nTO\nSTART";
+	}
+
+	void setTimeGaugeRate () {
+		float gaugeX = timeGaugeBaseWidth * (timeLeft / TIME);
+		Vector3 gaugeScale = new Vector3 (gaugeX,
+										 timeGauge.transform.localScale.y,
+										 timeGauge.transform.localScale.z);
+		timeGauge.transform.localScale = gaugeScale;
+	}
+
+	void setColorTimeGaugeRate ()
+	{
+		float gaugeX = colorTimeGaugeBaseWidth * (changeTimeLeft / CHANGE_TIME);
+		Vector3 gaugeScale = new Vector3 (gaugeX,
+		                                  colorTimeGauge.transform.localScale.y,
+										 colorTimeGauge.transform.localScale.z);
+		colorTimeGauge.transform.localScale = gaugeScale;
+
+		Vector3 targetCubeScale = colorTimeGaugeBaseScaleSphere * (changeTimeLeft / CHANGE_TIME);
+		targetCube.transform.localScale = targetCubeScale;
 	}
 
 	void StartGame() {
@@ -104,6 +146,9 @@ public class GameCtrl : MonoBehaviour {
 		changeTimeLeft = CHANGE_TIME;
 		targetColor = (Colors)Random.Range(0,5);
 		setCubes();
+
+		countDownNum = COUNT_DOWN_NUM;
+		touchableSign.SetActive (false);
 
 		state = STATE.PLAYING;
 	}
@@ -129,19 +174,46 @@ public class GameCtrl : MonoBehaviour {
 			mistakePenaltyTimeLeft -= Time.deltaTime;
 			if (mistakePenaltyTimeLeft <= 0) {
 				mistakePenaltyFlg = false;
+
+				touchableSign.SetActive (false);
 			}
 		}
 		
 		timeLeft -= Time.deltaTime;
 		timeText.text = "TIME :"+timeLeft.ToString("F2");
 		if (timeLeft <= 0) {
+			timeLeft = 0;
+			timeText.text = "TIME :" + timeLeft.ToString ("F2");
 			//GAME OVER
 			StartCoroutine(StopGame());
 		}
+		setTimeGaugeRate ();
+		countDown();
 		
 		changeTimeLeft -= Time.deltaTime;
+		setColorTimeGaugeRate ();
+		setColorTimeGaugeRate ();
 		if (changeTimeLeft <= 0) {
 			changeTargetColor();
+		}
+	}
+
+	void countDown () {
+		if (timeLeft <= countDownNum) {
+			if (timeLeft <= 0) {
+				return;
+			} 
+
+			// SHOW TEXT
+			GameObject textObj = Instantiate (countDownTextObj,
+			                                  countDownTextObj.transform.position,
+			                                  gameObject.transform.rotation) as GameObject;
+			textObj.SetActive (true);
+			textObj.GetComponent<TextMesh> ().text = ""+countDownNum;
+			textObj.GetComponent<TextCtrl> ().init (0.5f, 0.5f);
+
+			// COUNT DOWN
+			countDownNum--;
 		}
 	}
 
@@ -162,6 +234,7 @@ public class GameCtrl : MonoBehaviour {
 
 		state = STATE.RESULT;
 		canGoNext = false;
+		touchableSign.SetActive (true);
 
 		resultText.text = "RESULT\n"+"SCORE:"+score+"\nMAX COMBO:"+maxCombo;
 		resultText.gameObject.SetActive(true);
@@ -183,6 +256,9 @@ public class GameCtrl : MonoBehaviour {
 			targetColor = (Colors)Random.Range (0, 5);
 		} while (!hasEnableCube(targetColor));
 
+		changeTimeLeft = CHANGE_TIME;
+		setColorTimeGaugeRate ();
+
 		targetCubeCtrl.setColor((int)targetColor);
 		iTween.ScaleFrom(targetCube, iTween.Hash(
 			"scale", new Vector3(0,0,0),
@@ -190,7 +266,7 @@ public class GameCtrl : MonoBehaviour {
 			"easetype", iTween.EaseType.easeOutBounce)
 		                 );
 
-		changeTimeLeft = CHANGE_TIME;
+
 	}
 
 	bool hasEnableCube(Colors pColor) {
@@ -231,6 +307,7 @@ public class GameCtrl : MonoBehaviour {
 	}
 	
 	void setCubes() {
+		// NORMAL CUBES
 		int cubeId = 1;
 		for (int i = 0; i < WIDTH; i++) {
 			for (int j = 0; j < HEIGHT; j++) {
@@ -242,6 +319,7 @@ public class GameCtrl : MonoBehaviour {
 			}
 		}
 
+		// TARGET CUBE
 		targetCube = Instantiate(cubeObj);
 		targetCube.transform.position = new Vector3(2, 6.5f, 0);
 		enableCollider(targetCube, false);
@@ -249,6 +327,7 @@ public class GameCtrl : MonoBehaviour {
 		targetCubeCtrl.setGameCtrl(this);
 		targetCubeCtrl.setColor((int)targetColor);
 		targetCubeCtrl.gameObject.name = TARGET_CUBE;
+		colorTimeGaugeBaseScaleSphere = targetCube.transform.localScale;
 	}
 
 	void enableCollider(GameObject iObj, bool iFlg) {
@@ -304,5 +383,7 @@ public class GameCtrl : MonoBehaviour {
 		comboText.text = "";
 		mistakePenaltyFlg = true;
 		mistakePenaltyTimeLeft = mistakePenaltyTime;
+
+		touchableSign.SetActive (true);
 	}
 }
