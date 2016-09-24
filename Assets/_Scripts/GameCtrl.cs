@@ -7,7 +7,6 @@ public class GameCtrl : MonoBehaviour {
 	public float timeLeft;
 	public float frameRate = 30;
 
-
 	float score = 0;
 	public int comboCount = 0;
 	int maxCombo = 0;
@@ -27,15 +26,20 @@ public class GameCtrl : MonoBehaviour {
 
 	float timeGaugeBaseWidth;
 	float colorTimeGaugeBaseWidth;
+	float mistakeGaugeBaseWidth;
+
 	Vector3 colorTimeGaugeBaseScaleSphere;
+
+	public GameObject mistakeGauge;
+	public GameObject mistakeText;
 	#endregion
 
 	#region timerflg
-	int COUNT_DOWN_NUM = 3;
+	int COUNT_DOWN_NUM = 5;
 	int countDownNum;
 	#endregion
 
-	public float TIME = 20;
+	public float TIME = 30;
 	public int HEIGHT = 5;
 	public int WIDTH = 5;
 	float basePoint = 10;
@@ -81,7 +85,10 @@ public class GameCtrl : MonoBehaviour {
 
 		timeGaugeBaseWidth = timeGauge.transform.localScale.x;
 		colorTimeGaugeBaseWidth = colorTimeGauge.transform.localScale.x;
+		mistakeGaugeBaseWidth = mistakeGauge.transform.localScale.x;
 		countDownTextObj.SetActive (false);
+		mistakeText.SetActive (false);
+		mistakeGauge.SetActive (false);
 
 		SetGame();
 	}
@@ -100,6 +107,7 @@ public class GameCtrl : MonoBehaviour {
 		resultText.text = "TAP\nTO\nSTART";
 	}
 
+
 	void setTimeGaugeRate () {
 		float gaugeX = timeGaugeBaseWidth * (timeLeft / TIME);
 		Vector3 gaugeScale = new Vector3 (gaugeX,
@@ -111,13 +119,22 @@ public class GameCtrl : MonoBehaviour {
 	void setColorTimeGaugeRate ()
 	{
 		float gaugeX = colorTimeGaugeBaseWidth * (changeTimeLeft / CHANGE_TIME);
-		Vector3 gaugeScale = new Vector3 (gaugeX,
-		                                  colorTimeGauge.transform.localScale.y,
+		Vector3 gaugeScale = new Vector3(gaugeX,
+		                                 colorTimeGauge.transform.localScale.y,
 										 colorTimeGauge.transform.localScale.z);
 		colorTimeGauge.transform.localScale = gaugeScale;
 
 		Vector3 targetCubeScale = colorTimeGaugeBaseScaleSphere * (changeTimeLeft / CHANGE_TIME);
 		targetCube.transform.localScale = targetCubeScale;
+	}
+
+	void setMistakeTimeGaugeRate ()
+	{
+		float gaugeX = mistakeGaugeBaseWidth * (mistakePenaltyTimeLeft / mistakePenaltyTime);
+		Vector3 gaugeScale = new Vector3(gaugeX,
+		                                 mistakeGauge.transform.localScale.y,
+										 mistakeGauge.transform.localScale.z);
+		mistakeGauge.transform.localScale = gaugeScale;
 	}
 
 	void StartGame() {
@@ -160,9 +177,11 @@ public class GameCtrl : MonoBehaviour {
 	void updatePlaying() {
 		if (mistakePenaltyFlg) {
 			mistakePenaltyTimeLeft -= Time.deltaTime;
+			setMistakeTimeGaugeRate ();
 			if (mistakePenaltyTimeLeft <= 0) {
 				mistakePenaltyFlg = false;
 
+				mistakeGauge.SetActive (false);
 				touchableSign.SetActive (false);
 			}
 		}
@@ -208,7 +227,6 @@ public class GameCtrl : MonoBehaviour {
 
 	void updateResult() {
 		if (Input.GetMouseButtonDown(0)) {
-			Debug.Log("LogScreen (SCENE_RESULT)");
 			// SETTING
 			SetGame();
 //			Application.LoadLevel(Application.loadedLevelName);
@@ -259,19 +277,30 @@ public class GameCtrl : MonoBehaviour {
 		return false;
 	}
 
-	bool isBomb() {
-		return false;
-		float rate = Random.Range (0,100);
+	bool isBomb () {
+		float rate = Random.Range (0, 100);
 		if (rate <= 10) {
 			return true;
 		}
 		return false;
 	}
 
+	Const.BombType bombRate () {
+		float rate = Random.Range (0, 100);
+		if (rate <= 33) {
+			return Const.BombType.VERTICAL;
+		} else if (rate <= 66) {
+			return Const.BombType.HORIZONTAL;
+		} else {
+			return Const.BombType.CROSS;
+		}
+	}
+
 	CubeCtrl createCube(Vector3 pPosition) {
 		GameObject obj;
 		if (isBomb()){
 			obj = Instantiate(bombObj);
+			obj.GetComponent<BombCtrl> ().setBombType (bombRate ());
 		} else {
 			obj = Instantiate(cubeObj);
 		}
@@ -365,6 +394,14 @@ public class GameCtrl : MonoBehaviour {
 		mistakePenaltyFlg = true;
 		mistakePenaltyTimeLeft = mistakePenaltyTime;
 
+		// 表示
+		GameObject textObj = Instantiate (mistakeText,
+		                                  mistakeText.transform.position,
+		                                  mistakeText.transform.rotation) as GameObject;
+		textObj.SetActive (true);
+		textObj.GetComponent<TextCtrl> ().init (0.1f, mistakePenaltyTime);
+
+		mistakeGauge.SetActive (true);
 		touchableSign.SetActive (true);
 	}
 }

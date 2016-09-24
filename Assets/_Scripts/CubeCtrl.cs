@@ -5,6 +5,7 @@ public class CubeCtrl : MonoBehaviour {
 	public Material[] materials;
 	int cubeId;
 
+
 	GameCtrl.Colors myColor;
 	GameCtrl _GameCtrl;
 
@@ -32,18 +33,8 @@ public class CubeCtrl : MonoBehaviour {
 		}
 	}
 
-	void Awake() {
-//		init ();
-	}
-
-	// Use this for initialization
-	void Start () {
-
-	}
-
 	// Update is called once per frame
 	void Update () {
-
 		if (_GameCtrl.mistakePenaltyFlg) {
 			return;
 		}
@@ -67,7 +58,11 @@ public class CubeCtrl : MonoBehaviour {
 	void checkColor() {
 		if (_GameCtrl.targetColor == myColor) {
 			// CORRECT
-			vanish();
+			if (isBomb ()) {
+				bombCheck();
+			} else {
+				vanish ();	
+			}
 		} else {
 			// WRONG
 			wrong();
@@ -83,11 +78,12 @@ public class CubeCtrl : MonoBehaviour {
 		return false;
 	}
 
-	public void vanish() {
-		if (isBomb()) {
-			GetComponent<BombCtrl>().explode(cubeId);
-		}
+	public void bombCheck () {
+		Const.BombType bombType = GetComponent<BombCtrl> ().getBombType ();
+		_GameCtrl.gameObject.GetComponent<BombItemCtrl> ().tapBomb (cubeId, bombType);
+	}
 
+	public void vanish() {
 		_GameCtrl.createNew(this.transform.position, cubeId);
 		Destroy(this.gameObject);
 	}
@@ -107,6 +103,14 @@ public class CubeCtrl : MonoBehaviour {
 	public void setColor(int pColor) {
 		this.gameObject.GetComponent<Renderer>().material = materials[pColor];
 		myColor = (GameCtrl.Colors)pColor;
+
+		return;
+		if (isBomb ()) {
+			for (int i = 0; i < this.transform.childCount; i++) {
+				Transform t = this.transform.GetChild (i);
+				t.gameObject.GetComponent<Renderer> ().material = materials [pColor];
+			}
+		}
 	}
 
 	public void setGameCtrl(GameCtrl pGameCtrl) {
