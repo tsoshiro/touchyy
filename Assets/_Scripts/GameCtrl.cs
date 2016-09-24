@@ -72,17 +72,12 @@ public class GameCtrl : MonoBehaviour {
 
 	string TARGET_CUBE = "TARGET_CUBE";
 
-	public GoogleAnalyticsV3 googleAnalytics;
 	string SCENE_TITLE  = "TEST_TITLE";
 	string SCENE_MAIN   = "TEST_MAIN";
 	string SCENE_RESULT = "TEST_RESULT";
 
 	// Use this for initialization
 	void Start () {
-		// GOOGLE ANALYTICS
-		Debug.Log("Start Session");
-
-		googleAnalytics.StartSession();
 
 		timeGaugeBaseWidth = timeGauge.transform.localScale.x;
 		colorTimeGaugeBaseWidth = colorTimeGauge.transform.localScale.x;
@@ -92,10 +87,6 @@ public class GameCtrl : MonoBehaviour {
 	}
 
 	void SetGame() {
-		// GA
-		Debug.Log("LogScreen (SCENE_TITLE)");
-		googleAnalytics.LogScreen(SCENE_TITLE);
-
 		state = STATE.READY;
 		
 		scoreText.text = "SCORE : "+score;
@@ -137,9 +128,6 @@ public class GameCtrl : MonoBehaviour {
 			cubes.Clear();
 			Destroy (targetCube);
 		}
-
-		Debug.Log("LogScreen (SCENE_MAIN)");
-		googleAnalytics.LogScreen(SCENE_MAIN);
 
 		resultText.gameObject.SetActive(false);
 
@@ -184,6 +172,7 @@ public class GameCtrl : MonoBehaviour {
 		if (timeLeft <= 0) {
 			timeLeft = 0;
 			timeText.text = "TIME :" + timeLeft.ToString ("F2");
+
 			//GAME OVER
 			StartCoroutine(StopGame());
 		}
@@ -220,7 +209,6 @@ public class GameCtrl : MonoBehaviour {
 	void updateResult() {
 		if (Input.GetMouseButtonDown(0)) {
 			Debug.Log("LogScreen (SCENE_RESULT)");
-			googleAnalytics.LogScreen(SCENE_RESULT);
 			// SETTING
 			SetGame();
 //			Application.LoadLevel(Application.loadedLevelName);
@@ -230,7 +218,6 @@ public class GameCtrl : MonoBehaviour {
 	bool canGoNext = false;
 
 	IEnumerator StopGame() {
-		googleAnalytics.LogScreen(SCENE_RESULT);
 
 		state = STATE.RESULT;
 		canGoNext = false;
@@ -238,12 +225,6 @@ public class GameCtrl : MonoBehaviour {
 
 		resultText.text = "RESULT\n"+"SCORE:"+score+"\nMAX COMBO:"+maxCombo;
 		resultText.gameObject.SetActive(true);
-
-		Debug.Log("LogEvent");
-		googleAnalytics.LogEvent("TEST",
-		                         "SCORE",
-		                         "EASY MODE",
-		                         (long)Mathf.RoundToInt(score));
 
 		yield return new WaitForSeconds(2);
 
