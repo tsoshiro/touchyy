@@ -5,12 +5,14 @@ public class CubeCtrl : MonoBehaviour {
 	public Material[] materials;
 	int cubeId;
 
-
 	GameCtrl.Colors myColor;
 	GameCtrl _GameCtrl;
 
+	Const.CubeType cubeType;
+
 	public void init() {
 		setCollider();
+		setCubeType ();
 
 		if (gameObject.name == "TARGET_CUBE") {
 //			gameObject.transform.localScale = gameObject.transform.localScale * 3;
@@ -30,6 +32,18 @@ public class CubeCtrl : MonoBehaviour {
 			gameObject.GetComponent<BoxCollider>().enabled = true;
 		} else if (gameObject.GetComponent<SphereCollider>()) {
 			gameObject.GetComponent<SphereCollider>().enabled = true;
+		}
+	}
+
+	void setCubeType () {
+		if (GetComponent<BombCtrl> ()) {
+			cubeType = Const.CubeType.BOMB;
+		} else if (GetComponent<TimeCubeCtrl> ()) {
+			cubeType = Const.CubeType.TIME;
+		} else if (GetComponent<ColorCubeCtrl> ()) {
+			cubeType = Const.CubeType.COLOR;
+		} else {
+			cubeType = Const.CubeType.NORMAL;
 		}
 	}
 
@@ -58,8 +72,13 @@ public class CubeCtrl : MonoBehaviour {
 	void checkColor() {
 		if (_GameCtrl.targetColor == myColor) {
 			// CORRECT
-			if (isBomb ()) {
-				bombCheck();
+			if (cubeType == Const.CubeType.BOMB) {
+				bombCheck ();
+			} else if (cubeType == Const.CubeType.TIME) {
+				addTime ();
+				vanish ();
+			} else if (cubeType == Const.CubeType.COLOR) {
+				
 			} else {
 				vanish ();	
 			}
@@ -71,16 +90,13 @@ public class CubeCtrl : MonoBehaviour {
 
 	public GameCtrl.Colors getColor() { return myColor; }
 
-	bool isBomb() {
-		if (GetComponent<BombCtrl>()) {
-			return true;
-		}
-		return false;
-	}
-
 	public void bombCheck () {
 		Const.BombType bombType = GetComponent<BombCtrl> ().getBombType ();
 		_GameCtrl.gameObject.GetComponent<BombItemCtrl> ().tapBomb (cubeId, bombType);
+	}
+
+	void addTime () {
+		_GameCtrl.addTime (GetComponent<TimeCubeCtrl> ().getAddTime ());
 	}
 
 	public void vanish() {
@@ -103,14 +119,6 @@ public class CubeCtrl : MonoBehaviour {
 	public void setColor(int pColor) {
 		this.gameObject.GetComponent<Renderer>().material = materials[pColor];
 		myColor = (GameCtrl.Colors)pColor;
-
-		return;
-		if (isBomb ()) {
-			for (int i = 0; i < this.transform.childCount; i++) {
-				Transform t = this.transform.GetChild (i);
-				t.gameObject.GetComponent<Renderer> ().material = materials [pColor];
-			}
-		}
 	}
 
 	public void setGameCtrl(GameCtrl pGameCtrl) {

@@ -142,5 +142,4 @@ public class BombItemCtrl : MonoBehaviour {
 	void resetDeleteCubes () {
 		deletingCubes.Clear ();
 	}
-
 }

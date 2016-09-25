@@ -11,7 +11,7 @@ public class GameCtrl : MonoBehaviour {
 	int deleteCount = 0;
 	public int comboCount = 0;
 	int maxCombo = 0;
-	int colorClearCount = 0;
+	int killAllCount = 0;
 	float COLOR_CLEAR_BONUS_RATE = 2f;
 
 	#region UI
@@ -23,6 +23,7 @@ public class GameCtrl : MonoBehaviour {
 	public TextMesh resultText;
 	public GameObject cubeObj;
 	public GameObject bombObj;
+	public GameObject timeObj;
 	public GameObject comboShowTextObj;
 	public GameObject countDownTextObj;
 	public GameObject touchableSign;
@@ -81,10 +82,6 @@ public class GameCtrl : MonoBehaviour {
 
 	string TARGET_CUBE = "TARGET_CUBE";
 
-	string SCENE_TITLE  = "TEST_TITLE";
-	string SCENE_MAIN   = "TEST_MAIN";
-	string SCENE_RESULT = "TEST_RESULT";
-
 	// Use this for initialization
 	void Start () {
 
@@ -95,6 +92,8 @@ public class GameCtrl : MonoBehaviour {
 		mistakeText.SetActive (false);
 		mistakeGauge.SetActive (false);
 
+		initRate ();
+
 		SetGame();
 	}
 
@@ -103,8 +102,13 @@ public class GameCtrl : MonoBehaviour {
 		
 		scoreText.text = "SCORE : "+score;
 		comboText.text = "";
+
+		// RESET SCORE
+		maxCombo = 0;
+		score = 0;
 		comboCount = 0;
 		deleteCount = 0;
+		killAllCount = 0;
 		
 		timeLeft = TIME;
 		timeText.text = "TIME : "+timeLeft;
@@ -248,7 +252,8 @@ public class GameCtrl : MonoBehaviour {
 
 		resultText.text = "RESULT\n"+"SCORE:"+score
 			+"\nMAX COMBO:"+maxCombo
-			+"\nCUBES:"+deleteCount;
+			+"\nCUBES:"+deleteCount
+			+"\nKILL ALL:" + killAllCount;
 		resultText.gameObject.SetActive(true);
 
 		yield return new WaitForSeconds(2);
@@ -282,9 +287,16 @@ public class GameCtrl : MonoBehaviour {
 		return false;
 	}
 
-	bool isBomb () {
-		float rate = Random.Range (0, 100);
-		if (rate <= 10) {
+	bool isBomb (int pConstType) {
+		if (pConstType >= 0 &&
+			pConstType <= 5) {
+			return true;
+		}
+		return false;
+	}
+
+	bool isTime (int pConstType) {
+		if (pConstType == Const.TYPE_ADD_TYME) {
 			return true;
 		}
 		return false;
@@ -301,11 +313,30 @@ public class GameCtrl : MonoBehaviour {
 		}
 	}
 
+	Const.BombType getBombType (int pConstType) {
+		if (pConstType == Const.TYPE_VERTICAL) {
+			return Const.BombType.VERTICAL;
+		} else if (pConstType == Const.TYPE_HORIZONTAL) {
+			return Const.BombType.HORIZONTAL;
+		} else if (pConstType == Const.TYPE_PLUS) {
+			return Const.BombType.PLUS;
+		} else if (pConstType == Const.TYPE_MULTIPLE) {
+			return Const.BombType.MULTIPLE;
+		} else { // (pConstType == Const.TYPE_AROUND)
+			return Const.BombType.AROUND;
+		}
+	} 
+
 	CubeCtrl createCube(Vector3 pPosition) {
 		GameObject obj;
-		if (isBomb()){
+
+		int cubeType = decideCubeType ();
+		if (isBomb(cubeType)){
 			obj = Instantiate(bombObj);
-			obj.GetComponent<BombCtrl> ().setBombType (bombRate ());
+			obj.GetComponent<BombCtrl> ().setBombType (getBombType (cubeType));
+		} else if (isTime(cubeType)) {
+			obj = Instantiate (timeObj);
+			obj.GetComponent<TimeCubeCtrl> ().setAddTime (0.5f);
 		} else {
 			obj = Instantiate(cubeObj);
 		}
@@ -396,14 +427,14 @@ public class GameCtrl : MonoBehaviour {
 	}
 
 	void colorClearBonus () {
-		colorClearCount++;
-		score += (float)colorClearCount * COLOR_CLEAR_BONUS_RATE;
+		killAllCount++;
+		score += (float)killAllCount * COLOR_CLEAR_BONUS_RATE;
 
 		// 表示
 		GameObject textObj = Instantiate (killAllText,
 										  killAllText.transform.position,
 										  killAllText.transform.rotation) as GameObject;
-		textObj.GetComponent<TextMesh> ().text = "Kill All!\n+" + score;
+		textObj.GetComponent<TextMesh> ().text = "Kill All!\n+" + (float)killAllCount * COLOR_CLEAR_BONUS_RATE;
 		textObj.SetActive (true);
 		textObj.GetComponent<TextCtrl> ().init (0.2f, 0.1f);
 	}
@@ -429,5 +460,71 @@ public class GameCtrl : MonoBehaviour {
 
 		mistakeGauge.SetActive (true);
 		touchableSign.SetActive (true);
+	}
+
+	public void addTime (float pTime) {
+		timeLeft += pTime;
+	}
+
+
+	// 確率設定
+	// 0 - 5	: BOMB
+	// 6 - 7	: COLOR
+	// 8		: TIME
+	public float rate_vertical		= 2f;
+	public float rate_horizontal	= 2f;
+	public float rate_cross			= 1f;
+	public float rate_plus			= 2f;
+	public float rate_multiple		= 2f;
+	public float rate_around		= 1f;
+	public float rate_renewal		= 0f;
+	public float rate_restrict		= 0f;
+	public float rate_add_time		= 3f;
+	float [] ranges;
+
+	void initRate () {
+		ranges = new float [] {
+			rate_vertical,
+			rate_horizontal,
+			rate_cross,
+			rate_plus,
+			rate_multiple,
+			rate_around,
+			rate_renewal,
+			rate_restrict,
+			rate_add_time
+		};
+	}
+
+	int decideCubeType () {
+		float value = Random.Range (0, 100);
+
+		int fixId = -1;
+		float rangeValue = 0;
+		for (int i = 0; i < ranges.Length; i++) {
+			rangeValue += ranges [i];
+			if (value < rangeValue) {
+				fixId = i;			
+				break;
+			}
+		}
+		if (fixId < 0) {
+			// NORMAL
+			return Const.TYPE_NORMAL;
+		} else {
+			// ITEM
+			return fixId;
+		}
+	}
+
+	// USER_RATE
+	// todo 育成機能開発時に使用
+	float ur_bomb;
+	float ur_time;
+	float ur_color;
+
+	Const.CubeType _decideCubeType () {
+		Const.CubeType aType = Const.CubeType.NORMAL;
+		return aType;
 	}
 }
