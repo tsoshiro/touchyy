@@ -11,7 +11,7 @@ public class TextCtrl : MonoBehaviour {
 
 	float displayTime;
 	float fadeTime;
-	float marginTime = 1f; // 表示上消えてから消滅るまでの時間
+	float marginTime = 1f; // 表示上消えてから消滅するまでの時間
 
 	IEnumerator startLifeCycle () {
 		// WAIT UNTIL DISPLAY TIME

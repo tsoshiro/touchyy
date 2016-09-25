@@ -20,6 +20,7 @@ public class GameCtrl : MonoBehaviour {
 	public TextMesh timeText;
 	public GameObject timeGauge;
 	public GameObject colorTimeGauge;
+	public GameObject colorRestrictionGauge;
 	public TextMesh resultText;
 	public GameObject cubeObj;
 	public GameObject bombObj;
@@ -27,6 +28,8 @@ public class GameCtrl : MonoBehaviour {
 	public GameObject comboShowTextObj;
 	public GameObject countDownTextObj;
 	public GameObject touchableSign;
+
+	public GameObject arrowguide;
 
 	float timeGaugeBaseWidth;
 	float colorTimeGaugeBaseWidth;
@@ -114,9 +117,9 @@ public class GameCtrl : MonoBehaviour {
 		timeText.text = "TIME : "+timeLeft;
 		setTimeGaugeRate ();
 		
-		resultText.text = "TAP\nTO\nSTART";
+		resultText.text = "TAP\nTO\nSTART\n\n画面上部のものと\n同じ色を触って\n消しましょう"; ;
+		//arrowguide.SetActive (true);
 	}
-
 
 	void setTimeGaugeRate () {
 		float gaugeX = timeGaugeBaseWidth * (timeLeft / TIME);
@@ -163,6 +166,7 @@ public class GameCtrl : MonoBehaviour {
 
 		countDownNum = COUNT_DOWN_NUM;
 		touchableSign.SetActive (false);
+		arrowguide.SetActive (false);
 
 		state = STATE.PLAYING;
 	}
@@ -185,14 +189,11 @@ public class GameCtrl : MonoBehaviour {
 
 	void updatePlaying() {
 		if (mistakePenaltyFlg) {
-			mistakePenaltyTimeLeft -= Time.deltaTime;
-			setMistakeTimeGaugeRate ();
-			if (mistakePenaltyTimeLeft <= 0) {
-				mistakePenaltyFlg = false;
+			updateMistake ();
+		}
 
-				mistakeGauge.SetActive (false);
-				touchableSign.SetActive (false);
-			}
+		if (isColorRestrictionValid) {
+			updateColorRestriction ();
 		}
 		
 		timeLeft -= Time.deltaTime;
@@ -239,6 +240,17 @@ public class GameCtrl : MonoBehaviour {
 			// SETTING
 			SetGame();
 //			Application.LoadLevel(Application.loadedLevelName);
+		}
+	}
+
+	void updateMistake () {
+		mistakePenaltyTimeLeft -= Time.deltaTime;
+		setMistakeTimeGaugeRate ();
+		if (mistakePenaltyTimeLeft <= 0) {
+			mistakePenaltyFlg = false;
+
+			mistakeGauge.SetActive (false);
+			touchableSign.SetActive (false);
 		}
 	}
 
@@ -302,6 +314,14 @@ public class GameCtrl : MonoBehaviour {
 		return false;
 	}
 
+	bool isColorEffect (int pConstType) {
+		if (pConstType == Const.TYPE_RENEWAL ||
+		    pConstType == Const.TYPE_RESTRICT) {
+			return true;
+		}
+		return false;
+	}
+
 	Const.BombType bombRate () {
 		float rate = Random.Range (0, 100);
 		if (rate <= 33) {
@@ -325,7 +345,11 @@ public class GameCtrl : MonoBehaviour {
 		} else { // (pConstType == Const.TYPE_AROUND)
 			return Const.BombType.AROUND;
 		}
-	} 
+	}
+
+	public GameObject colorCubeObj;
+	int colorRestrictionCount = 2;
+	float colorRestrictionTime = 5f;
 
 	CubeCtrl createCube(Vector3 pPosition) {
 		GameObject obj;
@@ -337,6 +361,12 @@ public class GameCtrl : MonoBehaviour {
 		} else if (isTime(cubeType)) {
 			obj = Instantiate (timeObj);
 			obj.GetComponent<TimeCubeCtrl> ().setAddTime (0.5f);
+		} else if (isColorEffect(cubeType)) {
+			obj = Instantiate (colorCubeObj);
+			ColorCubeCtrl ctrl = obj.GetComponent<ColorCubeCtrl> ();
+			if (cubeType == Const.TYPE_RESTRICT) {
+				ctrl.setRestrictParameters (colorRestrictionCount, colorRestrictionTime);
+			}
 		} else {
 			obj = Instantiate(cubeObj);
 		}
@@ -347,7 +377,12 @@ public class GameCtrl : MonoBehaviour {
 		CubeCtrl cubeCtrl = obj.GetComponent<CubeCtrl>();
 		cubeCtrl.init();
 		cubeCtrl.setGameCtrl(this);
-		cubeCtrl.setColor(Random.Range(0,5));
+
+		int aColor =
+			(isColorRestrictionValid)
+			? (int)restrictColors[Random.Range (0, restrictColors.Count)]
+	        : Random.Range (0, 5);
+		cubeCtrl.setColor(aColor);
 
 		return cubeCtrl;
 	}
@@ -442,6 +477,12 @@ public class GameCtrl : MonoBehaviour {
 	public bool mistakePenaltyFlg = false;
 	public float mistakePenaltyTime =  .5f;
 	float mistakePenaltyTimeLeft;
+	string howWrong = "";
+
+	public void wrongAnswer (int pId, int pColor) {
+		howWrong = pId + "\n" + (Colors)pColor;
+		wrongAnswer ();
+	}
 
 	public void wrongAnswer() {
 		_audioMgr.play(SE_BAD);
@@ -457,6 +498,7 @@ public class GameCtrl : MonoBehaviour {
 		                                  mistakeText.transform.rotation) as GameObject;
 		textObj.SetActive (true);
 		textObj.GetComponent<TextCtrl> ().init (0.1f, mistakePenaltyTime);
+		textObj.GetComponent<TextMesh> ().text += "\n"+howWrong;
 
 		mistakeGauge.SetActive (true);
 		touchableSign.SetActive (true);
@@ -466,20 +508,57 @@ public class GameCtrl : MonoBehaviour {
 		timeLeft += pTime;
 	}
 
+	public void renewCubes (int pColor) {
+		for (int i = 0; i < cubes.Count; i++) {
+			cubes [i].setColor (pColor);
+		}
+	}
+
+	public GameObject ColorRestrictionGauge;
+
+	bool isColorRestrictionValid = false;
+	float colorRestrictionTimeLeft;
+	public List<Colors> restrictColors;
+
+	public void startColorRestriction (int pColorCount, float pTime) {
+		isColorRestrictionValid = true;
+		colorRestrictionTimeLeft = pTime;
+
+		restrictColors = new List<Colors> ();
+		do {
+			Colors aColor = (Colors)(int)Random.Range (0, 5);
+			if (!restrictColors.Contains (aColor)) {
+				restrictColors.Add (aColor);		
+			}
+		} while (restrictColors.Count >= pColorCount);
+	}
+
+	void updateColorRestriction () {
+		colorRestrictionTimeLeft -= Time.deltaTime;
+
+		// 表示系処理
+
+		// Reset
+		if (colorRestrictionTimeLeft <= 0) {
+			colorRestrictionTimeLeft = 0;
+			restrictColors.Clear ();
+			isColorRestrictionValid = false;
+		}
+	}
 
 	// 確率設定
 	// 0 - 5	: BOMB
 	// 6 - 7	: COLOR
 	// 8		: TIME
-	public float rate_vertical		= 2f;
-	public float rate_horizontal	= 2f;
-	public float rate_cross			= 1f;
-	public float rate_plus			= 2f;
-	public float rate_multiple		= 2f;
-	public float rate_around		= 1f;
-	public float rate_renewal		= 0f;
-	public float rate_restrict		= 0f;
-	public float rate_add_time		= 3f;
+	float rate_vertical		= 2f;
+	float rate_horizontal	= 2f;
+	float rate_cross		= 1f;
+	float rate_plus			= 2f;
+	float rate_multiple		= 2f;
+	float rate_around		= 1f;
+	float rate_renewal		= 1f;
+	float rate_restrict		= 1f;
+	float rate_add_time		= 3f;
 	float [] ranges;
 
 	void initRate () {

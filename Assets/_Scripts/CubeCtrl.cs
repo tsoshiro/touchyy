@@ -78,7 +78,8 @@ public class CubeCtrl : MonoBehaviour {
 				addTime ();
 				vanish ();
 			} else if (cubeType == Const.CubeType.COLOR) {
-				
+				colorEffect();
+				vanish ();
 			} else {
 				vanish ();	
 			}
@@ -99,13 +100,24 @@ public class CubeCtrl : MonoBehaviour {
 		_GameCtrl.addTime (GetComponent<TimeCubeCtrl> ().getAddTime ());
 	}
 
+	void colorEffect () {
+		ColorCubeCtrl ctrl = GetComponent<ColorCubeCtrl> ();
+
+		if (ctrl.getColorType() == Const.TYPE_RENEWAL) { // RENEWAL
+			_GameCtrl.renewCubes ((int)myColor);
+		} else { // COLOR RESTRICTION
+			_GameCtrl.startColorRestriction (ctrl.getRestrictColorCount(), ctrl.getRestrictValidTime());
+		}
+	}
+
 	public void vanish() {
 		_GameCtrl.createNew(this.transform.position, cubeId);
 		Destroy(this.gameObject);
 	}
 
 	void wrong() {
-		_GameCtrl.wrongAnswer();
+		_GameCtrl.wrongAnswer (cubeId, (int)myColor);
+		//_GameCtrl.wrongAnswer();
 	}
 
 	public void setId(int pId) {
