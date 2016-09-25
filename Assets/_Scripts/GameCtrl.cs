@@ -8,8 +8,11 @@ public class GameCtrl : MonoBehaviour {
 	public float frameRate = 30;
 
 	float score = 0;
+	int deleteCount = 0;
 	public int comboCount = 0;
 	int maxCombo = 0;
+	int colorClearCount = 0;
+	float COLOR_CLEAR_BONUS_RATE = 2f;
 
 	#region UI
 	public TextMesh scoreText;
@@ -32,6 +35,8 @@ public class GameCtrl : MonoBehaviour {
 
 	public GameObject mistakeGauge;
 	public GameObject mistakeText;
+
+	public GameObject killAllText;
 	#endregion
 
 	#region timerflg
@@ -99,6 +104,7 @@ public class GameCtrl : MonoBehaviour {
 		scoreText.text = "SCORE : "+score;
 		comboText.text = "";
 		comboCount = 0;
+		deleteCount = 0;
 		
 		timeLeft = TIME;
 		timeText.text = "TIME : "+timeLeft;
@@ -149,7 +155,6 @@ public class GameCtrl : MonoBehaviour {
 		resultText.gameObject.SetActive(false);
 
 		changeTimeLeft = CHANGE_TIME;
-		targetColor = (Colors)Random.Range(0,5);
 		setCubes();
 
 		countDownNum = COUNT_DOWN_NUM;
@@ -241,7 +246,9 @@ public class GameCtrl : MonoBehaviour {
 		canGoNext = false;
 		touchableSign.SetActive (true);
 
-		resultText.text = "RESULT\n"+"SCORE:"+score+"\nMAX COMBO:"+maxCombo;
+		resultText.text = "RESULT\n"+"SCORE:"+score
+			+"\nMAX COMBO:"+maxCombo
+			+"\nCUBES:"+deleteCount;
 		resultText.gameObject.SetActive(true);
 
 		yield return new WaitForSeconds(2);
@@ -328,6 +335,10 @@ public class GameCtrl : MonoBehaviour {
 		}
 
 		// TARGET CUBE
+		do {
+			targetColor = (Colors)Random.Range (0, 5);
+		} while (!hasEnableCube (targetColor));
+
 		targetCube = Instantiate(cubeObj);
 		targetCube.transform.position = new Vector3(2, 6.5f, 0);
 		enableCollider(targetCube, false);
@@ -346,13 +357,15 @@ public class GameCtrl : MonoBehaviour {
 		}
 	}
 
-	public void createNew(Vector3 pPosition, int pId) {
-		_audioMgr.play(SE_GOOD);
+	public void createNew (Vector3 pPosition, int pId)
+	{
+		_audioMgr.play (SE_GOOD);
 
-		cubes[pId-1] = createCube(pPosition);
-		cubes[pId-1].setId(pId);
-		cubes[pId-1].gameObject.name = "CUBE_"+pId.ToString("D2");
+		cubes [pId - 1] = createCube (pPosition);
+		cubes [pId - 1].setId (pId);
+		cubes [pId - 1].gameObject.name = "CUBE_" + pId.ToString ("D2");
 
+		deleteCount++;
 		comboCount++;
 
 		if (comboCount > maxCombo) {
@@ -360,24 +373,39 @@ public class GameCtrl : MonoBehaviour {
 		}
 
 		if (comboCount >= 2) {
-			comboText.text = comboCount.ToString() + " COMBO!!";
+			comboText.text = comboCount.ToString () + " COMBO!!";
 
-			string comboShowTextStr = comboCount.ToString() + "\nCOMBO!!";
+			string comboShowTextStr = comboCount.ToString () + "\nCOMBO!!";
 
-			Vector3 textPosition = pPosition + new Vector3(0, 0, -5f);
-			GameObject textObj = Instantiate(comboShowTextObj,						
-			                                 textPosition,
-			                                 gameObject.transform.rotation) as GameObject;
-			textObj.GetComponent<TextMesh>().text = comboShowTextStr;
+			Vector3 textPosition = pPosition + new Vector3 (0, 0, -5f);
+			GameObject textObj = Instantiate (comboShowTextObj,
+											 textPosition,
+											 gameObject.transform.rotation) as GameObject;
+			textObj.GetComponent<TextMesh> ().text = comboShowTextStr;
 			textObj.GetComponent<TextCtrl> ().init (2, 1);
 		}
 
 		score += basePoint * comboCount;
-		scoreText.text = "SCORE : "+score;
+		scoreText.text = "SCORE : " + score;
 
-		if (!hasEnableCube(targetColor)) {
-			changeTargetColor();
+		if (!hasEnableCube (targetColor)) {
+			// 色全滅ボーナス
+			colorClearBonus ();
+			changeTargetColor ();
 		}
+	}
+
+	void colorClearBonus () {
+		colorClearCount++;
+		score += (float)colorClearCount * COLOR_CLEAR_BONUS_RATE;
+
+		// 表示
+		GameObject textObj = Instantiate (killAllText,
+										  killAllText.transform.position,
+										  killAllText.transform.rotation) as GameObject;
+		textObj.GetComponent<TextMesh> ().text = "Kill All!\n+" + score;
+		textObj.SetActive (true);
+		textObj.GetComponent<TextCtrl> ().init (0.2f, 0.1f);
 	}
 
 	public bool mistakePenaltyFlg = false;
