@@ -5,25 +5,39 @@ using System.Collections.Generic;
 public class BombCtrl : MonoBehaviour {
 	public Const.BombType bombType;
 
-	public void setBombType (Const.BombType pBombType) {
-		bombType = pBombType;
+	#region SETTING
+	public GameObject x;
+	public GameObject y;
+	public GameObject plus;
+	public GameObject multiple;
+	#endregion
 
-		if (bombType == Const.BombType.CROSS) {
-			return;
-		} else if (bombType == Const.BombType.HORIZONTAL) {
-			for (int i = 0; i < transform.childCount; i++) {
-				Transform t = transform.GetChild (i);
-				if (t.name == "y") {
-					t.gameObject.SetActive (false);
-				}
-			}
-		} else {
-			for (int i = 0; i < transform.childCount; i++) {
-				Transform t = transform.GetChild (i);
-				if (t.name == "x") {
-					t.gameObject.SetActive (false);
-				}
-			}			
+	public void setBombType (Const.BombType pType) {
+		bombType = pType;
+
+		switch (pType) {
+		case Const.BombType.HORIZONTAL:
+			x.SetActive (true);
+			break;
+		case Const.BombType.VERTICAL:
+			y.SetActive (true);
+			break;
+		case Const.BombType.CROSS:
+			x.SetActive (true);
+			y.SetActive (true);
+			break;
+		case Const.BombType.PLUS:
+			plus.SetActive (true);
+			break;
+		case Const.BombType.MULTIPLE:
+			multiple.SetActive (true);
+			break;
+		case Const.BombType.AROUND:
+			plus.SetActive (true);
+			multiple.SetActive (true);
+			break;
+		default:
+			break;
 		}
 	}
 

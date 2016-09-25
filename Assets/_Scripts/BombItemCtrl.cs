@@ -13,7 +13,6 @@ public class BombItemCtrl : MonoBehaviour {
 	public List<CubeCtrl> deletingCubes = new List<CubeCtrl> ();
 
 	public void tapBomb (int pId, Const.BombType pType) {
-		Debug.Log ("pId:" + pId + " pType:" + pType);
 		switch (pType) {
 		case Const.BombType.HORIZONTAL:
 			getHorizontalCubes (pId);
@@ -25,11 +24,15 @@ public class BombItemCtrl : MonoBehaviour {
 			getHorizontalCubes (pId);
 			getVerticalCubes (pId);
 			break;
-		case Const.BombType.SIDE:
+		case Const.BombType.PLUS:
+			getPlusCubes (pId);
 			break;
-		case Const.BombType.UPDOWN:
+		case Const.BombType.MULTIPLE:
+			getMultipleCubes (pId);
 			break;
 		case Const.BombType.AROUND:
+			getPlusCubes (pId);
+			getMultipleCubes (pId);
 			break;
 		default:
 			break;
@@ -39,7 +42,9 @@ public class BombItemCtrl : MonoBehaviour {
 		resetDeleteCubes ();
 	}
 
-	void getHorizontalCubes (int pId) {
+	// HORIZONTAL
+	void getHorizontalCubes (int pId) 
+	{
 		int startValue = pId % _gameCtrl.HEIGHT;
 		if (startValue == 0) {
 			startValue = _gameCtrl.HEIGHT;
@@ -51,11 +56,69 @@ public class BombItemCtrl : MonoBehaviour {
 		}
 	}
 
-	void getVerticalCubes (int pId) {
+	// VERTICAL
+	void getVerticalCubes (int pId) 
+	{
 		int value = (pId - 1) / _gameCtrl.HEIGHT;
 		int startId = ( value * _gameCtrl.HEIGHT ) + 1;
 		for (int i = startId; i < startId + _gameCtrl.HEIGHT; i++) {
 			deletingCubes.Add (_gameCtrl.cubes [i - 1]);
+		}
+	}
+
+	void getPlusCubes (int pId)
+	{
+		int u = pId + 1;
+		int d = pId - 1;
+		int r = pId + _gameCtrl.HEIGHT;
+		int l = pId - _gameCtrl.HEIGHT;
+
+		int colNum = (pId - 1) / _gameCtrl.HEIGHT + 1;
+		int rowNum = (pId % _gameCtrl.HEIGHT == 0) ? _gameCtrl.HEIGHT : pId % _gameCtrl.HEIGHT;
+
+		deletingCubes.Add (_gameCtrl.cubes [pId - 1]);
+
+		if (colNum != 1) {
+			deletingCubes.Add (_gameCtrl.cubes [l - 1]);
+		}
+		if (colNum != _gameCtrl.WIDTH) {
+			deletingCubes.Add (_gameCtrl.cubes [r - 1]);
+		}
+		if (rowNum != 1) {
+			deletingCubes.Add (_gameCtrl.cubes [d - 1]);
+		}
+		if (rowNum != _gameCtrl.HEIGHT) {
+			deletingCubes.Add (_gameCtrl.cubes [u - 1]);
+		}
+	}
+
+	void getMultipleCubes (int pId)
+	{
+		int ul = pId + 1 - _gameCtrl.HEIGHT;
+		int dl = pId - 1 - _gameCtrl.HEIGHT;
+		int ur = pId + 1 + _gameCtrl.HEIGHT;
+		int dr = pId - 1 + _gameCtrl.HEIGHT;
+
+		int colNum = (pId - 1) / _gameCtrl.HEIGHT + 1;
+		int rowNum = (pId % _gameCtrl.HEIGHT == 0) ? _gameCtrl.HEIGHT : pId % _gameCtrl.HEIGHT;
+
+		deletingCubes.Add (_gameCtrl.cubes [pId - 1]);
+
+		if (colNum != 1) {
+			if (rowNum != 1) {
+				deletingCubes.Add (_gameCtrl.cubes [dl - 1]);
+			}
+			if (rowNum != _gameCtrl.HEIGHT) {
+				deletingCubes.Add (_gameCtrl.cubes [ul - 1]);
+			}
+		}
+		if (colNum != _gameCtrl.WIDTH) {
+			if (rowNum != 1) {
+				deletingCubes.Add (_gameCtrl.cubes [dr - 1]);
+			}
+			if (rowNum != _gameCtrl.HEIGHT) {
+				deletingCubes.Add (_gameCtrl.cubes [ur - 1]);
+			}
 		}
 	}
 
@@ -68,9 +131,6 @@ public class BombItemCtrl : MonoBehaviour {
 		}
 
 		deletingCubes = tmpCubeList;
-		for (int i = 0; i < deletingCubes.Count; i++) {
-			Debug.Log ("omitDuplicateCubes\nDELETING CUBES[" + i + "]:" + deletingCubes [i].getId());
-		}
 	}
 
 	void deleteCubes () {

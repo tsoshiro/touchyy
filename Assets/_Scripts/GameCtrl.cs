@@ -264,8 +264,6 @@ public class GameCtrl : MonoBehaviour {
 			"time", 0.5f,
 			"easetype", iTween.EaseType.easeOutBounce)
 		                 );
-
-
 	}
 
 	bool hasEnableCube(Colors pColor) {
@@ -288,11 +286,11 @@ public class GameCtrl : MonoBehaviour {
 	Const.BombType bombRate () {
 		float rate = Random.Range (0, 100);
 		if (rate <= 33) {
-			return Const.BombType.VERTICAL;
+			return Const.BombType.PLUS;
 		} else if (rate <= 66) {
-			return Const.BombType.HORIZONTAL;
+			return Const.BombType.MULTIPLE;
 		} else {
-			return Const.BombType.CROSS;
+			return Const.BombType.AROUND;
 		}
 	}
 
