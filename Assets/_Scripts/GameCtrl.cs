@@ -30,6 +30,7 @@ public class GameCtrl : MonoBehaviour {
 	public GameObject touchableSign;
 
 	public GameObject arrowguide;
+	public GameObject pauseBtn;
 
 	float timeGaugeBaseWidth;
 	float colorTimeGaugeBaseWidth;
@@ -76,6 +77,7 @@ public class GameCtrl : MonoBehaviour {
 	public enum STATE {
 		READY,
 		PLAYING,
+		PAUSE,
 		RESULT
 	}
 
@@ -94,6 +96,7 @@ public class GameCtrl : MonoBehaviour {
 		countDownTextObj.SetActive (false);
 		mistakeText.SetActive (false);
 		mistakeGauge.SetActive (false);
+		pauseBtn.SetActive (false);
 
 		initRate ();
 
@@ -161,6 +164,7 @@ public class GameCtrl : MonoBehaviour {
 
 		resultText.gameObject.SetActive(false);
 
+		Debug.Log ("called");
 		changeTimeLeft = CHANGE_TIME;
 		setCubes();
 
@@ -168,12 +172,16 @@ public class GameCtrl : MonoBehaviour {
 		touchableSign.SetActive (false);
 		arrowguide.SetActive (false);
 
+		pauseBtn.SetActive (true);
+
 		state = STATE.PLAYING;
 	}
 
 	void Update() {
 		if (state == STATE.READY) {
 			updateReady();
+		} else if (state == STATE.PAUSE) {
+			updatePause ();
 		} else if (state == STATE.PLAYING) {
 			updatePlaying();
 		} else if (state == STATE.RESULT && canGoNext) {
@@ -181,11 +189,79 @@ public class GameCtrl : MonoBehaviour {
 		}
 	}
 
+	bool isCountingDown = false;
 	void updateReady() {
 		if (Input.GetMouseButtonDown(0)) {
-			StartGame();
+			if (!isCountingDown) {
+				StartCoroutine (startCountDown (Const.COUNTDOWN_TIME));
+			}
 		}
 	}
+
+	void updatePause () {
+		
+	}
+
+	#region PAUSE
+	void enablePause (bool iFlg) {
+		if (iFlg) {
+			state = STATE.PAUSE;
+			// 表示系処理
+			// Pauseオブジェクトを表示
+			pauseDiplay.SetActive (true);
+		} else {
+			state = STATE.PLAYING;
+
+			// 表示系処理
+			// Pauseオブジェクトを非表示
+			pauseDiplay.SetActive (false);
+		}
+	}
+	public GameObject pauseDiplay;
+
+	public void actionPauseBtn () {
+		if (state != STATE.PAUSE) {
+			enablePause (true);	
+		}
+	}
+
+	void actionContinueBtn () {
+		if (state == STATE.PAUSE) {
+			if (!isCountingDown) {
+				StartCoroutine (startCountDown (Const.COUNTDOWN_TIME));
+			}
+		}
+	}
+
+	IEnumerator startCountDown (int pSecond) {
+		isCountingDown = true;
+		float second = pSecond;
+
+		for (int i = (int)second; i > 0; i--) {
+			// Display Object
+			displayCountDownNumber (i);
+			yield return new WaitForSeconds (1.0f);
+		}
+
+		isCountingDown = false;
+		if (state == STATE.PAUSE) { // PAUSE 
+			enablePause (false);
+		} else { // READY
+			StartGame ();	
+		}
+	}
+
+	void displayCountDownNumber (int pNum) {
+		// SHOW TEXT
+		GameObject textObj = Instantiate (countDownTextObj,
+										  countDownTextObj.transform.position,
+										  gameObject.transform.rotation) as GameObject;
+		textObj.SetActive (true);
+		textObj.GetComponent<TextMesh> ().text = "" + pNum;
+		textObj.GetComponent<TextCtrl> ().init (0.5f, 0.5f);
+	}
+
+	#endregion
 
 	void updatePlaying() {
 		if (mistakePenaltyFlg) {
@@ -207,7 +283,7 @@ public class GameCtrl : MonoBehaviour {
 		}
 		setTimeGaugeRate ();
 		countDown();
-		
+
 		changeTimeLeft -= Time.deltaTime;
 		setColorTimeGaugeRate ();
 		setColorTimeGaugeRate ();
@@ -220,16 +296,9 @@ public class GameCtrl : MonoBehaviour {
 		if (timeLeft <= countDownNum) {
 			if (timeLeft <= 0) {
 				return;
-			} 
-
+			}
 			// SHOW TEXT
-			GameObject textObj = Instantiate (countDownTextObj,
-			                                  countDownTextObj.transform.position,
-			                                  gameObject.transform.rotation) as GameObject;
-			textObj.SetActive (true);
-			textObj.GetComponent<TextMesh> ().text = ""+countDownNum;
-			textObj.GetComponent<TextCtrl> ().init (0.5f, 0.5f);
-
+			displayCountDownNumber (countDownNum);
 			// COUNT DOWN
 			countDownNum--;
 		}
@@ -260,6 +329,7 @@ public class GameCtrl : MonoBehaviour {
 
 		state = STATE.RESULT;
 		canGoNext = false;
+		pauseBtn.SetActive (false);
 		touchableSign.SetActive (true);
 
 		resultText.text = "RESULT\n"+"SCORE:"+score
@@ -606,4 +676,18 @@ public class GameCtrl : MonoBehaviour {
 		Const.CubeType aType = Const.CubeType.NORMAL;
 		return aType;
 	}
+
+	#region background
+	void OnApplicationPause (bool pauseStatus)
+	{
+		if (pauseStatus) {
+			//ホームボタンを押してアプリがバックグランドに移行した時
+		} else {
+			//アプリを終了しないでホーム画面からアプリを起動して復帰した時
+			if (state == STATE.PLAYING) {
+				enablePause (true);	
+			}
+		}
+	}
+	#endregion
 }

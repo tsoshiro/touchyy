@@ -2,6 +2,9 @@
 using System.Collections;
 
 public class Const {
+	public const int COUNTDOWN_TIME = 3;
+
+
 	public enum CubeType
 	{
 		NORMAL,
