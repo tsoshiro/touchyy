@@ -2,6 +2,7 @@
 using System.Collections;
 
 public class Const {
+	public const float ApplicationFrameRate = 30f;
 	public const int COUNTDOWN_TIME = 3;
 
 
@@ -34,4 +35,31 @@ public class Const {
 	public const int TYPE_RESTRICT	= 7;
 	public const int TYPE_ADD_TYME	= 8;
 	public const int TYPE_NORMAL 	= 9;
+
+	// UserData
+	// PlayerPrefsのKey
+	// RECORD
+	public const string PREF_BEST_SCORE 		= "PREF_BEST_SCORE";
+	public const string PREF_MAX_COMBO 			= "PREF_MAX_COMBO";
+	public const string PREF_MAX_DELETE_COUNT 	= "PREF_MAX_DELETE_COUNT";
+	public const string PREF_MAX_KILL_ALL_COUNT = "PREF_MAX_KILL_ALL_COUNT";
+	public const string PREF_COIN 				= "PREF_COIN";
+	public const string PREF_TOTAL_SCORE 		= "PREF_TOTAL_SCORE";
+	public const string PREF_TOTAL_DELETE_COUNT = "PREF_TOTAL_DELETE_COUNT";
+	public const string PREF_TOTAL_KILL_ALL_COUNT = "PREF_TOTAL_KILL_ALL_COUNT";
+	public const string PREF_PLAY_COUNT 		= "PREF_PLAY_COUNT";
+
+	// STATUS
+	public const string PREF_LV_BASE 			= "PREF_LV_BASE";
+	public const string PREF_LV_AREA_BOMB 		= "PREF_LV_AREA_BOMB";
+	public const string PREF_LV_LINE_BOMB 		= "PREF_LV_LINE_BOMB";
+	public const string PREF_LV_RENEWAL_BOMB 	= "PREF_LV_RENEWAL_BOMB";
+	public const string PREF_LV_COLOR_LOCK_BOMB = "PREF_LV_COLOR_LOCK_BOMB";
+	public const string PREF_LV_TIME_BOMB 		= "PREF_LV_TIME_BOMB";
+
+
+	#region Sound
+	public const int SE_GOOD = 0;
+	public const int SE_BAD = 1;
+	#endregion
 }
