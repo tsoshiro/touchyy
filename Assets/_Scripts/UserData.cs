@@ -35,14 +35,21 @@ public class UserData {
 		PlayerPrefs.SetString (pKey, pValue);
 	}
 
-	#region 
-	public bool checkIfIsNewRecord (int pValue, string pKey) {
+	#region RECORD
+	public bool checkIfIsNewRecord (string pKey, int pValue) {
 		if ( pValue > getUserDataInt(pKey)) {
 			setUserData (pKey, pValue);
 			return true;
 		}
 		return false;
 	}
+
+	public void addTotalRecords (string pKey, int pValue) {
+		int totalRecord = getUserDataInt (pKey);
+		totalRecord += pValue;
+		setUserData (pKey, totalRecord);
+	}
+
 	#endregion
 
 	public void saveUserData () {
@@ -51,5 +58,22 @@ public class UserData {
 
 	public void resetUserData () {
 		PlayerPrefs.DeleteAll ();
+	}
+
+	// 初期データ作成
+	public void checkNewUser () {
+		if (getUserDataInt (Const.PREF_LV_BASE) <= 0) {
+			createBaseUserData ();
+		}
+	}
+
+	void createBaseUserData () {
+		setUserData (Const.PREF_COIN, 0);
+		setUserData (Const.PREF_LV_BASE, 1);
+	 	setUserData (Const.PREF_LV_AREA_BOMB, 0);
+	 	setUserData (Const.PREF_LV_LINE_BOMB, 0);
+	 	setUserData (Const.PREF_LV_RENEWAL_BOMB, 0);
+	 	setUserData (Const.PREF_LV_COLOR_LOCK_BOMB, 0);
+	 	setUserData (Const.PREF_LV_TIME_BOMB, 0);
 	}
 }

@@ -10,6 +10,7 @@ public class GameCtrl : MonoBehaviour {
 
 	Result _result;
 	UserData _userData;
+	UserParam _userParam;
 
 	#region UI
 	public TextMesh scoreText;
@@ -74,7 +75,8 @@ public class GameCtrl : MonoBehaviour {
 		READY,
 		PLAYING,
 		PAUSE,
-		RESULT
+		RESULT,
+		SHOP
 	}
 
 	public STATE state;
@@ -83,9 +85,17 @@ public class GameCtrl : MonoBehaviour {
 
 	string TARGET_CUBE = "TARGET_CUBE";
 
+	void Awake () {
+		// UserData初期化
+		_userData = new UserData ();
+		_userData.checkNewUser ();
+
+		// UserParam初期化
+		_userParam = new UserParam (_userData);
+	}
+
 	// Use this for initialization
 	void Start () {
-
 		timeGaugeBaseWidth = timeGauge.transform.localScale.x;
 		colorTimeGaugeBaseWidth = colorTimeGauge.transform.localScale.x;
 		mistakeGaugeBaseWidth = mistakeGauge.transform.localScale.x;
@@ -96,10 +106,14 @@ public class GameCtrl : MonoBehaviour {
 
 		initRate ();
 
-		// UserData初期化
-		_userData = new UserData ();
-
 		SetGame();
+	}
+
+
+	// TEST
+	void DisplayTest () {
+		IntValueConverter testClass = new IntValueConverter ();
+		testClass.test ();
 	}
 
 	void SetGame() {
@@ -345,25 +359,25 @@ public class GameCtrl : MonoBehaviour {
 		resultText.text = "RESULT\n";
 
 		resultText.text += "SCORE:";
-		if (_userData.checkIfIsNewRecord (_result.score, Const.PREF_BEST_SCORE)) {
+		if (_userData.checkIfIsNewRecord (Const.PREF_BEST_SCORE, _result.score)) {
 			resultText.text += NEW_ICON;
 		}
 		resultText.text += _result.score + "\n";
 		resultText.text += "MAX COMBO:";
 
-		if (_userData.checkIfIsNewRecord (_result.maxCombo, Const.PREF_MAX_COMBO)) {
+		if (_userData.checkIfIsNewRecord (Const.PREF_MAX_COMBO, _result.maxCombo)) {
 			resultText.text += NEW_ICON;
 		}
 		resultText.text += _result.maxCombo + "\n";
 
 		resultText.text += "CUBES:";
-		if (_userData.checkIfIsNewRecord (_result.deleteCount, Const.PREF_MAX_DELETE_COUNT)) {
+		if (_userData.checkIfIsNewRecord (Const.PREF_MAX_DELETE_COUNT, _result.deleteCount)) {
 			resultText.text += NEW_ICON;
 		}
 		resultText.text += _result.deleteCount + "\n";
 
 		resultText.text += "KILL ALL:";
-		if (_userData.checkIfIsNewRecord (_result.killAllCount, Const.PREF_MAX_KILL_ALL_COUNT)) {
+		if (_userData.checkIfIsNewRecord (Const.PREF_MAX_KILL_ALL_COUNT, _result.killAllCount)) {
 			resultText.text += NEW_ICON;
 		}
 		resultText.text += _result.killAllCount+"\n";
@@ -374,11 +388,32 @@ public class GameCtrl : MonoBehaviour {
 			resultText.text += "NO MISS!!";
 		}
 
+		// TOTAL VALUE
+		_userData.addTotalRecords (Const.PREF_TOTAL_SCORE, _result.score);
+		_userData.addTotalRecords (Const.PREF_TOTAL_DELETE_COUNT, _result.deleteCount);
+		_userData.addTotalRecords (Const.PREF_TOTAL_KILL_ALL_COUNT, _result.killAllCount);
+		_userData.addTotalRecords (Const.PREF_PLAY_COUNT, 1);
+
 		// SAVE
 		_userData.saveUserData ();
 
 		resultText.gameObject.SetActive (true);
 	}
+
+	#region coin
+	void getCoin (int pScore) {
+		// LOGIC
+		int coin = pScore;
+
+		_userData.addTotalRecords (Const.PREF_COIN, coin);
+	}
+
+	void spendCoin (int pScore) {
+		int coin = pScore;
+
+		_userData.addTotalRecords (Const.PREF_COIN, - coin);
+	}
+	#endregion
 
 	void changeTargetColor() {
 		do {
@@ -675,6 +710,16 @@ public class GameCtrl : MonoBehaviour {
 	float [] ranges;
 
 	void initRate () {
+		rate_vertical 	= _userParam.lineBombRate;
+		rate_horizontal = _userParam.lineBombRate;
+		rate_cross		= _userParam.lineBombRate;
+		rate_plus		= _userParam.areaBombRate;
+     	rate_multiple	= _userParam.areaBombRate;
+     	rate_around 	= _userParam.areaBombRate;
+		rate_renewal	= _userParam.renewalBombRate;
+		rate_restrict 	= _userParam.colorLockBombRate;	
+		rate_add_time	= _userParam.timeBombRate;
+
 		ranges = new float [] {
 			rate_vertical,
 			rate_horizontal,
@@ -708,12 +753,6 @@ public class GameCtrl : MonoBehaviour {
 			return fixId;
 		}
 	}
-
-	// USER_RATE
-	// todo 育成機能開発時に使用
-	float ur_bomb;
-	float ur_time;
-	float ur_color;
 
 	Const.CubeType _decideCubeType () {
 		Const.CubeType aType = Const.CubeType.NORMAL;
