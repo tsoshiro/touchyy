@@ -24,18 +24,7 @@ public class Const {
 		AROUND // 周囲8コ 
 	}
 
-	public enum UserParams
-	{
-		COIN,
-		LV_BASE,
-		LV_AREA_BOMB,
-		LV_LINE_BOMB,
-		LV_RENEWAL_BOMB,
-		LV_COLOR_LOCK_BOMB,
-		LV_TIME_BOMB
-	}
-
-	// 
+	// TYPE
 	public const int TYPE_VERTICAL 	= 0;
 	public const int TYPE_HORIZONTAL= 1;
 	public const int TYPE_CROSS		= 2;
@@ -60,6 +49,18 @@ public class Const {
 	public const string PREF_PLAY_COUNT 		= "PREF_PLAY_COUNT";
 
 	// PARAM
+	public enum UserParams
+	{
+		COIN,
+		LV_BASE,
+		LV_AREA_BOMB,
+		LV_LINE_BOMB,
+		LV_RENEWAL_BOMB,
+		LV_COLOR_LOCK_BOMB,
+		LV_TIME_BOMB,
+		COUNT
+	}
+
 	public const string PREF_COIN				= "PREF_COIN";
 	public const string PREF_LV_BASE 			= "PREF_LV_BASE";
 	public const string PREF_LV_AREA_BOMB 		= "PREF_LV_AREA_BOMB";
@@ -73,6 +74,15 @@ public class Const {
 	public const int CUSTOM_LV_MAX = 1; // 
 	public const int COST_BASE = 19000;
 	public const float OVER_LV_COST_ADD_RATE = 1.02f;
+
+	// PARAM ID
+	public const int PARAM_COIN 			= 0;
+	public const int PARAM_LV_BASE 			= 1;
+	public const int PARAM_LV_AREA_BOMB 	= 2;
+	public const int PARAM_LV_LINE_BOMB 	= 3;
+	public const int PARAM_LV_RENEWAL_BOMB 	= 4;
+	public const int PARAM_LV_COLOR_LOCK_BOMB = 5;
+	public const int PARAM_LV_TIME_BOMB 	= 6;
 
 	// ADS & REVIEWS
 	public const int AD_INTERVAL_INTER = 5;

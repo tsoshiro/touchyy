@@ -1,12 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class UserData {
-
-
 	int DEFAULT_VALUE_INT = 0;
 	float DEFAULT_VALUE_FLOAT = 0.0f;
 	string DEFAULT_VALUE_STRING = "";
+	public List<string> _userParamsList = new List<string> ();
 
 	public int getUserDataInt (string pKey) {
 		return PlayerPrefs.GetInt (pKey, DEFAULT_VALUE_INT);
@@ -75,5 +75,15 @@ public class UserData {
 	 	setUserData (Const.PREF_LV_RENEWAL_BOMB, 0);
 	 	setUserData (Const.PREF_LV_COLOR_LOCK_BOMB, 0);
 	 	setUserData (Const.PREF_LV_TIME_BOMB, 0);
+	}
+
+	public UserData () {
+		_userParamsList.Add (Const.PREF_COIN);
+		_userParamsList.Add (Const.PREF_LV_BASE);
+		_userParamsList.Add (Const.PREF_LV_AREA_BOMB);
+		_userParamsList.Add (Const.PREF_LV_LINE_BOMB);
+		_userParamsList.Add (Const.PREF_LV_RENEWAL_BOMB);
+		_userParamsList.Add (Const.PREF_LV_COLOR_LOCK_BOMB);
+		_userParamsList.Add (Const.PREF_LV_TIME_BOMB);
 	}
 }

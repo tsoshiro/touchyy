@@ -9,8 +9,8 @@ public class GameCtrl : MonoBehaviour {
 	float COLOR_CLEAR_BONUS_RATE = 2f;
 
 	Result _result;
-	UserData _userData;
-	UserParam _userParam;
+	public UserData _userData;
+	public UserParam _userParam;
 
 	#region UI
 	public TextMesh scoreText;
