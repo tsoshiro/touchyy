@@ -71,18 +71,18 @@ public class Const {
 
 	// PARAM LIMIT
 	//public const int CUSTOM_LV_MAX = 100; // 100まではゲームデータで管理。それ以降は決め打ちロジック。
-	public const int CUSTOM_LV_MAX = 1; // 
-	public const int COST_BASE = 19000;
+	public const int CUSTOM_LV_MAX = 0; // 
+	public const int COST_BASE = 10000;
 	public const float OVER_LV_COST_ADD_RATE = 1.02f;
 
 	// PARAM ID
-	public const int PARAM_COIN 			= 0;
-	public const int PARAM_LV_BASE 			= 1;
-	public const int PARAM_LV_AREA_BOMB 	= 2;
-	public const int PARAM_LV_LINE_BOMB 	= 3;
-	public const int PARAM_LV_RENEWAL_BOMB 	= 4;
-	public const int PARAM_LV_COLOR_LOCK_BOMB = 5;
-	public const int PARAM_LV_TIME_BOMB 	= 6;
+	public const int PARAM_COIN 				= 0;
+	public const int PARAM_LV_BASE 				= 1;
+	public const int PARAM_LV_AREA_BOMB 		= 2;
+	public const int PARAM_LV_LINE_BOMB 		= 3;
+	public const int PARAM_LV_RENEWAL_BOMB 		= 4;
+	public const int PARAM_LV_COLOR_LOCK_BOMB 	= 5;
+	public const int PARAM_LV_TIME_BOMB 		= 6;
 
 	// ADS & REVIEWS
 	public const int AD_INTERVAL_INTER = 5;
@@ -93,5 +93,7 @@ public class Const {
 	#region Sound
 	public const int SE_GOOD = 0;
 	public const int SE_BAD = 1;
+	public const int SE_UP = 2;
+	public const int SE_NO = 3;
 	#endregion
 }

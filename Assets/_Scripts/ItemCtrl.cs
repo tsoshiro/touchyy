@@ -12,5 +12,15 @@ public class ItemCtrl : MonoBehaviour {
 		cardText.text = _MyItem.name;
 		cardText.text += "\nLV." + _MyItem.lv;
 		cardText.text += "\n" + _MyItem.cost;
+
+		if (_MyItem.releaseFlg) {
+			gameObject.GetComponentInChildren<SpriteRenderer> ().color = Color.white;
+		} else { 
+			gameObject.GetComponentInChildren<SpriteRenderer> ().color = Color.gray;
+		}
+	}
+
+	public Item getMyItem () {
+		return _MyItem;
 	}
 }

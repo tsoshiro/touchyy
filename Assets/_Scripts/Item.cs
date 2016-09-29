@@ -26,6 +26,7 @@ public class Item {
 	}
 
 	string getName (int pId) {
+		Debug.Log ("int pId:" + pId);
 		return names [pId];
 	}
 

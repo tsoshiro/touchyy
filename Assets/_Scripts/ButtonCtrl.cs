@@ -3,6 +3,7 @@ using System.Collections;
 
 public class ButtonCtrl : MonoBehaviour {
 	public GameObject parentObj;
+	public bool setMeFlg = false;
 
 	void Update () {
 		if (Input.GetMouseButtonDown (0)) {
@@ -18,6 +19,10 @@ public class ButtonCtrl : MonoBehaviour {
 	}
 
 	void sendAction () {
-		parentObj.SendMessage ("action" + gameObject.name);
+		if (setMeFlg) {
+			parentObj.SendMessage ("action" + gameObject.name, this.gameObject);
+		} else {
+			parentObj.SendMessage ("action" + gameObject.name);	
+		}
 	}
 }

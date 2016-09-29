@@ -12,6 +12,11 @@ public class GameCtrl : MonoBehaviour {
 	public UserData _userData;
 	public UserParam _userParam;
 
+	#region Controllers
+	public ResultCtrl _resultCtrl;
+	public ShopCtrl _shopCtrl;
+	#endregion
+
 	#region UI
 	public TextMesh scoreText;
 	public TextMesh comboText;
@@ -104,6 +109,9 @@ public class GameCtrl : MonoBehaviour {
 		mistakeGauge.SetActive (false);
 		pauseBtn.SetActive (false);
 
+		// SHOP初期化
+		_shopCtrl.initUserItems ();
+
 		initRate ();
 
 		SetGame();
@@ -116,7 +124,7 @@ public class GameCtrl : MonoBehaviour {
 		testClass.test ();
 	}
 
-	void SetGame() {
+	public void SetGame() {
 		state = STATE.READY;
 
 		// Resultクラスの初期化
@@ -131,7 +139,8 @@ public class GameCtrl : MonoBehaviour {
 		setTimeGaugeRate ();
 
 		resetColorRestriction ();
-		
+
+		resultText.gameObject.SetActive (true);
 		resultText.text = "TAP\nTO\nSTART\n\n画面上部のものと\n同じ色を触って\n消しましょう"; ;
 		//arrowguide.SetActive (true);
 	}
@@ -232,7 +241,7 @@ public class GameCtrl : MonoBehaviour {
 
 	#region actionBtn
 	public void actionPauseBtn () {
-		if (state != STATE.PAUSE) {
+		if (state == STATE.PLAYING) {
 			enablePause (true);	
 		}
 	}
@@ -320,7 +329,7 @@ public class GameCtrl : MonoBehaviour {
 	void updateResult() {
 		if (Input.GetMouseButtonDown(0)) {
 			// SETTING
-			SetGame();
+			//SetGame();
 //			Application.LoadLevel(Application.loadedLevelName);
 		}
 	}
@@ -349,13 +358,29 @@ public class GameCtrl : MonoBehaviour {
 
 		showResult ();
 
-		yield return new WaitForSeconds(2);
+		yield return 0;
+	}
+
+	public void finishResultAnimation () {
+		//yield return new WaitForSeconds (2);
 
 		resultText.text += "\nTAP TO REPLAY";
 		canGoNext = true;
 	}
 
 	void showResult () {
+		_resultCtrl.gameObject.SetActive (true);
+		iTween.ScaleFrom (_resultCtrl.gameObject, Vector3.zero, 0.1f);
+
+		//TODO アニメーション中に触らせない処理
+
+		// saveData
+
+		// showResult
+		_resultCtrl.showResult (_result);
+
+		return;
+
 		resultText.text = "RESULT\n";
 
 		resultText.text += "SCORE:";
@@ -400,21 +425,41 @@ public class GameCtrl : MonoBehaviour {
 		resultText.gameObject.SetActive (true);
 	}
 
+	public STATE lastState = STATE.READY;
+	public void OpenShop () {
+		lastState = state;
+		_shopCtrl.gameObject.SetActive (true);
+		state = STATE.SHOP;
+	}
+
+	public void backFromShop () {
+		_shopCtrl.gameObject.SetActive (false);
+		if (lastState == STATE.READY) {
+			// 閉じるのみ
+			state = STATE.READY;
+		} else if (lastState == STATE.RESULT) {
+			// Resultを開く
+			state = STATE.RESULT;
+			_resultCtrl.gameObject.SetActive (true);
+		}
+	}
+
 	#region coin
-	void getCoin (int pScore) {
+	public void getCoin (int pScore) {
 		// LOGIC
 		int coin = pScore;
 
 		_userData.addTotalRecords (Const.PREF_COIN, coin);
 	}
 
-	void spendCoin (int pScore) {
+	public void spendCoin (int pScore) {
 		int coin = pScore;
 
 		_userData.addTotalRecords (Const.PREF_COIN, - coin);
 	}
 	#endregion
 
+	float ANIMATION_TIME = 0.5f;
 	void changeTargetColor() {
 		do {
 			targetColor = (Colors)Random.Range (0, 5);
@@ -426,7 +471,7 @@ public class GameCtrl : MonoBehaviour {
 		targetCubeCtrl.setColor((int)targetColor);
 		iTween.ScaleFrom(targetCube, iTween.Hash(
 			"scale", new Vector3(0,0,0),
-			"time", 0.5f,
+			"time", ANIMATION_TIME,
 			"easetype", iTween.EaseType.easeOutBounce)
 		                 );
 	}

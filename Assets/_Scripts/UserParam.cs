@@ -23,9 +23,12 @@ public class UserParam {
 		return value;
 	}
 
-	float START_RATE = 0.01f;
+	float START_RATE = 0.05f;
 	float getBombRate (int pLv) {
 		float value = 0.0f;
+		if (pLv <= 0) {
+			return 0;
+		}
 		if (pLv == 1) {
 			value = START_RATE;
 		} else {
