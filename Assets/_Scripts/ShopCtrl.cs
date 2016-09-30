@@ -14,11 +14,11 @@ public class ShopCtrl : MonoBehaviour
 	float Y_POS = -2;
 
 	public void Start () {
-		int coin = _gameCtrl._userData.getUserDataInt (Const.PREF_COIN);
-		_coin.text = "" + coin;
+		_coin.text = "" + _gameCtrl._userParam.coin;
 	}
 
 	public void initUserItems () {
+		_coin.text = "" + _gameCtrl._userParam.coin;
 		if (itemCtrlList.Count > 0) {
 			return;
 		}
@@ -46,12 +46,13 @@ public class ShopCtrl : MonoBehaviour
 
 	void reloadUserItems () {
 		UserData data = _gameCtrl._userData;
+
 		for (int i = 0; i < data._userParamsList.Count - 1; i++) {
 			Item aItem = new Item (i + 1, data.getUserDataInt (data._userParamsList [i + 1]));
 			itemCtrlList [i].init (aItem);
 		}
 
-		_coin.text = "" + data.getUserDataInt (Const.PREF_COIN);
+		_coin.text = "" + _gameCtrl._userParam.coin;
 	}
 
 	// PURCHASE
@@ -59,10 +60,10 @@ public class ShopCtrl : MonoBehaviour
 	{
 		Item item = obj.GetComponent<ItemCtrl> ().getMyItem ();
 		int cost = item.cost;
-		int coin = _gameCtrl._userData.getUserDataInt (Const.PREF_COIN);
+		int coin = _gameCtrl._userParam.coin; ;
 		if (coin >= cost) {
-			_gameCtrl._userData.setUserData (Const.PREF_COIN, (coin - cost));
-			purchase (item);
+			_gameCtrl.spendCoin (cost);
+			levelUp (item);
 			_gameCtrl._audioMgr.play (Const.SE_UP);
 		} else {
 			Debug.Log ("CAN'T BUY");
@@ -70,11 +71,12 @@ public class ShopCtrl : MonoBehaviour
 		}
 	}
 
-	void purchase (Item pItem) {
+	void levelUp (Item pItem) {
 		string key = _gameCtrl._userData._userParamsList [pItem.id];
 		_gameCtrl._userData.addTotalRecords (key, 1);
 		_gameCtrl._userData.saveUserData ();
 
+		_gameCtrl.reloadUserData ();
 		reloadUserItems ();
 	}
 
@@ -82,4 +84,14 @@ public class ShopCtrl : MonoBehaviour
 	void actionBackBtn () {
 		_gameCtrl.backFromShop ();
 	}
+
+	void actionResetDataBtn ()
+	{
+		_gameCtrl._userData.resetUserData ();
+
+		reloadUserItems ();
+
+		_gameCtrl.reloadUserData ();
+	}
+
 }

@@ -112,8 +112,6 @@ public class GameCtrl : MonoBehaviour {
 		// SHOP初期化
 		_shopCtrl.initUserItems ();
 
-		initRate ();
-
 		SetGame();
 	}
 
@@ -126,6 +124,8 @@ public class GameCtrl : MonoBehaviour {
 
 	public void SetGame() {
 		state = STATE.READY;
+
+		initRate ();
 
 		// Resultクラスの初期化
 		_result = new Result ();
@@ -346,7 +346,6 @@ public class GameCtrl : MonoBehaviour {
 	}
 
 	bool canGoNext = false;
-	string NEW_ICON = "[NEW]";
 
 	IEnumerator StopGame() {
 
@@ -379,50 +378,6 @@ public class GameCtrl : MonoBehaviour {
 		// showResult
 		_resultCtrl.showResult (_result);
 
-		return;
-
-		resultText.text = "RESULT\n";
-
-		resultText.text += "SCORE:";
-		if (_userData.checkIfIsNewRecord (Const.PREF_BEST_SCORE, _result.score)) {
-			resultText.text += NEW_ICON;
-		}
-		resultText.text += _result.score + "\n";
-		resultText.text += "MAX COMBO:";
-
-		if (_userData.checkIfIsNewRecord (Const.PREF_MAX_COMBO, _result.maxCombo)) {
-			resultText.text += NEW_ICON;
-		}
-		resultText.text += _result.maxCombo + "\n";
-
-		resultText.text += "CUBES:";
-		if (_userData.checkIfIsNewRecord (Const.PREF_MAX_DELETE_COUNT, _result.deleteCount)) {
-			resultText.text += NEW_ICON;
-		}
-		resultText.text += _result.deleteCount + "\n";
-
-		resultText.text += "KILL ALL:";
-		if (_userData.checkIfIsNewRecord (Const.PREF_MAX_KILL_ALL_COUNT, _result.killAllCount)) {
-			resultText.text += NEW_ICON;
-		}
-		resultText.text += _result.killAllCount+"\n";
-
-		if (_result.missCount > 0) {
-			resultText.text += "MISS:" + _result.missCount;
-		} else {
-			resultText.text += "NO MISS!!";
-		}
-
-		// TOTAL VALUE
-		_userData.addTotalRecords (Const.PREF_TOTAL_SCORE, _result.score);
-		_userData.addTotalRecords (Const.PREF_TOTAL_DELETE_COUNT, _result.deleteCount);
-		_userData.addTotalRecords (Const.PREF_TOTAL_KILL_ALL_COUNT, _result.killAllCount);
-		_userData.addTotalRecords (Const.PREF_PLAY_COUNT, 1);
-
-		// SAVE
-		_userData.saveUserData ();
-
-		resultText.gameObject.SetActive (true);
 	}
 
 	public STATE lastState = STATE.READY;
@@ -441,22 +396,25 @@ public class GameCtrl : MonoBehaviour {
 			// Resultを開く
 			state = STATE.RESULT;
 			_resultCtrl.gameObject.SetActive (true);
+			_resultCtrl.SetCoinValue();;
 		}
 	}
 
 	#region coin
 	public void getCoin (int pScore) {
 		// LOGIC
-		int coin = pScore;
-
-		_userData.addTotalRecords (Const.PREF_COIN, coin);
+		_userData.addTotalRecords (Const.PREF_COIN, pScore);
 	}
 
-	public void spendCoin (int pScore) {
-		int coin = pScore;
-
-		_userData.addTotalRecords (Const.PREF_COIN, - coin);
+	public void spendCoin (int pCost) {
+		_userData.addTotalRecords (Const.PREF_COIN, - pCost);
 	}
+
+	public void reloadUserData () {
+		_userData = new UserData ();
+		_userParam.setUserParam (_userData);
+	}
+
 	#endregion
 
 	float ANIMATION_TIME = 0.5f;

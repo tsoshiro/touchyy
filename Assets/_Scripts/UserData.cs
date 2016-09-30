@@ -49,7 +49,6 @@ public class UserData {
 		totalRecord += pValue;
 		setUserData (pKey, totalRecord);
 	}
-
 	#endregion
 
 	public void saveUserData () {
@@ -78,6 +77,8 @@ public class UserData {
 	}
 
 	public UserData () {
+		_userParamsList.Clear ();
+
 		_userParamsList.Add (Const.PREF_COIN);
 		_userParamsList.Add (Const.PREF_LV_BASE);
 		_userParamsList.Add (Const.PREF_LV_AREA_BOMB);

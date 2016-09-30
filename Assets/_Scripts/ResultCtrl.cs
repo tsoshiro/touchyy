@@ -25,12 +25,12 @@ public class ResultCtrl : MonoBehaviour {
 
 		LBL_MAX_COMBO.text = ""+_result.maxCombo;
 		if (_userData.checkIfIsNewRecord (Const.PREF_MAX_COMBO, _result.maxCombo)) {
-			LBL_MAX_COMBO.text = NEW_ICON;
+			LBL_MAX_COMBO.text = NEW_ICON + _result.maxCombo;
 		}
 
 		LBL_CUBES.text = ""+_result.deleteCount;
 		if (_userData.checkIfIsNewRecord (Const.PREF_MAX_DELETE_COUNT, _result.deleteCount)) {
-			LBL_CUBES.text = NEW_ICON + _result.maxCombo;
+			LBL_CUBES.text = NEW_ICON + _result.deleteCount;
 		}
 
 		LBL_KILL_ALL.text = "" + _result.killAllCount;
@@ -67,8 +67,13 @@ public class ResultCtrl : MonoBehaviour {
 		LBL_COIN.text = "" + pValue;
 	}
 
+	public void SetCoinValue () {
+		LBL_COIN.text = ""+_gameCtrl._userParam.coin;
+	}
+
 	void callback () {
 		_gameCtrl.finishResultAnimation ();
+		_gameCtrl._shopCtrl.initUserItems ();
 	}
 
 	void actionReplayBtn ()
