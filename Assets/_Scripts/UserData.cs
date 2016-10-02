@@ -1,39 +1,83 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 public class UserData {
+	#region PRIVATE PlayerPrefs
 	int DEFAULT_VALUE_INT = 0;
 	float DEFAULT_VALUE_FLOAT = 0.0f;
 	string DEFAULT_VALUE_STRING = "";
-	public List<string> _userParamsList = new List<string> ();
 
-	public int getUserDataInt (string pKey) {
+	private int getUserDataInt (string pKey) {
 		return PlayerPrefs.GetInt (pKey, DEFAULT_VALUE_INT);
 	}
 
-	public float getUserDataFloat (string pKey)
+	private float getUserDataFloat (string pKey)
 	{
 		return PlayerPrefs.GetFloat (pKey, DEFAULT_VALUE_FLOAT);
 	}
 
-	public string getUserDataString (string pKey) {
+	private string getUserDataString (string pKey) {
 		return PlayerPrefs.GetString (pKey, DEFAULT_VALUE_STRING);
 	}
 
-	public void setUserData (string pKey, int pValue) {
+	private void setUserData (string pKey, int pValue) {
 		PlayerPrefs.SetInt (pKey, pValue);
 	}
 
-	public void setUserData (string pKey, float pValue)
+	private void setUserData (string pKey, float pValue)
 	{
 		PlayerPrefs.SetFloat (pKey, pValue);
 	}
 
-	public void setUserData (string pKey, string pValue)
+	private void setUserData (string pKey, string pValue)
 	{
 		PlayerPrefs.SetString (pKey, pValue);
 	}
+
+	private void saveUserData () {
+		PlayerPrefs.Save ();
+	}
+
+	private void resetUserData () {
+		PlayerPrefs.DeleteAll ();
+	}
+	#endregion
+
+	#region public interface
+	public void save() {
+		saveUserData ();
+	}
+
+	void saveAllData() {
+		setUserData (Const.PREF_BEST_SCORE, bestScore);
+		setUserData (Const.PREF_MAX_COMBO,maxCombo) ;
+		setUserData (Const.PREF_MAX_DELETE_COUNT,maxDeleteCount);
+		setUserData (Const.PREF_MAX_KILL_ALL_COUNT,maxKillAllCount);
+
+		setUserData (Const.PREF_TOTAL_SCORE,totalScore);
+		setUserData (Const.PREF_TOTAL_DELETE_COUNT,totalDeleteCount);
+		setUserData (Const.PREF_TOTAL_KILL_ALL_COUNT,totalKillAllCount);
+		setUserData (Const.PREF_PLAY_COUNT,playCount);
+
+		setUserData (Const.PREF_COIN,coin);
+
+		// _userParamListの中身を更新
+		setUserData (Const.PREF_LV_BASE, 			_userParamsList[Const.PARAM_LV_BASE]);
+		setUserData (Const.PREF_LV_AREA_BOMB, 		_userParamsList[Const.PARAM_LV_AREA_BOMB]);
+		setUserData (Const.PREF_LV_LINE_BOMB, 		_userParamsList[Const.PARAM_LV_LINE_BOMB]);
+		setUserData (Const.PREF_LV_RENEWAL_BOMB,	_userParamsList[Const.PARAM_LV_RENEWAL_BOMB]);
+		setUserData (Const.PREF_LV_COLOR_LOCK_BOMB,	_userParamsList[Const.PARAM_LV_COLOR_LOCK_BOMB]);
+		setUserData (Const.PREF_LV_TIME_BOMB,		_userParamsList[Const.PARAM_LV_TIME_BOMB]);
+
+		setUserData (Const.PREF_NEXT_FREE_GIFT, nextFreeGift);
+	}
+
+	public void reset() {
+		resetUserData ();
+	}
+	#endregion
 
 	#region RECORD
 	public bool checkIfIsNewRecord (string pKey, int pValue) {
@@ -51,16 +95,61 @@ public class UserData {
 	}
 	#endregion
 
-	public void saveUserData () {
-		PlayerPrefs.Save ();
-	}
+	#region IN GAME USE
+	// public records and parameters
+	// RECORDS
+	public int bestScore;
+	public int maxCombo;
+	public int maxDeleteCount;
+	public int maxKillAllCount;
+	public int maxAllCount;
 
-	public void resetUserData () {
-		PlayerPrefs.DeleteAll ();
-	}
+	// TOTAL RECORDS
+	public int totalScore;
+	public int totalDeleteCount;
+	public int totalKillAllCount;
+	public int playCount;
+
+	// PARAMETERS
+	public int coin;
+//	public int lv_base;
+//	public int lv_area_bomb;
+//	public int lv_line_bomb;
+//	public int lv_renewal_bomb;
+//	public int lv_color_lock_bomb;
+//	public int lv_time_bomb;
+	public List<int> _userParamsList = new List<int> ();
+
+	public string nextFreeGift;
 
 	// 初期データ作成
-	public void checkNewUser () {
+	public void initUserData() {
+		checkNewUser ();
+
+		bestScore 			= getUserDataInt (Const.PREF_BEST_SCORE);
+		maxCombo 			= getUserDataInt (Const.PREF_MAX_COMBO);
+		maxDeleteCount		= getUserDataInt (Const.PREF_MAX_DELETE_COUNT);
+		maxKillAllCount		= getUserDataInt (Const.PREF_MAX_KILL_ALL_COUNT);
+
+		totalScore			= getUserDataInt (Const.PREF_TOTAL_SCORE);
+		totalDeleteCount	= getUserDataInt (Const.PREF_TOTAL_DELETE_COUNT);
+		totalKillAllCount	= getUserDataInt (Const.PREF_TOTAL_KILL_ALL_COUNT);
+		playCount			= getUserDataInt (Const.PREF_PLAY_COUNT);
+
+		coin				= getUserDataInt (Const.PREF_COIN);
+
+		// userParamList
+		_userParamsList.Add (getUserDataInt (Const.PREF_LV_BASE));
+		_userParamsList.Add (getUserDataInt (Const.PREF_LV_AREA_BOMB));
+		_userParamsList.Add (getUserDataInt (Const.PREF_LV_LINE_BOMB));
+		_userParamsList.Add (getUserDataInt (Const.PREF_LV_RENEWAL_BOMB));
+		_userParamsList.Add (getUserDataInt (Const.PREF_LV_COLOR_LOCK_BOMB));
+		_userParamsList.Add (getUserDataInt (Const.PREF_LV_TIME_BOMB));
+
+		nextFreeGift = getUserDataString (Const.PREF_NEXT_FREE_GIFT);
+	}
+
+	void checkNewUser () {
 		if (getUserDataInt (Const.PREF_LV_BASE) <= 0) {
 			createBaseUserData ();
 		}
@@ -74,17 +163,12 @@ public class UserData {
 	 	setUserData (Const.PREF_LV_RENEWAL_BOMB, 0);
 	 	setUserData (Const.PREF_LV_COLOR_LOCK_BOMB, 0);
 	 	setUserData (Const.PREF_LV_TIME_BOMB, 0);
+
+		setUserData (Const.PREF_NEXT_FREE_GIFT, DateTime.Now.ToString ("yyyy-MM-dd HH:mm:ss"));
 	}
 
 	public UserData () {
 		_userParamsList.Clear ();
-
-		_userParamsList.Add (Const.PREF_COIN);
-		_userParamsList.Add (Const.PREF_LV_BASE);
-		_userParamsList.Add (Const.PREF_LV_AREA_BOMB);
-		_userParamsList.Add (Const.PREF_LV_LINE_BOMB);
-		_userParamsList.Add (Const.PREF_LV_RENEWAL_BOMB);
-		_userParamsList.Add (Const.PREF_LV_COLOR_LOCK_BOMB);
-		_userParamsList.Add (Const.PREF_LV_TIME_BOMB);
 	}
+	#endregion
 }

@@ -101,7 +101,7 @@ public class GameCtrl : MonoBehaviour {
 	void Awake () {
 		// UserData初期化
 		_userData = new UserData ();
-		_userData.checkNewUser ();
+		_userData.initUserData ();
 
 		// UserParam初期化
 		_userParam = new UserParam (_userData);
@@ -370,7 +370,7 @@ public class GameCtrl : MonoBehaviour {
 		}
 	}
 
-	bool canGoNext = false;
+	public bool canGoNext = false;
 
 	IEnumerator StopGame() {
 
@@ -405,7 +405,10 @@ public class GameCtrl : MonoBehaviour {
 	public STATE lastState = STATE.READY;
 	public void OpenShop () {
 		lastState = state;
+
+		_shopCtrl.initUserItems ();
 		_shopCtrl.gameObject.SetActive (true);
+
 		state = STATE.SHOP;
 	}
 
@@ -426,14 +429,17 @@ public class GameCtrl : MonoBehaviour {
 	public void getCoin (int pScore) {
 		// LOGIC
 		_userData.addTotalRecords (Const.PREF_COIN, pScore);
+		_userData.save ();
 	}
 
 	public void spendCoin (int pCost) {
 		_userData.addTotalRecords (Const.PREF_COIN, - pCost);
+		_userData.save ();
 	}
 
 	public void reloadUserData () {
 		_userData = new UserData ();
+		_userData.initUserData ();
 		_userParam.setUserParam (_userData);
 	}
 

@@ -77,6 +77,8 @@ public class Const {
 	public const string PREF_LV_COLOR_LOCK_BOMB = "PREF_LV_COLOR_LOCK_BOMB";
 	public const string PREF_LV_TIME_BOMB 		= "PREF_LV_TIME_BOMB";
 
+	public const string PREF_NEXT_FREE_GIFT	 	= "PREF_NEXT_FREE_GIFT";
+
 	// PARAM LIMIT
 	//public const int CUSTOM_LV_MAX = 100; // 100まではゲームデータで管理。それ以降は決め打ちロジック。
 	public const int CUSTOM_LV_MAX = 0; // 
@@ -84,13 +86,12 @@ public class Const {
 	public const float OVER_LV_COST_ADD_RATE = 1.02f;
 
 	// PARAM ID
-	public const int PARAM_COIN 				= 0;
-	public const int PARAM_LV_BASE 				= 1;
-	public const int PARAM_LV_AREA_BOMB 		= 2;
-	public const int PARAM_LV_LINE_BOMB 		= 3;
-	public const int PARAM_LV_RENEWAL_BOMB 		= 4;
-	public const int PARAM_LV_COLOR_LOCK_BOMB 	= 5;
-	public const int PARAM_LV_TIME_BOMB 		= 6;
+	public const int PARAM_LV_BASE 				= 0;
+	public const int PARAM_LV_AREA_BOMB 		= 1;
+	public const int PARAM_LV_LINE_BOMB 		= 2;
+	public const int PARAM_LV_RENEWAL_BOMB 		= 3;
+	public const int PARAM_LV_COLOR_LOCK_BOMB 	= 4;
+	public const int PARAM_LV_TIME_BOMB 		= 5;
 
 	// ADS & REVIEWS
 	public const int AD_INTERVAL_INTER = 5;

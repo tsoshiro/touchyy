@@ -19,20 +19,20 @@ public class ShopCtrl : MonoBehaviour
 	// -2
 
 	public void Start () {
-		_coin.text = "" + _gameCtrl._userParam.coin;
+		_coin.text = "" + _gameCtrl._userData.coin;
 	}
 
 	public void initUserItems () {
-		_coin.text = "" + _gameCtrl._userParam.coin;
+		_coin.text = "" + _gameCtrl._userData.coin;
 		if (itemCtrlList.Count > 0) {
 			return;
 		}
 		UserData data = _gameCtrl._userData;
-		for (int i = 1; i < data._userParamsList.Count; i++) {
-			Item aItem = new Item (i, data.getUserDataInt (data._userParamsList [i]));
+		for (int i = 0; i < data._userParamsList.Count; i++) {
+			Item aItem = new Item (i, data._userParamsList[i]);
 
-			float xPos = (i % 2 == 0) ? X_POS : -X_POS;
-			float yPos = (float)((i - 1) / 2) * Y_POS;
+			float xPos = (i % 2 != 0) ? X_POS : -X_POS;
+			float yPos = (float)(i / 2) * Y_POS;
 
 			Vector3 pos = new Vector3 (xPos, yPos, -5);
 
@@ -52,12 +52,12 @@ public class ShopCtrl : MonoBehaviour
 	void reloadUserItems () {
 		UserData data = _gameCtrl._userData;
 
-		for (int i = 0; i < data._userParamsList.Count - 1; i++) {
-			Item aItem = new Item (i + 1, data.getUserDataInt (data._userParamsList [i + 1]));
+		for (int i = 0; i < data._userParamsList.Count; i++) {
+			Item aItem = new Item (i, data._userParamsList [i]);
 			itemCtrlList [i].init (aItem);
 		}
 
-		_coin.text = "" + _gameCtrl._userParam.coin;
+		_coin.text = "" + _gameCtrl._userData.coin;
 	}
 
 	// PURCHASE
@@ -65,7 +65,7 @@ public class ShopCtrl : MonoBehaviour
 	{
 		Item item = obj.GetComponent<ItemCtrl> ().getMyItem ();
 		int cost = item.cost;
-		int coin = _gameCtrl._userParam.coin; ;
+		int coin = _gameCtrl._userData.coin; ;
 		if (coin >= cost) {
 			_gameCtrl.spendCoin (cost);
 			levelUp (item);
@@ -77,9 +77,9 @@ public class ShopCtrl : MonoBehaviour
 	}
 
 	void levelUp (Item pItem) {
-		string key = _gameCtrl._userData._userParamsList [pItem.id];
-		_gameCtrl._userData.addTotalRecords (key, 1);
-		_gameCtrl._userData.saveUserData ();
+		_gameCtrl._userData._userParamsList [pItem.id]++;
+
+		_gameCtrl._userData.save ();
 
 		_gameCtrl.reloadUserData ();
 		reloadUserItems ();
@@ -92,7 +92,7 @@ public class ShopCtrl : MonoBehaviour
 
 	void actionResetDataBtn ()
 	{
-		_gameCtrl._userData.resetUserData ();
+		_gameCtrl._userData.reset ();
 
 		reloadUserItems ();
 

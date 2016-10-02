@@ -25,8 +25,8 @@ public class ItemCtrl : MonoBehaviour {
 			ColorEditor.setFade (this.gameObject, 0.2f);
 		}
 	}
-	// IDが2以上ならCardImageObjectsの中から選んで表示する。(1はBASE)
-	int SPECIAL_ID_IS_FROM = 2;
+	// IDが1以上ならCardImageObjectsの中から選んで表示する。(0はBASE)
+	int SPECIAL_ID_IS_FROM = 1;
 	void setImage(int pId) {
 		if (_MyItem.id >= SPECIAL_ID_IS_FROM) {
 			for (int i = 0; i < cardImageObjects.Length; i++) {

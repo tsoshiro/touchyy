@@ -8,7 +8,6 @@ public class Item {
 	public int cost;
 	public bool releaseFlg;
 	public string [] names = {
-		"COIN",
 		"BASE",
 		"AREA",
 		"LINE",
