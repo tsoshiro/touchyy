@@ -10,8 +10,13 @@ public class ShopCtrl : MonoBehaviour
 	public GameObject _cardPrefab;
 	public TextMesh _coin;
 
-	float X_POS = 1.2f;
+	float X_POS = 1.34f;
 	float Y_POS = -2;
+	//	-1.34
+	// -0.1
+
+	// 1.2f
+	// -2
 
 	public void Start () {
 		_coin.text = "" + _gameCtrl._userParam.coin;

@@ -13,6 +13,7 @@ public class GameCtrl : MonoBehaviour {
 	public UserParam _userParam;
 
 	#region Controllers
+	public GameObject _readyCtrl;
 	public ResultCtrl _resultCtrl;
 	public ShopCtrl _shopCtrl;
 	#endregion
@@ -75,6 +76,13 @@ public class GameCtrl : MonoBehaviour {
 		YELLOW,
 		PURPLE
 	}
+	public string[] colorCodes = {
+		Const.COLOR_CODE_RED,
+		Const.COLOR_CODE_BLUE,
+		Const.COLOR_CODE_GREEN,
+		Const.COLOR_CODE_YELLOW,
+		Const.COLOR_CODE_PURPLE
+	};
 
 	public enum STATE {
 		READY,
@@ -105,8 +113,10 @@ public class GameCtrl : MonoBehaviour {
 		colorTimeGaugeBaseWidth = colorTimeGauge.transform.localScale.x;
 		mistakeGaugeBaseWidth = mistakeGauge.transform.localScale.x;
 		countDownTextObj.SetActive (false);
-		mistakeText.SetActive (false);
-		mistakeGauge.SetActive (false);
+
+		mistakeObj.SetActive (true);
+		iTween.FadeTo(mistakeObj, iTween.Hash("a", 0f, "time", 0));
+
 		pauseBtn.SetActive (false);
 
 		// SHOP初期化
@@ -140,9 +150,11 @@ public class GameCtrl : MonoBehaviour {
 
 		resetColorRestriction ();
 
-		resultText.gameObject.SetActive (true);
-		resultText.text = "TAP\nTO\nSTART\n\n画面上部のものと\n同じ色を触って\n消しましょう"; ;
-		//arrowguide.SetActive (true);
+		_readyCtrl.SetActive (true);
+		iTween.FadeTo (_readyCtrl, iTween.Hash("a", 1, "time", 0.5f));
+//		resultText.gameObject.SetActive (true);
+//		resultText.text = "TAP\nTO\nSTART\n\n画面上部のものと\n同じ色を触って\n消しましょう"; ;
+//		//arrowguide.SetActive (true);
 	}
 
 	void setTimeGaugeRate () {
@@ -211,11 +223,6 @@ public class GameCtrl : MonoBehaviour {
 
 	bool isCountingDown = false;
 	void updateReady() {
-		if (Input.GetMouseButtonDown(0)) {
-			if (!isCountingDown) {
-				StartCoroutine (startCountDown (Const.COUNTDOWN_TIME));
-			}
-		}
 	}
 
 	void updatePause () {
@@ -240,6 +247,13 @@ public class GameCtrl : MonoBehaviour {
 	public GameObject pauseDiplay;
 
 	#region actionBtn
+	public void actionStartBtn() {
+		if (!isCountingDown) {
+			StartCoroutine (startCountDown (Const.COUNTDOWN_TIME));
+			iTween.FadeTo (_readyCtrl, iTween.Hash ("a", 0, "time", 0.5f));
+		}
+	}
+
 	public void actionPauseBtn () {
 		if (state == STATE.PLAYING) {
 			enablePause (true);	
@@ -269,7 +283,8 @@ public class GameCtrl : MonoBehaviour {
 		if (state == STATE.PAUSE) { // PAUSE 
 			enablePause (false);
 		} else { // READY
-			StartGame ();	
+			_readyCtrl.SetActive(false);
+			StartGame ();
 		}
 	}
 
@@ -327,11 +342,6 @@ public class GameCtrl : MonoBehaviour {
 	}
 
 	void updateResult() {
-		if (Input.GetMouseButtonDown(0)) {
-			// SETTING
-			//SetGame();
-//			Application.LoadLevel(Application.loadedLevelName);
-		}
 	}
 
 	void updateMistake () {
@@ -340,7 +350,8 @@ public class GameCtrl : MonoBehaviour {
 		if (mistakePenaltyTimeLeft <= 0) {
 			mistakePenaltyFlg = false;
 
-			mistakeGauge.SetActive (false);
+//			ColorEditor.setFade (mistakeObj, 0f);
+			iTween.FadeTo(mistakeObj, iTween.Hash("a", 0f, "time", 0));
 			touchableSign.SetActive (false);
 		}
 	}
@@ -361,9 +372,6 @@ public class GameCtrl : MonoBehaviour {
 	}
 
 	public void finishResultAnimation () {
-		//yield return new WaitForSeconds (2);
-
-		resultText.text += "\nTAP TO REPLAY";
 		canGoNext = true;
 	}
 
@@ -417,6 +425,7 @@ public class GameCtrl : MonoBehaviour {
 
 	#endregion
 
+	float SHORT_ANIMATION_TIME = 0.1f;
 	float ANIMATION_TIME = 0.5f;
 	void changeTargetColor() {
 		do {
@@ -583,9 +592,9 @@ public class GameCtrl : MonoBehaviour {
 		}
 
 		if (_result.comboCount >= 2) {
-			comboText.text = _result.comboCount.ToString () + " COMBO!!";
+			comboText.text = _result.comboCount.ToString ();
 
-			string comboShowTextStr = _result.comboCount.ToString () + "\nCOMBO!!";
+			string comboShowTextStr = _result.comboCount.ToString ();
 
 			Vector3 textPosition = pPosition + new Vector3 (0, 0, -5f);
 			GameObject textObj = Instantiate (comboShowTextObj,
@@ -618,14 +627,23 @@ public class GameCtrl : MonoBehaviour {
 		textObj.GetComponent<TextCtrl> ().init (0.2f, 0.1f);
 	}
 
+	public GameObject mistakeObj;
 	public bool mistakePenaltyFlg = false;
 	public float mistakePenaltyTime =  .5f;
 	float mistakePenaltyTimeLeft;
-	string howWrong = "";
 
 	public void wrongAnswer (int pId, int pColor) {
-		howWrong = pId + "\n" + (Colors)pColor;
+//		howWrong = (Colors)pColor;
+		setHowWrong (pColor);
 		wrongAnswer ();
+	}
+
+	public SpriteRenderer miss_target;
+	public SpriteRenderer miss_touched;
+
+	void setHowWrong(int pColor) {
+		ColorEditor.paintColor (miss_target.gameObject, colorCodes [(int)targetColor]);
+		ColorEditor.paintColor (miss_touched.gameObject, colorCodes [pColor]);
 	}
 
 	public void wrongAnswer() {
@@ -638,14 +656,7 @@ public class GameCtrl : MonoBehaviour {
 		mistakePenaltyTimeLeft = mistakePenaltyTime;
 
 		// 表示
-		GameObject textObj = Instantiate (mistakeText,
-		                                  mistakeText.transform.position,
-		                                  mistakeText.transform.rotation) as GameObject;
-		textObj.SetActive (true);
-		textObj.GetComponent<TextCtrl> ().init (0.1f, mistakePenaltyTime);
-		textObj.GetComponent<TextMesh> ().text += "\n"+howWrong;
-
-		mistakeGauge.SetActive (true);
+		iTween.FadeTo(mistakeObj, iTween.Hash("a", 1.0f, "time", 0));
 		touchableSign.SetActive (true);
 	}
 
@@ -712,16 +723,19 @@ public class GameCtrl : MonoBehaviour {
 	float rate_add_time		= 3f;
 	float [] ranges;
 
+	public bool isRateDebug = false;
 	void initRate () {
-		rate_vertical 	= _userParam.lineBombRate;
-		rate_horizontal = _userParam.lineBombRate;
-		rate_cross		= _userParam.lineBombRate;
-		rate_plus		= _userParam.areaBombRate;
-     	rate_multiple	= _userParam.areaBombRate;
-     	rate_around 	= _userParam.areaBombRate;
-		rate_renewal	= _userParam.renewalBombRate;
-		rate_restrict 	= _userParam.colorLockBombRate;	
-		rate_add_time	= _userParam.timeBombRate;
+		if (!isRateDebug) {
+			rate_vertical 	= _userParam.lineBombRate;
+			rate_horizontal = _userParam.lineBombRate;
+			rate_cross		= _userParam.lineBombRate;
+			rate_plus		= _userParam.areaBombRate;
+	     	rate_multiple	= _userParam.areaBombRate;
+	     	rate_around 	= _userParam.areaBombRate;
+			rate_renewal	= _userParam.renewalBombRate;
+			rate_restrict 	= _userParam.colorLockBombRate;	
+			rate_add_time	= _userParam.timeBombRate;
+		}
 
 		ranges = new float [] {
 			rate_vertical,

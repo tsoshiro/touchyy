@@ -129,7 +129,11 @@ public class CubeCtrl : MonoBehaviour {
 	}
 
 	public void setColor(int pColor) {
-		this.gameObject.GetComponent<Renderer>().material = materials[pColor];
+		Color aColor;
+		// 色情報を取得し、塗る
+		if (ColorUtility.TryParseHtmlString("#"+_GameCtrl.colorCodes[pColor], out aColor)) {
+			this.transform.GetComponentInChildren<SpriteRenderer> ().color = aColor;
+		}
 		myColor = (GameCtrl.Colors)pColor;
 	}
 

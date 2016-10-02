@@ -12,31 +12,25 @@ public class ResultCtrl : MonoBehaviour {
 
 	public TextMesh LBL_COIN;
 
-	string NEW_ICON = "[NEW]";
+	public GameObject BEST_ICON;
+	string BEST_ICON_NAME = "BEST_ICON";
+	Vector3 BEST_ICON_POS = new Vector3 (0, -0.4f, 0);
 
 	public void showResult (Result pResult) {
 		Result _result = pResult;
 		UserData _userData = _gameCtrl._userData;
 
 		LBL_SCORE.text = ""+_result.score;
-		if (_userData.checkIfIsNewRecord (Const.PREF_BEST_SCORE, _result.score)) {
-			LBL_SCORE.text = NEW_ICON + _result.score;
-		}
+		checkBestRecord(_userData, Const.PREF_BEST_SCORE,_result.score, LBL_SCORE);
 
 		LBL_MAX_COMBO.text = ""+_result.maxCombo;
-		if (_userData.checkIfIsNewRecord (Const.PREF_MAX_COMBO, _result.maxCombo)) {
-			LBL_MAX_COMBO.text = NEW_ICON + _result.maxCombo;
-		}
+		checkBestRecord(_userData, Const.PREF_MAX_COMBO,_result.maxCombo, LBL_MAX_COMBO);
 
 		LBL_CUBES.text = ""+_result.deleteCount;
-		if (_userData.checkIfIsNewRecord (Const.PREF_MAX_DELETE_COUNT, _result.deleteCount)) {
-			LBL_CUBES.text = NEW_ICON + _result.deleteCount;
-		}
+		checkBestRecord(_userData, Const.PREF_MAX_DELETE_COUNT,_result.deleteCount, LBL_CUBES);
 
 		LBL_KILL_ALL.text = "" + _result.killAllCount;
-		if (_userData.checkIfIsNewRecord (Const.PREF_MAX_KILL_ALL_COUNT, _result.killAllCount)) {
-			LBL_KILL_ALL.text = NEW_ICON + _result.killAllCount;
-		}
+		checkBestRecord(_userData, Const.PREF_MAX_KILL_ALL_COUNT,_result.killAllCount, LBL_KILL_ALL);
 
 		if (_result.missCount > 0) {
 			LBL_MISS.text = "" + _result.missCount;
@@ -61,6 +55,41 @@ public class ResultCtrl : MonoBehaviour {
 
 		// SAVE
 		_userData.saveUserData ();
+	}
+
+	void checkBestRecord(UserData pUserData,string pKey, int pScore, TextMesh pScoreTextMesh) {
+		UserData _userData = pUserData;
+		if (_userData.checkIfIsNewRecord (pKey, pScore)) {
+//		if (true) {
+			if (!pScoreTextMesh.transform.FindChild (BEST_ICON_NAME)) {
+				GameObject go = Instantiate (BEST_ICON,
+					                BEST_ICON.transform.position,
+					                BEST_ICON.transform.rotation) as GameObject;
+				go.transform.parent = pScoreTextMesh.transform;
+				go.transform.localPosition = BEST_ICON_POS;
+				go.name = BEST_ICON_NAME;		
+			} else {
+				pScoreTextMesh.transform.Find (BEST_ICON_NAME).gameObject.SetActive (true);
+			}
+		}
+	}
+
+	void cleanBestIcon(GameObject pScoreTextObj) {
+		if (pScoreTextObj.transform.FindChild (BEST_ICON_NAME)) {
+			pScoreTextObj.transform.Find (BEST_ICON_NAME).gameObject.SetActive (false);
+		}
+	}
+
+	void cleanBestIcons() {
+		TextMesh[] values = {
+			LBL_SCORE,
+			LBL_CUBES,
+			LBL_MAX_COMBO,
+			LBL_KILL_ALL
+		};
+		for (int i = 0; i < values.Length; i++) {
+			cleanBestIcon (values [i].gameObject);
+		}
 	}
 
 	void CoinValueChange (int pValue) {

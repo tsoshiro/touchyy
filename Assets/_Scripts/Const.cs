@@ -5,6 +5,14 @@ public class Const {
 	public const float ApplicationFrameRate = 30f;
 	public const int COUNTDOWN_TIME = 3;
 
+	public const string COLOR_CODE_BASE_COLOR = "37474F";
+	public const string COLOR_CODE_BG_GRAY = "F5F5F5";
+	public const string COLOR_CODE_RED = "ef5350";
+	public const string COLOR_CODE_BLUE = "42A5F5";
+	public const string COLOR_CODE_GREEN = "66BB6A";
+	public const string COLOR_CODE_YELLOW = "FFCA28";
+	public const string COLOR_CODE_PURPLE = "7E57C2";
+	public const string COLOR_CODE_GRAY = "BDBDBD";
 
 	public enum CubeType
 	{

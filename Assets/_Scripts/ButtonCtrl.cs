@@ -19,7 +19,8 @@ public class ButtonCtrl : MonoBehaviour {
 	}
 
 	void sendAction () {
-		if (setMeFlg) {
+		Debug.Log ("action"+gameObject.name);
+		if (setMeFlg) {			
 			parentObj.SendMessage ("action" + gameObject.name, this.gameObject);
 		} else {
 			parentObj.SendMessage ("action" + gameObject.name);	
