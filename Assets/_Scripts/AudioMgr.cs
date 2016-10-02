@@ -4,6 +4,7 @@ using System.Collections;
 public class AudioMgr : MonoBehaviour {
 	public AudioClip[] sounds;
 	AudioSource _audio;
+	public bool isMute;
 
 	// Use this for initialization
 	void Start () {
@@ -16,6 +17,9 @@ public class AudioMgr : MonoBehaviour {
 	}
 
 	public void play(int id) {
+		if (isMute) {
+			return;
+		}
 		_audio.clip = sounds[id];
 		_audio.Play();
 	}

@@ -4,6 +4,18 @@ using System.Collections;
 public class ButtonCtrl : MonoBehaviour {
 	public GameObject parentObj;
 	public bool setMeFlg = false;
+	public bool onOffFlg = false;
+
+	GameObject imageObj;
+	string imageObjName = "image";
+
+	public Sprite[] onOffSprites; 
+
+	void Start() {
+		if (transform.FindChild (imageObjName)) {
+			imageObj = transform.FindChild (imageObjName).gameObject;
+		}
+	}
 
 	void Update () {
 		if (Input.GetMouseButtonDown (0)) {
@@ -15,6 +27,18 @@ public class ButtonCtrl : MonoBehaviour {
 					sendAction ();
 				}
 			}
+		}
+	}
+
+	public void setOnFlg(bool iFlg) {
+		if (onOffSprites.Length <= 0) {
+			Debug.LogWarning ("onOffSprites are not set!:" + this.gameObject);
+			return;
+		}
+		if (iFlg) {
+			imageObj.GetComponent<SpriteRenderer> ().sprite = onOffSprites [0];
+		} else {
+			imageObj.GetComponent<SpriteRenderer> ().sprite = onOffSprites [1];
 		}
 	}
 

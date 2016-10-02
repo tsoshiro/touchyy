@@ -105,6 +105,7 @@ public class ResultCtrl : MonoBehaviour {
 		_gameCtrl._shopCtrl.initUserItems ();
 	}
 
+	#region action
 	void actionReplayBtn ()
 	{
 		this.gameObject.SetActive (false);
@@ -116,4 +117,11 @@ public class ResultCtrl : MonoBehaviour {
 		_gameCtrl.OpenShop ();
 	}
 
+	void actionSoundBtn(GameObject pObj) {
+		bool flg = _gameCtrl._audioMgr.isMute;	
+		_gameCtrl._audioMgr.isMute = !flg;
+		pObj.GetComponent<ButtonCtrl> ().setOnFlg (flg); // ミュートなし=ON=true
+	}
+
+	#endregion
 }

@@ -109,6 +109,16 @@ public class GameCtrl : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		setUpDisplays ();
+
+		// SHOP初期化
+		_shopCtrl.initUserItems ();
+
+		SetGame();
+	}
+
+	// 表示系初期化
+	void setUpDisplays() {
 		timeGaugeBaseWidth = timeGauge.transform.localScale.x;
 		colorTimeGaugeBaseWidth = colorTimeGauge.transform.localScale.x;
 		mistakeGaugeBaseWidth = mistakeGauge.transform.localScale.x;
@@ -119,10 +129,8 @@ public class GameCtrl : MonoBehaviour {
 
 		pauseBtn.SetActive (false);
 
-		// SHOP初期化
-		_shopCtrl.initUserItems ();
-
-		SetGame();
+		// BLOCKER
+		ColorEditor.setFade (touchableSign, 0.8f);
 	}
 
 
@@ -152,9 +160,6 @@ public class GameCtrl : MonoBehaviour {
 
 		_readyCtrl.SetActive (true);
 		iTween.FadeTo (_readyCtrl, iTween.Hash("a", 1, "time", 0.5f));
-//		resultText.gameObject.SetActive (true);
-//		resultText.text = "TAP\nTO\nSTART\n\n画面上部のものと\n同じ色を触って\n消しましょう"; ;
-//		//arrowguide.SetActive (true);
 	}
 
 	void setTimeGaugeRate () {
