@@ -22,7 +22,7 @@ public class ItemCtrl : MonoBehaviour {
 		if (_MyItem.releaseFlg) {
 			ColorEditor.setFade (this.gameObject, 1.0f);
 		} else { 
-			ColorEditor.setFade (this.gameObject, 0.2f);
+			ColorEditor.setFade (this.gameObject, 0.6f);
 		}
 	}
 	// IDが1以上ならCardImageObjectsの中から選んで表示する。(0はBASE)

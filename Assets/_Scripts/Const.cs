@@ -2,6 +2,8 @@
 using System.Collections;
 
 public class Const {
+	public const float GAME_SCREEN_POSITION_X = 6.4f;
+
 	public const float ApplicationFrameRate = 30f;
 	public const int COUNTDOWN_TIME = 3;
 
@@ -78,6 +80,8 @@ public class Const {
 	public const string PREF_LV_TIME_BOMB 		= "PREF_LV_TIME_BOMB";
 
 	public const string PREF_NEXT_FREE_GIFT	 	= "PREF_NEXT_FREE_GIFT";
+
+	public const string DATETIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
 	// PARAM LIMIT
 	//public const int CUSTOM_LV_MAX = 100; // 100まではゲームデータで管理。それ以降は決め打ちロジック。

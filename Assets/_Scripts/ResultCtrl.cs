@@ -27,7 +27,7 @@ public class ResultCtrl : MonoBehaviour {
 		UserData _userData = _gameCtrl._userData;
 
 		LBL_SCORE.text = ""+_result.score;
-		if (checkBestRecord (_userData.bestScore, _result.score,LBL_SCORE)) {
+		if (checkBestRecord (_userData.bestScore, _result.score, LBL_SCORE)) {
 			_userData.bestScore = _result.score;		
 		};
 
@@ -46,9 +46,11 @@ public class ResultCtrl : MonoBehaviour {
 			_userData.maxKillAllCount = _result.killAllCount;	
 		}
 
-		LBL_MISS.text = "" + _result.missCount;
+
 		if (_result.missCount == 0) {
-			LBL_MISS.text += "\nPERFECT!";
+			LBL_MISS.text = "NO MISS";
+		} else {
+			LBL_MISS.text = "" + _result.missCount;
 		}
 
 		// TOTAL VALUE
@@ -69,6 +71,7 @@ public class ResultCtrl : MonoBehaviour {
 	}
 
 	bool checkBestRecord(int pBestScore, int pScore, TextMesh pScoreTextMesh) {
+		Debug.Log ("pBestScore: " + pBestScore + " pScore:" + pScore);
 		if (pScore > pBestScore) {
 			showBestScoreLabel (pScoreTextMesh);
 			return true;
@@ -77,6 +80,7 @@ public class ResultCtrl : MonoBehaviour {
 	}
 
 	void showBestScoreLabel(TextMesh pScoreTextMesh){
+		Debug.Log ("pScoreTextMesh:" + pScoreTextMesh);
 		if (!pScoreTextMesh.transform.FindChild (BEST_ICON_NAME)) {
 			GameObject go = Instantiate (BEST_ICON,
 				BEST_ICON.transform.position,
@@ -88,24 +92,7 @@ public class ResultCtrl : MonoBehaviour {
 			pScoreTextMesh.transform.Find (BEST_ICON_NAME).gameObject.SetActive (true);
 		}
 	}
-
-	void checkBestRecord(UserData pUserData, string pKey, int pScore, TextMesh pScoreTextMesh) {
-		UserData _userData = pUserData;
-		if (_userData.checkIfIsNewRecord (pKey, pScore)) {
-//		if (true) {
-			if (!pScoreTextMesh.transform.FindChild (BEST_ICON_NAME)) {
-				GameObject go = Instantiate (BEST_ICON,
-					                BEST_ICON.transform.position,
-					                BEST_ICON.transform.rotation) as GameObject;
-				go.transform.parent = pScoreTextMesh.transform;
-				go.transform.localPosition = BEST_ICON_POS;
-				go.name = BEST_ICON_NAME;		
-			} else {
-				pScoreTextMesh.transform.Find (BEST_ICON_NAME).gameObject.SetActive (true);
-			}
-		}
-	}
-
+		
 	void cleanBestIcon(GameObject pScoreTextObj) {
 		if (pScoreTextObj.transform.FindChild (BEST_ICON_NAME)) {
 			pScoreTextObj.transform.Find (BEST_ICON_NAME).gameObject.SetActive (false);
@@ -143,7 +130,6 @@ public class ResultCtrl : MonoBehaviour {
 		if (!_gameCtrl.canGoNext) {
 			return;
 		}
-		this.gameObject.SetActive (false);
 		_gameCtrl.SetGame ();
 	}
 
@@ -151,7 +137,6 @@ public class ResultCtrl : MonoBehaviour {
 		if (!_gameCtrl.canGoNext) {
 			return;
 		}
-		this.gameObject.SetActive (false);
 		_gameCtrl.OpenShop ();
 	}
 
@@ -177,8 +162,5 @@ public class ResultCtrl : MonoBehaviour {
 			_gameCtrl._userData.save ();
 		}
 	}
-
-
-
 	#endregion
 }

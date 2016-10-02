@@ -47,6 +47,7 @@ public class UserData {
 
 	#region public interface
 	public void save() {
+		saveAllData ();
 		saveUserData ();
 	}
 
@@ -112,12 +113,6 @@ public class UserData {
 
 	// PARAMETERS
 	public int coin;
-//	public int lv_base;
-//	public int lv_area_bomb;
-//	public int lv_line_bomb;
-//	public int lv_renewal_bomb;
-//	public int lv_color_lock_bomb;
-//	public int lv_time_bomb;
 	public List<int> _userParamsList = new List<int> ();
 
 	public string nextFreeGift;
@@ -139,6 +134,7 @@ public class UserData {
 		coin				= getUserDataInt (Const.PREF_COIN);
 
 		// userParamList
+		_userParamsList.Clear ();
 		_userParamsList.Add (getUserDataInt (Const.PREF_LV_BASE));
 		_userParamsList.Add (getUserDataInt (Const.PREF_LV_AREA_BOMB));
 		_userParamsList.Add (getUserDataInt (Const.PREF_LV_LINE_BOMB));
@@ -147,6 +143,9 @@ public class UserData {
 		_userParamsList.Add (getUserDataInt (Const.PREF_LV_TIME_BOMB));
 
 		nextFreeGift = getUserDataString (Const.PREF_NEXT_FREE_GIFT);
+		if (nextFreeGift == "") {
+			nextFreeGift = DateTime.Now.ToString (Const.DATETIME_FORMAT);
+		}
 	}
 
 	void checkNewUser () {
@@ -164,11 +163,10 @@ public class UserData {
 	 	setUserData (Const.PREF_LV_COLOR_LOCK_BOMB, 0);
 	 	setUserData (Const.PREF_LV_TIME_BOMB, 0);
 
-		setUserData (Const.PREF_NEXT_FREE_GIFT, DateTime.Now.ToString ("yyyy-MM-dd HH:mm:ss"));
+		setUserData (Const.PREF_NEXT_FREE_GIFT, DateTime.Now.ToString (Const.DATETIME_FORMAT));
 	}
 
 	public UserData () {
-		_userParamsList.Clear ();
 	}
 	#endregion
 }

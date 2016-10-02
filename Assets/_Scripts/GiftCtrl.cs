@@ -19,6 +19,7 @@ public class GiftCtrl : MonoBehaviour {
 
 		image = _giftBtn.transform.FindChild ("image").gameObject;
 		leftTimeText = _giftBtn.transform.FindChild ("leftTime").gameObject.GetComponent<TextMesh>();
+		Debug.Log ("nextFreegift;:"+_resultCtrl._gameCtrl._userData.nextFreeGift);
 		nextTimeFreeGift = DateTime.Parse(_resultCtrl._gameCtrl._userData.nextFreeGift);
 
 		statusCheck ();

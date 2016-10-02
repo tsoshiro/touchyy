@@ -19,13 +19,9 @@ public class Item {
 		id = pId;
 		lv = pLv;
 
-		name = getName (id);
+		name = names[id];
 		cost = getCostFromId (id, lv);
 		releaseFlg = isReleased ();
-	}
-
-	string getName (int pId) {
-		return names [pId];
 	}
 
 	int getCostFromId (int pId, int pLv)

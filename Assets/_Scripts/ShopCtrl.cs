@@ -27,7 +27,10 @@ public class ShopCtrl : MonoBehaviour
 		if (itemCtrlList.Count > 0) {
 			return;
 		}
+
 		UserData data = _gameCtrl._userData;
+
+		// UserParamのリストでItemListを作成する
 		for (int i = 0; i < data._userParamsList.Count; i++) {
 			Item aItem = new Item (i, data._userParamsList[i]);
 

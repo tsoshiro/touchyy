@@ -389,9 +389,10 @@ public class GameCtrl : MonoBehaviour {
 		canGoNext = true;
 	}
 
+	Vector3 _screenBasePos = new Vector3(0,0,-20);
+
 	void showResult () {
-		_resultCtrl.gameObject.SetActive (true);
-		iTween.ScaleFrom (_resultCtrl.gameObject, Vector3.zero, 0.1f);
+		iTween.MoveTo (_resultCtrl.gameObject, iTween.Hash("position", _screenBasePos, "time", SHORT_ANIMATION_TIME, "islocal", true));
 
 		//TODO アニメーション中に触らせない処理
 
@@ -405,35 +406,53 @@ public class GameCtrl : MonoBehaviour {
 	public STATE lastState = STATE.READY;
 	public void OpenShop () {
 		lastState = state;
-
-		_shopCtrl.initUserItems ();
 		_shopCtrl.gameObject.SetActive (true);
+		_shopCtrl.initUserItems ();
+
+		iTween.MoveTo (_shopCtrl.gameObject, 
+			iTween.Hash (
+				"position", _screenBasePos, "time", SHORT_ANIMATION_TIME, "islocal", true
+			)
+		);
+
+		iTween.MoveTo (_resultCtrl.gameObject, 
+			iTween.Hash(
+				"position", new Vector3(-Const.GAME_SCREEN_POSITION_X, _screenBasePos.y, _screenBasePos.z), "time", SHORT_ANIMATION_TIME, "islocal", true
+			)
+		);
 
 		state = STATE.SHOP;
 	}
 
 	public void backFromShop () {
-		_shopCtrl.gameObject.SetActive (false);
+		iTween.MoveTo (_shopCtrl.gameObject,
+			iTween.Hash (
+				"position", new Vector3 (Const.GAME_SCREEN_POSITION_X, _screenBasePos.y, _screenBasePos.z), "time", SHORT_ANIMATION_TIME, "islocal", true
+			)
+		);
 		if (lastState == STATE.READY) {
-			// 閉じるのみ
 			state = STATE.READY;
 		} else if (lastState == STATE.RESULT) {
 			// Resultを開く
 			state = STATE.RESULT;
-			_resultCtrl.gameObject.SetActive (true);
-			_resultCtrl.SetCoinValue();;
+			_resultCtrl.SetCoinValue();
+			iTween.MoveTo (_resultCtrl.gameObject, 
+				iTween.Hash(
+					"position", _screenBasePos, "time", SHORT_ANIMATION_TIME, "islocal", true
+				)
+			);
 		}
 	}
 
 	#region coin
 	public void getCoin (int pScore) {
 		// LOGIC
-		_userData.addTotalRecords (Const.PREF_COIN, pScore);
+		_userData.coin += pScore;
 		_userData.save ();
 	}
 
 	public void spendCoin (int pCost) {
-		_userData.addTotalRecords (Const.PREF_COIN, - pCost);
+		_userData.coin -= pCost;
 		_userData.save ();
 	}
 
