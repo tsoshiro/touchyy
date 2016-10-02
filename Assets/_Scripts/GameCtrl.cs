@@ -243,10 +243,6 @@ public class GameCtrl : MonoBehaviour {
 			pauseDiplay.SetActive (true);
 		} else {
 			state = STATE.PLAYING;
-
-			// 表示系処理
-			// Pauseオブジェクトを非表示
-			pauseDiplay.SetActive (false);
 		}
 	}
 	public GameObject pauseDiplay;
@@ -268,6 +264,11 @@ public class GameCtrl : MonoBehaviour {
 	void actionContinueBtn () {
 		if (state == STATE.PAUSE) {
 			if (!isCountingDown) {
+				// 表示系処理
+				// Pauseオブジェクトを非表示
+				pauseDiplay.SetActive (false);
+
+				// カウントダウン開始
 				StartCoroutine (startCountDown (Const.COUNTDOWN_TIME));
 			}
 		}
@@ -294,12 +295,20 @@ public class GameCtrl : MonoBehaviour {
 	}
 
 	void displayCountDownNumber (int pNum) {
+		Vector3 pos = countDownTextObj.transform.position;
+		float fadeValue = 0.4f;
+		if (state != STATE.PLAYING) {
+			pos.z = _readyCtrl.transform.position.z;
+			fadeValue = 0.8f;
+		}
+
 		// SHOW TEXT
 		GameObject textObj = Instantiate (countDownTextObj,
-										  countDownTextObj.transform.position,
+										  pos,
 										  gameObject.transform.rotation) as GameObject;
 		textObj.SetActive (true);
 		textObj.GetComponent<TextMesh> ().text = "" + pNum;
+		ColorEditor.setFade (textObj, fadeValue);
 		textObj.GetComponent<TextCtrl> ().init (0.5f, 0.5f);
 	}
 
@@ -431,7 +440,7 @@ public class GameCtrl : MonoBehaviour {
 	#endregion
 
 	float SHORT_ANIMATION_TIME = 0.1f;
-	float ANIMATION_TIME = 0.5f;
+	float ANIMATION_TIME = 0.2f;
 	void changeTargetColor() {
 		do {
 			targetColor = (Colors)Random.Range (0, 5);
@@ -564,7 +573,8 @@ public class GameCtrl : MonoBehaviour {
 		} while (!hasEnableCube (targetColor));
 
 		targetCube = Instantiate(cubeObj);
-		targetCube.transform.position = new Vector3(2, 6.5f, 0);
+		targetCube.transform.position = new Vector3(2, 6.9f, 0);
+		targetCube.transform.localScale = targetCube.transform.localScale * 2.5f;
 		enableCollider(targetCube, false);
 		targetCubeCtrl = targetCube.GetComponent<CubeCtrl>();
 		targetCubeCtrl.setGameCtrl(this);

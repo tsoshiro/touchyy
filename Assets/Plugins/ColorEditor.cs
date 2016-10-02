@@ -6,10 +6,12 @@ using UnityEngine;
 
 public class ColorEditor : MonoBehaviour {
 	// αを設定する
-	public static void setFade(GameObject pObj, float pAlpha) {
-		if (pObj.transform.childCount > 0) { // 子オブジェクトがある場合は再帰処理
-			foreach (Transform child in pObj.transform) {
-				setFade (child.gameObject, pAlpha);
+	public static void setFade(GameObject pObj, float pAlpha, bool pIsRecursive = true) {
+		if (pIsRecursive) {
+			if (pObj.transform.childCount > 0) { // 子オブジェクトがある場合は再帰処理
+				foreach (Transform child in pObj.transform) {
+					setFade (child.gameObject, pAlpha);
+				}
 			}
 		}
 
