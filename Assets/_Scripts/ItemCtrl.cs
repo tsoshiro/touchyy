@@ -32,6 +32,9 @@ public class ItemCtrl : MonoBehaviour {
 			for (int i = 0; i < cardImageObjects.Length; i++) {
 				if (i == (_MyItem.id - SPECIAL_ID_IS_FROM)) {
 					cardImageObjects [i].SetActive (true);
+					Vector3 pos = cardImageObjects [i].transform.localPosition;
+					pos.z = -0.1f;
+					cardImageObjects [i].transform.localPosition = pos;
 				} else {
 					cardImageObjects [i].SetActive (false);
 				}

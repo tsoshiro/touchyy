@@ -130,7 +130,7 @@ public class ResultCtrl : MonoBehaviour {
 		if (!_gameCtrl.canGoNext) {
 			return;
 		}
-		_gameCtrl.SetGame ();
+		_gameCtrl.replay ();
 	}
 
 	void actionShopBtn () {

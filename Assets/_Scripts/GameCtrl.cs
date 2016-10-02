@@ -56,7 +56,6 @@ public class GameCtrl : MonoBehaviour {
 	public float TIME = 30;
 	public int HEIGHT = 5;
 	public int WIDTH = 5;
-	int basePoint = 10;
 
 	//AUDIO
 	public AudioMgr _audioMgr;
@@ -364,7 +363,6 @@ public class GameCtrl : MonoBehaviour {
 		if (mistakePenaltyTimeLeft <= 0) {
 			mistakePenaltyFlg = false;
 
-//			ColorEditor.setFade (mistakeObj, 0f);
 			iTween.FadeTo(mistakeObj, iTween.Hash("a", 0f, "time", 0));
 			touchableSign.SetActive (false);
 		}
@@ -401,6 +399,16 @@ public class GameCtrl : MonoBehaviour {
 		// showResult
 		_resultCtrl.showResult (_result);
 
+	}
+
+	public void replay() {
+		iTween.MoveTo (_resultCtrl.gameObject, 
+			iTween.Hash(
+				"position", new Vector3(-Const.GAME_SCREEN_POSITION_X, _screenBasePos.y, _screenBasePos.z), "time", SHORT_ANIMATION_TIME, "islocal", true
+			)
+		);
+		iTween.FadeTo(mistakeObj, iTween.Hash("a", 0f, "time", 0));
+		SetGame ();
 	}
 
 	public STATE lastState = STATE.READY;
@@ -644,7 +652,7 @@ public class GameCtrl : MonoBehaviour {
 			textObj.GetComponent<TextCtrl> ().init (2, 1);
 		}
 
-		_result.score += basePoint * _result.comboCount;
+		_result.score += _userParam.basePoint * _result.comboCount;
 		scoreText.text = "SCORE : " + _result.score;
 
 		if (!hasEnableCube (targetColor)) {
