@@ -131,6 +131,10 @@ public class Const {
 	public const int AD_INTERVAL_REWARD_MOVIE = 3;
 	public const int INTERVAL_REVIEW_REQUEST = 20;
 
+	public const string AD_MOVIE_STATE_FINISHED = "0";
+	public const string AD_MOVIE_STATE_SKIPPED = "1";
+	public const string AD_MOVIE_STATE_FAILED = "2";
+
 
 	#region Sound
 	public const int SE_GOOD = 0;

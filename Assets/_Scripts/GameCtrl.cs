@@ -675,7 +675,7 @@ public class GameCtrl : MonoBehaviour {
 		GameObject textObj = Instantiate (killAllText,
 										  killAllText.transform.position,
 										  killAllText.transform.rotation) as GameObject;
-		textObj.GetComponent<TextMesh> ().text = "Kill All!\n+" + (float)_result.killAllCount * COLOR_CLEAR_BONUS_RATE;
+		textObj.GetComponent<TextMesh> ().text = "Kill All!\nx" + _result.killAllCount;
 		textObj.SetActive (true);
 		textObj.GetComponent<TextCtrl> ().init (0.2f, 0.1f);
 	}

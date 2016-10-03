@@ -207,7 +207,9 @@ public class ResultCtrl : MonoBehaviour {
 	}
 
 	void actionGiftBtn() {
-		Debug.Log ("reached");
+		if (!_gameCtrl.canGoNext) {
+			return;	
+		}
 		if (_giftCtrl.checkIsReward()) {
 			Debug.Log ("reached");
 			_giftCtrl.playMovieReward ();

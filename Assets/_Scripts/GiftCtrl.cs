@@ -82,7 +82,8 @@ public class GiftCtrl : MonoBehaviour {
 	}
 
 	public bool checkIsReward() {
-		if (status == GiftButtonStatus.REWARD) {
+		if (status == GiftButtonStatus.REWARD &&
+		    !isRewardMovieWatched) {
 			return true;
 		}
 		return false;
@@ -164,16 +165,16 @@ public class GiftCtrl : MonoBehaviour {
 	}
 
 	public void movieCallBack(string state) { // 0:finished, 1:skipped, 2:failed
-		if (state == "1") {
+		if (state == "0") {
 			int addCoin = getGiftCoinValue ();
 			_resultCtrl.giveRewardCoin (addCoin);
 			isRewardMovieWatched = true;
 			statusCheck ();
 
 			new AnalyticsManager ().SendCounterEvent ("movieRewardFinished", 1);
-		} else if (state == "2") {
+		} else if (state == "1") {
 			new AnalyticsManager ().SendCounterEvent ("movieRewardSkipped", 1);
-		} else if (state == "3") {
+		} else if (state == "2") {
 			new AnalyticsManager ().SendCounterEvent ("movieRewardFailed", 1);
 		}
 	}
