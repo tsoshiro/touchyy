@@ -69,8 +69,16 @@ public class ResultCtrl : MonoBehaviour {
 		// SAVE
 		_userData.save ();
 
-		// MOVIE REWARD
+		// GIFT REWARD CHECK
 		_giftCtrl.statusCheck();
+
+		// INTERSTITIAL CHECK
+	}
+
+	void checkInterstitial() {
+		if (_gameCtrl._userData.playCount % Const.AD_INTERVAL_INTER == 0) {
+			_gameCtrl.gameObject.GetComponent<AdvertisementManager> ().showInterstitial ();
+		}
 	}
 
 	bool checkBestRecord(int pBestScore, int pScore, TextMesh pScoreTextMesh) {

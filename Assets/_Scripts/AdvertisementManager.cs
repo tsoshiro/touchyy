@@ -43,4 +43,8 @@ public class AdvertisementManager : MonoBehaviour {
 			break;
 		}
 	}
+
+	public void showInterstitial() {
+		
+	}
 }
