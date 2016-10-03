@@ -105,6 +105,7 @@ public class GiftCtrl : MonoBehaviour {
 		switch (pStatus) {
 		case GiftButtonStatus.FREE_AVAILABLE:
 			ColorEditor.setColor(button_small, Color.white);
+			ColorEditor.setColorFromColorCode (image, Const.COLOR_CODE_BASE_COLOR);
 			ColorEditor.setFade (_giftBtn, 1.0f);
 			leftTimeText.gameObject.SetActive (false);
 			pos = image.transform.localPosition;
@@ -113,6 +114,7 @@ public class GiftCtrl : MonoBehaviour {
 			break;
 		case GiftButtonStatus.FREE_AWAIT:
 			ColorEditor.setColor(button_small, Color.white);
+			ColorEditor.setColorFromColorCode (image, Const.COLOR_CODE_BASE_COLOR);
 			ColorEditor.setFade (_giftBtn, 0.8f);
 			pos = image.transform.localPosition;
 			pos.x = xPos;
@@ -135,22 +137,26 @@ public class GiftCtrl : MonoBehaviour {
 	#region movie reward
 	public bool isRewardMovieWatched = false;
 	public bool checkIsMovieRewardAvailable() {
+		Debug.Log ("reached");
+		Debug.Log ("playCount:"+_resultCtrl._gameCtrl._userData.playCount);
 		// Play回数が3回に1回、出す
 		if (_resultCtrl._gameCtrl._userData.playCount % Const.AD_INTERVAL_REWARD_MOVIE == 0 &&
 			!isRewardMovieWatched)
 		{
+			Debug.Log ("reached");
 			return true;
 		}
 		return false;
 	}
 
 	public void playMovieReward() {
+		Debug.Log ("reached");
 		AdvertisementManager adMng = _resultCtrl._gameCtrl.gameObject.GetComponent<AdvertisementManager> ();
 		adMng.ShowRewardedAd (this.gameObject);
 	}
 
-	public void movieCallBack(int state) { // 0:finished, 1:skipped, 2:failed
-		if (state == 1) {
+	public void movieCallBack(string state) { // 0:finished, 1:skipped, 2:failed
+		if (state == "1") {
 			int addCoin = getGiftCoinValue ();
 			_resultCtrl.giveRewardCoin (addCoin);
 			isRewardMovieWatched = true;

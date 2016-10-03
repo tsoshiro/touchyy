@@ -10,13 +10,19 @@ public class AdvertisementManager : MonoBehaviour {
 
 	public void ShowRewardedAd(GameObject pObj = null)
 	{
-		if (Advertisement.IsReady("rewardedVideoZone"))
-		{
+		if (Advertisement.isInitialized &&
+			Advertisement.IsReady ()) {
 			if (pObj != null) {
 				callBackObj = pObj;
 			}
-			var options = new ShowOptions { resultCallback = HandleShowResult };
-			Advertisement.Show("rewardedVideoZone", options);
+			Advertisement.Show (null, new ShowOptions {
+				////trueだとUnityが止まり、音もミュートになる
+				//pause = true, 
+				//広告が表示された後のコールバック設定
+				resultCallback = HandleShowResult
+			});
+		} else {
+			Debug.Log ("NOT INITIALIZED!");
 		}
 	}
 
@@ -29,45 +35,70 @@ public class AdvertisementManager : MonoBehaviour {
 			// YOUR CODE TO REWARD THE GAMER
 			// Give coins etc.
 			if (callBackObj != null) {
-				callBackObj.SendMessage ("movieCallBack", 0);
+				callBackObj.SendMessage ("movieCallBack", "0");
 			}
 			break;
 		case ShowResult.Skipped:
 			Debug.Log("The ad was skipped before reaching the end.");
 			if (callBackObj != null) {
-				callBackObj.SendMessage ("movieCallBack", 1);
+				callBackObj.SendMessage ("movieCallBack", "1");
 			}
 			break;
 		case ShowResult.Failed:
 			Debug.LogError("The ad failed to be shown.");
 			if (callBackObj != null) {
-				callBackObj.SendMessage ("movieCallBack", 2);
+				callBackObj.SendMessage ("movieCallBack", "2");
 			}
 			break;
 		}
 	}
 
+
+	// UnityAds
+	public string Android_gameId;
+	public string ios_gameId;
+	public bool isUnityAdsTestMode = false;
+	[SerializeField]
+	string gameId;
+
+	// AdMob
 	public string Android_interstitial;
 	public string ios_interstitial;
+
+	[SerializeField]
+	string adUnitId;
 
 	private InterstitialAd _interstitial;
 	private AdRequest request;
 
 	bool is_close_interstitial = false;
 
-
 	void Awake() {
 		// 起動時にロード
 		RequestInterstitial();
+		setMovieReward ();
+	}
+
+	public void setMovieReward () {
+	#if UNITY_ADROID
+		gameId = Android_gameId;
+	#elif UNITY_IPHONE
+		gameId = ios_gameId;
+	#else
+		gameId = ios_gameId;
+	#endif
+		if (Advertisement.isSupported) { // If the platform is supported,
+			Advertisement.Initialize (gameId, isUnityAdsTestMode); // initialize Unity Ads.
+		}
 	}
 
 	public void RequestInterstitial() {
 		#if UNITY_ADROID
-		string adUnitId = Android_interstitial;
+		adUnitId = Android_interstitial;
 		#elif UNITY_IPHONE
-		string adUnitId = ios_interstitial;
+		adUnitId = ios_interstitial;
 		#else
-		string adUnitId = "unexpected_platform";
+		adUnitId = "unexpected_platform";
 		#endif
 
 		if (is_close_interstitial) {
