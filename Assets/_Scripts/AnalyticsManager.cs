@@ -10,13 +10,6 @@ public class AnalyticsManager {
 	}
 
 	public void SendGameResult (Result pResult) {
-		//public int score;
-		//public int maxCombo;
-		//public int comboCount;
-		//public int deleteCount;
-		//public int killAllCount;
-		//public int missCount;
-		//public List<int> itemCountList;
 		Dictionary<string, object> obj = new Dictionary<string, object> {
 			{ "score", 		pResult.score.ToString() },
 			{ "maxCombo", 	pResult.maxCombo },
@@ -30,11 +23,6 @@ public class AnalyticsManager {
 	}
 
 	public void SendShop (Item pPurchasedItem) {
-		//public int id;
-		//public string name;
-		//public int lv;
-		//public int cost;
-
 		Dictionary<string, object> obj = new Dictionary<string, object> {
 			{"id", pPurchasedItem.id},
 			{"name",pPurchasedItem.name},

@@ -89,16 +89,22 @@ public class GiftCtrl : MonoBehaviour {
 		return false;
 	}
 
-	int coinRate = 1000;
-	public int getGiftCoinValue() {
-		UserData userData =	_resultCtrl._gameCtrl._userData;
-		int totalUserLevel = 0;
-		for (int i = 0; i < userData._userParamsList.Count; i++) {
-			totalUserLevel += userData._userParamsList [i];
-			Debug.Log ("add: " + userData._userParamsList [i]);
-		}
-		Debug.Log ("totalUserLevel: " + totalUserLevel);
-		return totalUserLevel * coinRate;
+	PBClass.BigInteger getRewardCoinValue () {
+		PBClass.BigInteger value = 0;
+
+		GameCtrl gc = GameCtrl.GetInstance ();
+		int lv = _resultCtrl._gameCtrl._userData._userParamsList [Const.PARAM_LV_BASE];
+		value = gc._userParam._userMasterDataCtrl.getReward(lv);
+		return value;
+	}
+
+	public PBClass.BigInteger getGiftCoinValue() {
+		PBClass.BigInteger value = 0;
+
+		GameCtrl gc = GameCtrl.GetInstance ();
+		int lv = _resultCtrl._gameCtrl._userData._userParamsList [Const.PARAM_LV_BASE];
+		value = gc._userParam._userMasterDataCtrl.getFree (lv);
+		return value;
 	}
 
 	void setButton(GiftButtonStatus pStatus) {
@@ -166,7 +172,7 @@ public class GiftCtrl : MonoBehaviour {
 
 	public void movieCallBack(string state) { // 0:finished, 1:skipped, 2:failed
 		if (state == "0") {
-			int addCoin = getGiftCoinValue ();
+			PBClass.BigInteger addCoin = getRewardCoinValue ();
 			_resultCtrl.giveRewardCoin (addCoin);
 			isRewardMovieWatched = true;
 			statusCheck ();

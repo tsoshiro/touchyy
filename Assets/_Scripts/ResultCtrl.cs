@@ -203,9 +203,12 @@ public class ResultCtrl : MonoBehaviour {
 		_gameCtrl.finishResultAnimation ();
 	}
 
-	void giveGiftCoin(int pCoin) {
+	void giveFreeCoin(PBClass.BigInteger pCoin) {
 		PBClass.BigInteger coinNow = _gameCtrl._userData.coin;
-		iTween.ValueTo (gameObject, iTween.Hash ("from", coinNow, "to", coinNow + pCoin, "time", 1.0f, "onupdate", "CoinValueChange"));
+
+		// todo Animation
+		//iTween.ValueTo (gameObject, iTween.Hash ("from", coinNow, "to", coinNow + pCoin, "time", 1.0f, "onupdate", "CoinValueChange"));
+
 		_gameCtrl._userData.coin += pCoin;
 		_gameCtrl._userData.nextFreeGift = _giftCtrl.nextTimeFreeGift.ToString ("yyyy/MM/dd HH:mm:ss");
 
@@ -213,9 +216,11 @@ public class ResultCtrl : MonoBehaviour {
 		_gameCtrl._userData.save ();
 	}
 
-	public void giveRewardCoin(int pCoin) {
+	public void giveRewardCoin(PBClass.BigInteger pCoin) {
 		PBClass.BigInteger coinNow = _gameCtrl._userData.coin;
-		iTween.ValueTo (gameObject, iTween.Hash ("from", coinNow, "to", coinNow + pCoin, "time", 1.0f, "onupdate", "CoinValueChange"));
+
+		//iTween.ValueTo (gameObject, iTween.Hash ("from", coinNow, "to", coinNow + pCoin, "time", 1.0f, "onupdate", "CoinValueChange"));
+
 		_gameCtrl._userData.coin += pCoin;
 
 		// SAVE
@@ -254,13 +259,12 @@ public class ResultCtrl : MonoBehaviour {
 			return;	
 		}
 		if (_giftCtrl.checkIsReward()) {
-			Debug.Log ("reached");
 			_giftCtrl.playMovieReward ();
 			return;
 		}
 		if (_giftCtrl.giveGiftFree ()) {
-			int addValue =_giftCtrl.getGiftCoinValue();
-			giveGiftCoin (addValue);
+			PBClass.BigInteger addValue =_giftCtrl.getGiftCoinValue();
+			giveFreeCoin (addValue);
 		}
 	}
 	#endregion
