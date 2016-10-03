@@ -53,9 +53,9 @@ public class UserData {
 
 	void saveAllData() {
 		setUserData (Const.PREF_BEST_SCORE, bestScore);
-		setUserData (Const.PREF_MAX_COMBO,maxCombo) ;
-		setUserData (Const.PREF_MAX_DELETE_COUNT,maxDeleteCount);
-		setUserData (Const.PREF_MAX_KILL_ALL_COUNT,maxKillAllCount);
+		setUserData (Const.PREF_MAX_COMBO, maxCombo) ;
+		setUserData (Const.PREF_MAX_DELETE_COUNT, maxDeleteCount);
+		setUserData (Const.PREF_MAX_KILL_ALL_COUNT, maxKillAllCount);
 
 		setUserData (Const.PREF_TOTAL_SCORE,totalScore);
 		setUserData (Const.PREF_TOTAL_DELETE_COUNT,totalDeleteCount);

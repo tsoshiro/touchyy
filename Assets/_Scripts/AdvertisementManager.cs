@@ -6,6 +6,7 @@ using GoogleMobileAds.Api;
 
 public class AdvertisementManager : MonoBehaviour {
 	GameObject callBackObj;
+	public string TEST_DEVICE_ID = "6befb76ee0c14f275cd09f2702c88528";
 
 	public void ShowRewardedAd(GameObject pObj = null)
 	{
@@ -76,7 +77,9 @@ public class AdvertisementManager : MonoBehaviour {
 		// Init
 		_interstitial = new InterstitialAd(adUnitId);
 		// create an empty request
-		request = new AdRequest.Builder().Build();
+		request = new AdRequest.Builder().
+		                       AddTestDevice(TEST_DEVICE_ID).
+		                       Build();
 		// load inters
 		_interstitial.LoadAd(request);
 		_interstitial.OnAdClosed += HandleInterstitialClosed;

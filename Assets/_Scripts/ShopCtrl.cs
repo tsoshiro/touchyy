@@ -102,4 +102,12 @@ public class ShopCtrl : MonoBehaviour
 		_gameCtrl.reloadUserData ();
 	}
 
+	public bool checkIsAffordSomething () {
+		for (int i = 0; i < itemCtrlList.Count; i++) {
+			if (itemCtrlList [i].getMyItem ().cost <= _gameCtrl._userData.coin ) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

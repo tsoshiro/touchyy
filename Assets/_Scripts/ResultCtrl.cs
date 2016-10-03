@@ -15,6 +15,9 @@ public class ResultCtrl : MonoBehaviour {
 	public GameObject BEST_ICON;
 	string BEST_ICON_NAME = "BEST_ICON";
 	Vector3 BEST_ICON_POS = new Vector3 (0, -0.4f, 0);
+
+	public GameObject SHOP_BADGE;
+
 	GiftCtrl _giftCtrl;
 
 	void Start() {
@@ -25,6 +28,7 @@ public class ResultCtrl : MonoBehaviour {
 	public void showResult (Result pResult) {
 		Result _result = pResult;
 		UserData _userData = _gameCtrl._userData;
+		cleanBestIcons ();
 
 		LBL_SCORE.text = ""+_result.score;
 		if (checkBestRecord (_userData.bestScore, _result.score, LBL_SCORE)) {
@@ -63,17 +67,34 @@ public class ResultCtrl : MonoBehaviour {
 		int coinNow = _userData.coin;
 		int coinAdded = coinNow + _result.score;
 
-		iTween.ValueTo (gameObject, iTween.Hash ("from", coinNow, "to", coinAdded, "time", 1.0f, "onupdate", "CoinValueChange", "oncomplete", "callback"));
+		iTween.ValueTo (gameObject,
+		                iTween.Hash (
+			                "from", coinNow, 
+			                "to", coinAdded, 
+			                "time", 1.0f, 
+			                "onupdate", "CoinValueChange", 
+			                "oncomplete", "callback"
+			               )
+		               );
 		_userData.coin = coinAdded;
 
 		// SAVE
 		_userData.save ();
 
+		// SHOP
+		_gameCtrl._shopCtrl.initUserItems ();
 		// GIFT REWARD CHECK
-		_giftCtrl.statusCheck();
+		_giftCtrl.statusCheck ();
+		checkShop ();
+	}
 
-		// INTERSTITIAL CHECK
-		checkInterstitial();
+	// ショップで購入できるものがあれば「!」マークをショップボタン上につける
+	public void checkShop () {
+		if (_gameCtrl._shopCtrl.checkIsAffordSomething ()) {
+			SHOP_BADGE.SetActive (true);
+		} else {
+			SHOP_BADGE.SetActive (false);
+		}
 	}
 
 	void checkInterstitial() {
@@ -83,7 +104,6 @@ public class ResultCtrl : MonoBehaviour {
 	}
 
 	bool checkBestRecord(int pBestScore, int pScore, TextMesh pScoreTextMesh) {
-		Debug.Log ("pBestScore: " + pBestScore + " pScore:" + pScore);
 		if (pScore > pBestScore) {
 			showBestScoreLabel (pScoreTextMesh);
 			return true;
@@ -92,14 +112,14 @@ public class ResultCtrl : MonoBehaviour {
 	}
 
 	void showBestScoreLabel(TextMesh pScoreTextMesh){
-		Debug.Log ("pScoreTextMesh:" + pScoreTextMesh);
 		if (!pScoreTextMesh.transform.FindChild (BEST_ICON_NAME)) {
 			GameObject go = Instantiate (BEST_ICON,
 				BEST_ICON.transform.position,
 				BEST_ICON.transform.rotation) as GameObject;
 			go.transform.parent = pScoreTextMesh.transform;
 			go.transform.localPosition = BEST_ICON_POS;
-			go.name = BEST_ICON_NAME;		
+			go.name = BEST_ICON_NAME;
+			ColorEditor.setColorFromColorCode (go, Const.COLOR_CODE_PINK);
 		} else {
 			pScoreTextMesh.transform.Find (BEST_ICON_NAME).gameObject.SetActive (true);
 		}
@@ -132,8 +152,10 @@ public class ResultCtrl : MonoBehaviour {
 	}
 
 	void callback () {
+		// INTERSTITIAL CHECK
+		checkInterstitial ();
+
 		_gameCtrl.finishResultAnimation ();
-		_gameCtrl._shopCtrl.initUserItems ();
 	}
 
 	void giveGiftCoin(int pCoin) {

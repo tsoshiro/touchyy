@@ -391,7 +391,6 @@ public class GameCtrl : MonoBehaviour {
 
 	void showResult () {
 		iTween.MoveTo (_resultCtrl.gameObject, iTween.Hash("position", _screenBasePos, "time", SHORT_ANIMATION_TIME, "islocal", true));
-
 		//TODO アニメーション中に触らせない処理
 
 		// saveData
@@ -433,17 +432,23 @@ public class GameCtrl : MonoBehaviour {
 	}
 
 	public void backFromShop () {
+		// ShopCtrlを移動
 		iTween.MoveTo (_shopCtrl.gameObject,
 			iTween.Hash (
 				"position", new Vector3 (Const.GAME_SCREEN_POSITION_X, _screenBasePos.y, _screenBasePos.z), "time", SHORT_ANIMATION_TIME, "islocal", true
 			)
 		);
+
+		// ショップからリザルト画面か、READY画面かで切り替え
+		// 基本はSTATE.RESULTの方を通る想定
 		if (lastState == STATE.READY) {
 			state = STATE.READY;
 		} else if (lastState == STATE.RESULT) {
 			// Resultを開く
 			state = STATE.RESULT;
 			_resultCtrl.SetCoinValue();
+			_resultCtrl.checkShop ();
+
 			iTween.MoveTo (_resultCtrl.gameObject, 
 				iTween.Hash(
 					"position", _screenBasePos, "time", SHORT_ANIMATION_TIME, "islocal", true

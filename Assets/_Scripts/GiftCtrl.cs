@@ -121,6 +121,9 @@ public class GiftCtrl : MonoBehaviour {
 			break;
 		case GiftButtonStatus.REWARD:
 			ColorEditor.setColorFromColorCode(button_small, Const.COLOR_CODE_PINK);
+			ColorEditor.setColor (image, Color.white);
+			ColorEditor.setFade (_giftBtn, 1.0f);
+
 			leftTimeText.gameObject.SetActive (false);
 			pos = image.transform.localPosition;
 			pos.x = 0f;
@@ -142,12 +145,8 @@ public class GiftCtrl : MonoBehaviour {
 	}
 
 	public void playMovieReward() {
-		if (!_resultCtrl._gameCtrl.gameObject.GetComponent<AdvertisementManager> ()) {
-			return;
-		}
 		AdvertisementManager adMng = _resultCtrl._gameCtrl.gameObject.GetComponent<AdvertisementManager> ();
-
-		adMng.ShowRewardedAd ();
+		adMng.ShowRewardedAd (this.gameObject);
 	}
 
 	public void movieCallBack(int state) { // 0:finished, 1:skipped, 2:failed
