@@ -7,7 +7,7 @@ public class UserData {
 	#region PRIVATE PlayerPrefs
 	int DEFAULT_VALUE_INT = 0;
 	float DEFAULT_VALUE_FLOAT = 0.0f;
-	string DEFAULT_VALUE_STRING = "";
+	string DEFAULT_VALUE_STRING = "0";
 
 	private int getUserDataInt (string pKey) {
 		return PlayerPrefs.GetInt (pKey, DEFAULT_VALUE_INT);
@@ -52,17 +52,17 @@ public class UserData {
 	}
 
 	void saveAllData() {
-		setUserData (Const.PREF_BEST_SCORE, bestScore);
+		setUserData (Const.PREF_BEST_SCORE, bestScore.ToString());
 		setUserData (Const.PREF_MAX_COMBO, maxCombo) ;
 		setUserData (Const.PREF_MAX_DELETE_COUNT, maxDeleteCount);
 		setUserData (Const.PREF_MAX_KILL_ALL_COUNT, maxKillAllCount);
 
-		setUserData (Const.PREF_TOTAL_SCORE,totalScore);
-		setUserData (Const.PREF_TOTAL_DELETE_COUNT,totalDeleteCount);
+		setUserData (Const.PREF_TOTAL_SCORE,totalScore.ToString ());
+		setUserData (Const.PREF_TOTAL_DELETE_COUNT,totalDeleteCount.ToString ());
 		setUserData (Const.PREF_TOTAL_KILL_ALL_COUNT,totalKillAllCount);
 		setUserData (Const.PREF_PLAY_COUNT,playCount);
 
-		setUserData (Const.PREF_COIN,coin);
+		setUserData (Const.PREF_COIN,coin.ToString ());
 
 		// _userParamListの中身を更新
 		setUserData (Const.PREF_LV_BASE, 			_userParamsList[Const.PARAM_LV_BASE]);
@@ -99,20 +99,20 @@ public class UserData {
 	#region IN GAME USE
 	// public records and parameters
 	// RECORDS
-	public int bestScore;
+	public PBClass.BigInteger bestScore;
 	public int maxCombo;
 	public int maxDeleteCount;
 	public int maxKillAllCount;
 	public int maxAllCount;
 
 	// TOTAL RECORDS
-	public int totalScore;
-	public int totalDeleteCount;
+	public PBClass.BigInteger totalScore;
+	public PBClass.BigInteger totalDeleteCount;
 	public int totalKillAllCount;
 	public int playCount;
 
 	// PARAMETERS
-	public int coin;
+	public PBClass.BigInteger coin;
 	public List<int> _userParamsList = new List<int> ();
 
 	public string nextFreeGift;
@@ -123,17 +123,17 @@ public class UserData {
 	public void initUserData() {
 		checkNewUser ();
 
-		bestScore 			= getUserDataInt (Const.PREF_BEST_SCORE);
+		bestScore 			= new PBClass.BigInteger(getUserDataString (Const.PREF_BEST_SCORE));
 		maxCombo 			= getUserDataInt (Const.PREF_MAX_COMBO);
 		maxDeleteCount		= getUserDataInt (Const.PREF_MAX_DELETE_COUNT);
 		maxKillAllCount		= getUserDataInt (Const.PREF_MAX_KILL_ALL_COUNT);
 
-		totalScore			= getUserDataInt (Const.PREF_TOTAL_SCORE);
-		totalDeleteCount	= getUserDataInt (Const.PREF_TOTAL_DELETE_COUNT);
+		totalScore			= new PBClass.BigInteger (getUserDataString (Const.PREF_TOTAL_SCORE));
+		totalDeleteCount	= new PBClass.BigInteger (getUserDataString (Const.PREF_TOTAL_DELETE_COUNT));
 		totalKillAllCount	= getUserDataInt (Const.PREF_TOTAL_KILL_ALL_COUNT);
 		playCount			= getUserDataInt (Const.PREF_PLAY_COUNT);
 
-		coin				= getUserDataInt (Const.PREF_COIN);
+		coin				= new PBClass.BigInteger(getUserDataString (Const.PREF_COIN));
 
 		// userParamList
 		_userParamsList.Clear ();
@@ -160,7 +160,7 @@ public class UserData {
 	}
 
 	void createBaseUserData () {
-		setUserData (Const.PREF_COIN, 0);
+		setUserData (Const.PREF_COIN, "0");
 		setUserData (Const.PREF_LV_BASE, 1);
 	 	setUserData (Const.PREF_LV_AREA_BOMB, 0);
 	 	setUserData (Const.PREF_LV_LINE_BOMB, 0);

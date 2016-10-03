@@ -8,7 +8,6 @@ public class ItemCtrl : MonoBehaviour {
 
 	Item _MyItem;
 
-
 	public void init (Item pItem)
 	{
 		_MyItem = pItem;
@@ -41,7 +40,6 @@ public class ItemCtrl : MonoBehaviour {
 			}
 		}
 	}
-
 
 	public Item getMyItem () {
 		return _MyItem;

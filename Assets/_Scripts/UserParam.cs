@@ -3,15 +3,18 @@ using System.Collections;
 
 public class UserParam {
 	// LV設定から確率などを計算する
-	public int basePoint;
+	public PBClass.BigInteger basePoint;
 	public float areaBombRate;
 	public float lineBombRate;
 	public float renewalBombRate;
 	public float colorLockBombRate;
 	public float timeBombRate;
 
+	public UserMasterDataCtrl _userMasterDataCtrl;
+
 	// データ初期化・基本UserParamからデータは取る
-	public UserParam (UserData pUserData) {
+	public UserParam (UserData pUserData, UserMasterDataCtrl pUserMaseterDataCtrl) {
+		_userMasterDataCtrl = pUserMaseterDataCtrl;
 		setUserParam (pUserData);
 	}
 
@@ -24,9 +27,8 @@ public class UserParam {
 		timeBombRate 	= getBombRate (pUserData._userParamsList[Const.PARAM_LV_TIME_BOMB]);
 	}
 
-	int getBasePoint (int pLv) {
-		int value = 100;
-		return value;
+	PBClass.BigInteger getBasePoint (int pLv) {
+		return _userMasterDataCtrl.getBaseValue (pLv);
 	}
 
 	float START_RATE = 0.05f;

@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 
-public class GameCtrl : MonoBehaviour {
+public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 	public float timeLeft;
 
 	float COLOR_CLEAR_BONUS_RATE = 2f;
@@ -98,12 +98,15 @@ public class GameCtrl : MonoBehaviour {
 	string TARGET_CUBE = "TARGET_CUBE";
 
 	void Awake () {
+		// MasterData取得
+		this.GetComponent<UserMasterDataCtrl> ().initMasterData ();
+
 		// UserData初期化
 		_userData = new UserData ();
 		_userData.initUserData ();
 
 		// UserParam初期化
-		_userParam = new UserParam (_userData);
+		_userParam = new UserParam (_userData, this.GetComponent<UserMasterDataCtrl>());
 	}
 
 	// Use this for initialization
@@ -390,14 +393,18 @@ public class GameCtrl : MonoBehaviour {
 	Vector3 _screenBasePos = new Vector3(0,0,-20);
 
 	void showResult () {
-		iTween.MoveTo (_resultCtrl.gameObject, iTween.Hash("position", _screenBasePos, "time", SHORT_ANIMATION_TIME, "islocal", true));
+		iTween.MoveTo (_resultCtrl.gameObject, 
+		               iTween.Hash(
+			               "position", _screenBasePos,
+			               "time", SHORT_ANIMATION_TIME,
+			               "islocal", true,
+			               "oncomplete", "showResult",
+			               "oncompleteparams", _result
+			              )
+		              );
 		//TODO アニメーション中に触らせない処理
-
-		// saveData
-
 		// showResult
-		_resultCtrl.showResult (_result);
-
+		//_resultCtrl.showResult (_result);
 	}
 
 	public void replay() {
@@ -464,7 +471,7 @@ public class GameCtrl : MonoBehaviour {
 		_userData.save ();
 	}
 
-	public void spendCoin (int pCost) {
+	public void spendCoin (PBClass.BigInteger pCost) {
 		_userData.coin -= pCost;
 		_userData.save ();
 	}

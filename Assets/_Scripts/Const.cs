@@ -113,9 +113,8 @@ public class Const {
 	public const string DATETIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
 	// PARAM LIMIT
-	//public const int CUSTOM_LV_MAX = 100; // 100まではゲームデータで管理。それ以降は決め打ちロジック。
-	public const int CUSTOM_LV_MAX = 0; // 
-	public const int COST_BASE = 10000;
+	// 100まではゲームデータで管理。それ以降は決め打ちロジック。
+	public const int CUSTOM_LV_MAX = 100; // 
 	public const float OVER_LV_COST_ADD_RATE = 1.02f;
 
 	// PARAM ID

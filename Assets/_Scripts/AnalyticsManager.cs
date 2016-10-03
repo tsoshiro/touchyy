@@ -18,7 +18,7 @@ public class AnalyticsManager {
 		//public int missCount;
 		//public List<int> itemCountList;
 		Dictionary<string, object> obj = new Dictionary<string, object> {
-			{ "score", 		pResult.score },
+			{ "score", 		pResult.score.ToString() },
 			{ "maxCombo", 	pResult.maxCombo },
 			{ "comboCount", pResult.comboCount },
 			{ "deleteCount",pResult.deleteCount},
@@ -39,7 +39,7 @@ public class AnalyticsManager {
 			{"id", pPurchasedItem.id},
 			{"name",pPurchasedItem.name},
 			{"lv", pPurchasedItem.lv},
-			{"cost",pPurchasedItem.cost}
+			{"cost",pPurchasedItem.cost.ToString()}
 		};
 
 		SendCustomEvent ("PurchaseRecord", obj);

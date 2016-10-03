@@ -67,8 +67,8 @@ public class ShopCtrl : MonoBehaviour
 	void actionLvCard (GameObject obj)
 	{
 		Item item = obj.GetComponent<ItemCtrl> ().getMyItem ();
-		int cost = item.cost;
-		int coin = _gameCtrl._userData.coin; ;
+		PBClass.BigInteger cost = item.cost;
+		PBClass.BigInteger coin = _gameCtrl._userData.coin; ;
 		if (coin >= cost) {
 			_gameCtrl.spendCoin (cost);
 			levelUp (item);

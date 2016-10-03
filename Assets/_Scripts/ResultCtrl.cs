@@ -66,18 +66,19 @@ public class ResultCtrl : MonoBehaviour {
 		_userData.playCount++;
 
 		// GET COIN
-		int coinNow = _userData.coin;
-		int coinAdded = coinNow + _result.score;
+		PBClass.BigInteger coinNow = _userData.coin;
+		PBClass.BigInteger coinAdded = coinNow + _result.score;
 
-		iTween.ValueTo (gameObject,
-		                iTween.Hash (
-			                "from", coinNow, 
-			                "to", coinAdded, 
-			                "time", 1.0f, 
-			                "onupdate", "CoinValueChange", 
-			                "oncomplete", "callback"
-			               )
-		               );
+		//iTween.ValueTo (gameObject,
+		//                iTween.Hash (
+		//	                "from", coinNow, 
+		//	                "to", coinAdded, 
+		//	                "time", 1.0f, 
+		//	                "onupdate", "CoinValueChange", 
+		//	                "oncomplete", "callback"
+		//	               )
+		//               );
+		StartCoroutine (resultMove (coinNow, coinAdded));
 		_userData.coin = coinAdded;
 
 		// SAVE
@@ -99,13 +100,37 @@ public class ResultCtrl : MonoBehaviour {
 		}
 	}
 
+	// COIN付与演出
+	IEnumerator resultMove (PBClass.BigInteger pFrom, PBClass.BigInteger pValue) {
+		CoinValueChange (pFrom);
+		GameObject cp = Instantiate (LBL_SCORE.gameObject,
+							 LBL_SCORE.transform.position,
+							 LBL_SCORE.transform.rotation) as GameObject;
+		cp.name = "ScoreMoving";
+
+		// BESTアイコンが表示されている場合は、消してておく
+		if (cp.transform.childCount > 0) {
+			cp.transform.FindChild (BEST_ICON_NAME).gameObject.SetActive (false);	
+		}
+
+		iTween.MoveTo (cp, iTween.Hash ("position", LBL_COIN.transform.position, "time", 1.0f, "islocal", true));
+		yield return new WaitForSeconds (1.0f);
+		iTween.ScaleTo (cp, iTween.Hash ("scale", cp.transform.localScale * 1.5f, "time", 0.2f));
+		iTween.FadeTo (cp, iTween.Hash ("a", 0, "time", 0.2f));
+		CoinValueChange (pValue);
+		yield return new WaitForSeconds (0.5f);
+		callback ();
+		Destroy (cp);
+	}
+
+	// インタースティシャルを表示するかどうか確認し、表示
 	void checkInterstitial() {
 		if (_gameCtrl._userData.playCount % Const.AD_INTERVAL_INTER == 0) {
 			_gameCtrl.gameObject.GetComponent<AdvertisementManager> ().showInterstitial ();
 		}
 	}
 
-	bool checkBestRecord(int pBestScore, int pScore, TextMesh pScoreTextMesh) {
+	bool checkBestRecord(PBClass.BigInteger pBestScore, PBClass.BigInteger pScore, TextMesh pScoreTextMesh) {
 		if (pScore > pBestScore) {
 			showBestScoreLabel (pScoreTextMesh);
 			return true;
@@ -145,9 +170,27 @@ public class ResultCtrl : MonoBehaviour {
 		}
 	}
 
-	void CoinValueChange (int pValue) {
+	void CoinValueChange (PBClass.BigInteger pValue) {
 		LBL_COIN.text = "" + pValue;
 	}
+
+	// todo 時間別で
+	//void CoinValueChange (PBClass.BigInteger pValueFrom, PBClass.BigInteger pValueTo, float pTime) {
+	//	StartCoroutine (coinValueChangeCoroutine (pValueTo, pValueTo, pTime);
+		
+	//}
+
+	//IEnumerator coinValueChangeCoroutine (PBClass.BigInteger pValueFrom, PBClass.BigInteger pValueTo, float pTime) {
+	//	// 時間を掛けて算出
+	//	PBClass.BigInteger frameRate = new PBClass.BigInteger (Application.targetFrameRate);
+	//	PBClass.BigInteger unit = (pValueFrom - pValueTo) / frameRate;
+
+	//	for (int i = 0; i < PBClass.BigInteger.ToInt32 (frameRate); i++) {
+	//		PBClass.BigInteger value = pValueFrom + (new PBClass.BigInteger (i) * frameRate);
+
+	//		yield return 0;
+	//	}
+	//}
 
 	public void SetCoinValue () {
 		LBL_COIN.text = ""+_gameCtrl._userData.coin;
@@ -161,7 +204,7 @@ public class ResultCtrl : MonoBehaviour {
 	}
 
 	void giveGiftCoin(int pCoin) {
-		int coinNow = _gameCtrl._userData.coin;
+		PBClass.BigInteger coinNow = _gameCtrl._userData.coin;
 		iTween.ValueTo (gameObject, iTween.Hash ("from", coinNow, "to", coinNow + pCoin, "time", 1.0f, "onupdate", "CoinValueChange"));
 		_gameCtrl._userData.coin += pCoin;
 		_gameCtrl._userData.nextFreeGift = _giftCtrl.nextTimeFreeGift.ToString ("yyyy/MM/dd HH:mm:ss");
@@ -171,7 +214,7 @@ public class ResultCtrl : MonoBehaviour {
 	}
 
 	public void giveRewardCoin(int pCoin) {
-		int coinNow = _gameCtrl._userData.coin;
+		PBClass.BigInteger coinNow = _gameCtrl._userData.coin;
 		iTween.ValueTo (gameObject, iTween.Hash ("from", coinNow, "to", coinNow + pCoin, "time", 1.0f, "onupdate", "CoinValueChange"));
 		_gameCtrl._userData.coin += pCoin;
 

@@ -5,7 +5,7 @@ public class Item {
 	public int id;
 	public string name;
 	public int lv;
-	public int cost;
+	public PBClass.BigInteger cost;
 	public bool releaseFlg;
 	public string [] names = {
 		"BASE",
@@ -24,15 +24,39 @@ public class Item {
 		releaseFlg = isReleased ();
 	}
 
-	int getCostFromId (int pId, int pLv)
+	PBClass.BigInteger getCostFromId (int pId, int pLv)
 	{
-		int value = 0;
-		if (pLv >= Const.CUSTOM_LV_MAX) {
-			value = Const.COST_BASE + (300 * pLv);
+		PBClass.BigInteger value = 0;
+		if (pLv > Const.CUSTOM_LV_MAX) {
+			PBClass.BigInteger lastValue = getCostFromId (pId, Const.CUSTOM_LV_MAX);
+			int addTimes = pLv - Const.CUSTOM_LV_MAX;
+			PBClass.BigInteger unitValue = lastValue / 10;
+			value = lastValue + (unitValue * addTimes);
 		} else {
-
+			value = getCostFromIdAndCSV (pId, pLv);
 		}
+		return value;
+	}
 
+	PBClass.BigInteger getCostFromIdAndCSV (int pId, int pLv) {
+		PBClass.BigInteger value = 0;
+		UserParam up = GameCtrl.GetInstance ()._userParam; 
+		switch (pId) {
+		case Const.PARAM_LV_BASE:
+			value = up._userMasterDataCtrl.getCostBase (pLv);
+			break;
+		case Const.PARAM_LV_AREA_BOMB:
+		case Const.PARAM_LV_LINE_BOMB:
+			value = up._userMasterDataCtrl.getCostBomb (pLv);
+			break;
+		case Const.PARAM_LV_RENEWAL_BOMB:
+		case Const.PARAM_LV_COLOR_LOCK_BOMB:
+			value = up._userMasterDataCtrl.getCostColor (pLv);
+			break;
+		case Const.PARAM_LV_TIME_BOMB:
+			value = up._userMasterDataCtrl.getCostTime (pLv);
+			break;
+		}
 		return value;
 	}
 

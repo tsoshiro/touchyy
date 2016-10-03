@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class Result {
-	public int score;
+	public PBClass.BigInteger score;
 	public int maxCombo;
 	public int comboCount;
 	public int deleteCount;

@@ -41,8 +41,6 @@ public class ReviewRequestCtrl : MonoBehaviour {
 		}
 	}
 
-	bool reviewDoneFlg;
-	bool messageDoneFlg;
 	void AskForReview () {
 		DialogManager.Instance.SetLabel ("Yes", "No", "Later");
 
@@ -79,9 +77,5 @@ public class ReviewRequestCtrl : MonoBehaviour {
 				}
 			}
 		);	
-	}
-
-	void setMessageDoneFlg (bool pFlg) {
-		messageDoneFlg = pFlg;
 	}
 }
