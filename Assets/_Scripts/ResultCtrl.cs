@@ -68,6 +68,9 @@ public class ResultCtrl : MonoBehaviour {
 
 		// SAVE
 		_userData.save ();
+
+		// MOVIE REWARD
+		_giftCtrl.statusCheck();
 	}
 
 	bool checkBestRecord(int pBestScore, int pScore, TextMesh pScoreTextMesh) {
@@ -124,6 +127,27 @@ public class ResultCtrl : MonoBehaviour {
 		_gameCtrl._shopCtrl.initUserItems ();
 	}
 
+	void giveGiftCoin(int pCoin) {
+		int coinNow = _gameCtrl._userData.coin;
+		iTween.ValueTo (gameObject, iTween.Hash ("from", coinNow, "to", coinNow + pCoin, "time", 1.0f, "onupdate", "CoinValueChange"));
+		_gameCtrl._userData.coin += pCoin;
+		_gameCtrl._userData.nextFreeGift = _giftCtrl.nextTimeFreeGift.ToString ("yyyy/MM/dd HH:mm:ss");
+
+		// SAVE
+		_gameCtrl._userData.save ();
+	}
+
+	public void giveRewardCoin(int pCoin) {
+		int coinNow = _gameCtrl._userData.coin;
+		iTween.ValueTo (gameObject, iTween.Hash ("from", coinNow, "to", coinNow + pCoin, "time", 1.0f, "onupdate", "CoinValueChange"));
+		_gameCtrl._userData.coin += pCoin;
+
+		// SAVE
+		_gameCtrl._userData.save ();
+	}
+
+
+
 	#region action
 	void actionReplayBtn ()
 	{
@@ -150,16 +174,13 @@ public class ResultCtrl : MonoBehaviour {
 	}
 
 	void actionGiftBtn() {
-		if (_giftCtrl.giveGift ()) {
+		if (_giftCtrl.checkIsReward()) {
+			_giftCtrl.playMovieReward ();
+			return;
+		}
+		if (_giftCtrl.giveGiftFree ()) {
 			int addValue =_giftCtrl.getGiftCoinValue();
-			Debug.Log ("addValue: "+addValue);
-			int coinNow = _gameCtrl._userData.coin;
-			iTween.ValueTo (gameObject, iTween.Hash ("from", coinNow, "to", coinNow + addValue, "time", 1.0f, "onupdate", "CoinValueChange"));
-			_gameCtrl._userData.coin += addValue;	
-			_gameCtrl._userData.nextFreeGift = _giftCtrl.nextTimeFreeGift.ToString ("yyyy/MM/dd HH:mm:ss");
-
-			// SAVE
-			_gameCtrl._userData.save ();
+			giveGiftCoin (addValue);
 		}
 	}
 	#endregion

@@ -690,8 +690,8 @@ public class GameCtrl : MonoBehaviour {
 	public SpriteRenderer miss_touched;
 
 	void setHowWrong(int pColor) {
-		ColorEditor.paintColor (miss_target.gameObject, colorCodes [(int)targetColor]);
-		ColorEditor.paintColor (miss_touched.gameObject, colorCodes [pColor]);
+		ColorEditor.setColorFromColorCode (miss_target.gameObject, colorCodes [(int)targetColor]);
+		ColorEditor.setColorFromColorCode (miss_touched.gameObject, colorCodes [pColor]);
 	}
 
 	public void wrongAnswer() {

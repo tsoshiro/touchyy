@@ -36,13 +36,21 @@ public class ColorEditor : MonoBehaviour {
 		return aColor;
 	}
 
-
-	public static void paintColor(GameObject pObj, string pColorCode) {
-		// 色情報を取得し、塗る
-		Color aColor;
-		if (ColorUtility.TryParseHtmlString("#"+pColorCode, out aColor)) {
-			pObj.GetComponent<SpriteRenderer> ().color = aColor;
+	public static Color getColorFromColorCode(string pColorCode) {
+		if (!pColorCode.StartsWith ("#")) {
+			pColorCode = "#" + pColorCode;
 		}
+		Color aColor;
+		if (ColorUtility.TryParseHtmlString (pColorCode, out aColor)) {
+			return aColor;
+		}
+		return Color.white;
+	}
+
+	public static void setColorFromColorCode(GameObject pObj, string pColorCode) {
+		// 色情報を取得し、塗る
+		Color aColor = getColorFromColorCode(pColorCode);
+		setColor (pObj, aColor);
 	}
 		
 	static Color getAlphaColor (Color pColor, float pAlpha) {
@@ -51,19 +59,28 @@ public class ColorEditor : MonoBehaviour {
 		return color;
 	}
 
-	static void setColor(GameObject pObj, Color pColor) {
+	public static void setColor(GameObject pObj, Color pColor) {
 		Transform child = pObj.transform;
 		if (child.GetComponent<SpriteRenderer> ()) {
 			SpriteRenderer sr = child.GetComponent<SpriteRenderer> ();
 			sr.color = pColor;
-		}
-		if (child.GetComponent<TextMesh> ()) {
+		} else if (child.GetComponent<TextMesh> ()) {
 			TextMesh tm = child.GetComponent<TextMesh> ();
 			tm.color = pColor;
-		}
-		if (child.GetComponent<Material> ()) {
+		} else if (child.GetComponent<Material> ()) {
 			Material mt = child.GetComponent<Material> ();
 			mt.color = pColor;
 		}
+	}
+
+	public static void setColors(GameObject pObj, Color pColor, bool pIsRecursive = true) {
+		if (pIsRecursive) {
+			if (pObj.transform.childCount > 0) { // 子オブジェクトがある場合は再帰処理
+				foreach (Transform child in pObj.transform) {
+					setColors (child.gameObject, pColor);
+				}
+			}
+		}
+		setColor (pObj, pColor);
 	}
 }

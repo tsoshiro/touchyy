@@ -4,52 +4,58 @@ using System;
 
 public class GiftCtrl : MonoBehaviour {
 	public ResultCtrl _resultCtrl;
-	public bool isFreeGiftAvailable;
 	public GameObject _giftBtn;
 	GameObject image;
 	TextMesh leftTimeText;
+	GameObject button_small;
+
 	float xPos = -1.5f;
 
 	public DateTime nextTimeFreeGift;
-
 	public DateTime intervalDateTime;
+
+	enum GiftButtonStatus {
+		FREE_AVAILABLE,
+		FREE_AWAIT,
+		REWARD
+	}
+	GiftButtonStatus status;
 
 	public void Init() {
 		_resultCtrl = this.GetComponent<ResultCtrl>();
 
 		image = _giftBtn.transform.FindChild ("image").gameObject;
 		leftTimeText = _giftBtn.transform.FindChild ("leftTime").gameObject.GetComponent<TextMesh>();
-		Debug.Log ("nextFreegift;:"+_resultCtrl._gameCtrl._userData.nextFreeGift);
+		button_small = _giftBtn.transform.FindChild ("button_small").gameObject;
+
 		nextTimeFreeGift = DateTime.Parse(_resultCtrl._gameCtrl._userData.nextFreeGift);
+		isRewardMovieWatched = false;
 
 		statusCheck ();
 	}
 
-	void statusCheck() {
-		setFreeGiftFlg ();
-
-		if (isFreeGiftAvailable) {
-
-		} else {
-			ColorEditor.setFade (_giftBtn, 0.8f);
-			Vector3 pos = image.transform.localPosition;
-			pos.x = xPos;
-			image.transform.localPosition = pos;
-			leftTimeText.gameObject.SetActive (true);
+	public void statusCheck() {
+		if (checkIsMovieRewardAvailable()) { // 動画広告
+			status = GiftButtonStatus.REWARD;
+		} else if (checkIsFreeGiftAvailable()) { // フリーギフト
+			status = GiftButtonStatus.FREE_AVAILABLE;
+		} else { // 待機中
+			status = GiftButtonStatus.FREE_AWAIT;
 		}
+		setButton (status);
 	}
 
-	void setFreeGiftFlg() {
+	bool checkIsFreeGiftAvailable() {
 		if (nextTimeFreeGift - DateTime.Now <= TimeSpan.Zero) {
-			isFreeGiftAvailable = true;
+			return true;
 		} else {
-			isFreeGiftAvailable = false;
+			return false;
 		}
 	}
 
 	// Update is called once per frame
 	void Update () {
-		if (!isFreeGiftAvailable) {
+		if (!checkIsFreeGiftAvailable()) {
 			TimeSpan leftTime = nextTimeFreeGift - DateTime.Now;
 			leftTimeText.text = String.Format ("{0:00}:{1:00}:{2:00}",
 				leftTime.Hours,
@@ -58,21 +64,25 @@ public class GiftCtrl : MonoBehaviour {
 			
 			if (leftTime <= TimeSpan.Zero) {
 				leftTime = TimeSpan.Zero;
-				isFreeGiftAvailable = true;
-				ColorEditor.setFade (_giftBtn, 1.0f);
-				leftTimeText.gameObject.SetActive (false);
-				Vector3 pos = image.transform.localPosition;
-				pos.x = 0f;
-				image.transform.localPosition = pos;
+				if (status == GiftButtonStatus.FREE_AWAIT) {
+					status = GiftButtonStatus.FREE_AVAILABLE;
+					setButton (status);
+				}
 			}
 		}
 	}
-
-	public bool giveGift() {
-		if (isFreeGiftAvailable) {
-			isFreeGiftAvailable = false;
+		
+	public bool giveGiftFree() {
+		if (checkIsFreeGiftAvailable()) {
 			nextTimeFreeGift = DateTime.Now.AddHours(1);
 			statusCheck ();
+			return true;
+		}
+		return false;
+	}
+
+	public bool checkIsReward() {
+		if (status == GiftButtonStatus.REWARD) {
 			return true;
 		}
 		return false;
@@ -89,4 +99,64 @@ public class GiftCtrl : MonoBehaviour {
 		Debug.Log ("totalUserLevel: " + totalUserLevel);
 		return totalUserLevel * coinRate;
 	}
+
+	void setButton(GiftButtonStatus pStatus) {
+		Vector3 pos;
+		switch (pStatus) {
+		case GiftButtonStatus.FREE_AVAILABLE:
+			ColorEditor.setColor(button_small, Color.white);
+			ColorEditor.setFade (_giftBtn, 1.0f);
+			leftTimeText.gameObject.SetActive (false);
+			pos = image.transform.localPosition;
+			pos.x = 0f;
+			image.transform.localPosition = pos;
+			break;
+		case GiftButtonStatus.FREE_AWAIT:
+			ColorEditor.setColor(button_small, Color.white);
+			ColorEditor.setFade (_giftBtn, 0.8f);
+			pos = image.transform.localPosition;
+			pos.x = xPos;
+			image.transform.localPosition = pos;
+			leftTimeText.gameObject.SetActive (true);
+			break;
+		case GiftButtonStatus.REWARD:
+			ColorEditor.setColorFromColorCode(button_small, Const.COLOR_CODE_PINK);
+			leftTimeText.gameObject.SetActive (false);
+			pos = image.transform.localPosition;
+			pos.x = 0f;
+			image.transform.localPosition = pos;
+			break;
+		}	
+	}
+
+	#region movie reward
+	public bool isRewardMovieWatched = false;
+	public bool checkIsMovieRewardAvailable() {
+		// Play回数が3回に1回、出す
+		if (_resultCtrl._gameCtrl._userData.playCount % Const.AD_INTERVAL_REWARD_MOVIE == 0 &&
+			!isRewardMovieWatched)
+		{
+			return true;
+		}
+		return false;
+	}
+
+	public void playMovieReward() {
+		if (!_resultCtrl._gameCtrl.gameObject.GetComponent<AdvertisementManager> ()) {
+			return;
+		}
+		AdvertisementManager adMng = _resultCtrl._gameCtrl.gameObject.GetComponent<AdvertisementManager> ();
+
+		adMng.ShowRewardedAd ();
+	}
+
+	public void movieCallBack(int state) { // 0:finished, 1:skipped, 2:failed
+		if (state == 1) {
+			int addCoin = getGiftCoinValue ();
+			_resultCtrl.giveRewardCoin (addCoin);
+			isRewardMovieWatched = true;
+			statusCheck ();
+		}
+	}
+	#endregion
 }

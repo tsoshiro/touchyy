@@ -130,7 +130,7 @@ public class CubeCtrl : MonoBehaviour {
 
 	public void setColor(int pColor) {
 		Transform colorSprite = this.transform.FindChild("colorSprite");
-		ColorEditor.paintColor (colorSprite.gameObject, _GameCtrl.colorCodes [pColor]);
+		ColorEditor.setColorFromColorCode (colorSprite.gameObject, _GameCtrl.colorCodes [pColor]);
 		myColor = (GameCtrl.Colors)pColor;
 	}
 
