@@ -73,6 +73,7 @@ public class ResultCtrl : MonoBehaviour {
 		_giftCtrl.statusCheck();
 
 		// INTERSTITIAL CHECK
+		checkInterstitial();
 	}
 
 	void checkInterstitial() {

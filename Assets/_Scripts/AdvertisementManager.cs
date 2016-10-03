@@ -2,6 +2,8 @@
 using System.Collections;
 using UnityEngine.Advertisements;
 
+using GoogleMobileAds.Api;
+
 public class AdvertisementManager : MonoBehaviour {
 	GameObject callBackObj;
 
@@ -44,7 +46,51 @@ public class AdvertisementManager : MonoBehaviour {
 		}
 	}
 
-	public void showInterstitial() {
-		
+	public string Android_interstitial;
+	public string ios_interstitial;
+
+	private InterstitialAd _interstitial;
+	private AdRequest request;
+
+	bool is_close_interstitial = false;
+
+
+	void Awake() {
+		// 起動時にロード
+		RequestInterstitial();
 	}
+
+	public void RequestInterstitial() {
+		#if UNITY_ADROID
+		string adUnitId = Android_interstitial;
+		#elif UNITY_IPHONE
+		string adUnitId = ios_interstitial;
+		#else
+		string adUnitId = "unexpected_platform";
+		#endif
+
+		if (is_close_interstitial) {
+			_interstitial.Destroy ();
+		}
+
+		// Init
+		_interstitial = new InterstitialAd(adUnitId);
+		// create an empty request
+		request = new AdRequest.Builder().Build();
+		// load inters
+		_interstitial.LoadAd(request);
+		_interstitial.OnAdClosed += HandleInterstitialClosed;
+
+		is_close_interstitial = false;	
+	}
+
+	public void showInterstitial() {
+		_interstitial.Show ();
+	}
+
+	public void HandleInterstitialClosed(object sender, System.EventArgs args) {
+		is_close_interstitial = true;
+		RequestInterstitial ();
+	}
+
 }
