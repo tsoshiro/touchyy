@@ -80,6 +80,8 @@ public class ShopCtrl : MonoBehaviour
 	}
 
 	void levelUp (Item pItem) {
+		new AnalyticsManager ().SendShop (pItem);
+
 		_gameCtrl._userData._userParamsList [pItem.id]++;
 
 		_gameCtrl._userData.save ();

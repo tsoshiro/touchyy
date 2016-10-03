@@ -27,6 +27,8 @@ public class ResultCtrl : MonoBehaviour {
 		
 	public void showResult (Result pResult) {
 		Result _result = pResult;
+		new AnalyticsManager ().SendGameResult (pResult);
+
 		UserData _userData = _gameCtrl._userData;
 		cleanBestIcons ();
 

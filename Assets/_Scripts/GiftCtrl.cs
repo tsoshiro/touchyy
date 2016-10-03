@@ -111,6 +111,9 @@ public class GiftCtrl : MonoBehaviour {
 			pos = image.transform.localPosition;
 			pos.x = 0f;
 			image.transform.localPosition = pos;
+
+			new AnalyticsManager ().SendCounterEvent ("freeGiftOffer", 1);
+
 			break;
 		case GiftButtonStatus.FREE_AWAIT:
 			ColorEditor.setColor(button_small, Color.white);
@@ -130,6 +133,9 @@ public class GiftCtrl : MonoBehaviour {
 			pos = image.transform.localPosition;
 			pos.x = 0f;
 			image.transform.localPosition = pos;
+
+			new AnalyticsManager ().SendCounterEvent ("movieRewardOffer", 1);
+
 			break;
 		}	
 	}
@@ -153,6 +159,8 @@ public class GiftCtrl : MonoBehaviour {
 		Debug.Log ("reached");
 		AdvertisementManager adMng = _resultCtrl._gameCtrl.gameObject.GetComponent<AdvertisementManager> ();
 		adMng.ShowRewardedAd (this.gameObject);
+
+		new AnalyticsManager ().SendCounterEvent ("movieRewardPlayed", 1);
 	}
 
 	public void movieCallBack(string state) { // 0:finished, 1:skipped, 2:failed
@@ -161,6 +169,12 @@ public class GiftCtrl : MonoBehaviour {
 			_resultCtrl.giveRewardCoin (addCoin);
 			isRewardMovieWatched = true;
 			statusCheck ();
+
+			new AnalyticsManager ().SendCounterEvent ("movieRewardFinished", 1);
+		} else if (state == "2") {
+			new AnalyticsManager ().SendCounterEvent ("movieRewardSkipped", 1);
+		} else if (state == "3") {
+			new AnalyticsManager ().SendCounterEvent ("movieRewardFailed", 1);
 		}
 	}
 	#endregion
