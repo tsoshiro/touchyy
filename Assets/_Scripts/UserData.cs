@@ -116,6 +116,8 @@ public class UserData {
 	public List<int> _userParamsList = new List<int> ();
 
 	public string nextFreeGift;
+	public int reviewDoneFlg; // レビュー 0:未レビュー, 1:レビュー済み
+	public int messageDoneFlg; // コメントや不具合など	0:未送信, 1:送信済み
 
 	// 初期データ作成
 	public void initUserData() {
@@ -146,6 +148,9 @@ public class UserData {
 		if (nextFreeGift == "") {
 			nextFreeGift = DateTime.Now.ToString (Const.DATETIME_FORMAT);
 		}
+
+		reviewDoneFlg = getUserDataInt(Const.PREF_REVIEW_DONE);
+		messageDoneFlg = getUserDataInt (Const.PREF_MESSAGE_DONE);
 	}
 
 	void checkNewUser () {

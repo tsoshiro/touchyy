@@ -3,24 +3,17 @@ using System.Collections;
 
 public class ReviewRequestCtrl : MonoBehaviour {
 	ResultCtrl _resultCtrl;
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
 
 	void ReviewRequest () {
 		// プレイ回数がx回以上のユーザーに対して
 		int playCount = _resultCtrl._gameCtrl._userData.playCount;
-		if (playCount <= Const.INTERVAL_REVIEW_REQUEST) {
-			return;
+		if (playCount <= Const.INTERVAL_REVIEW_REQUEST || // 規定回以上プレイていない
+		    reviewDoneFlg) // レビュー済み
+		{
+			return; // 何もしない
 		}
 
-		if (playCount % Const.INTERVAL_REVIEW_REQUEST == 0) { // 20の倍数ならレビュー依頼															  
+		if (playCount % Const.INTERVAL_REVIEW_REQUEST == 0) { // 規定回の倍数ならレビュー依頼してみる															  
 			// 使う前に setlabel を呼んどく。
 			DialogManager.Instance.SetLabel ("Yes", "It's ok...", "No");
 
@@ -31,46 +24,22 @@ public class ReviewRequestCtrl : MonoBehaviour {
 				(bool result) => {
 					if (result) {
 						//「ありがとうございます！よければレビューお願いします」
+						AskForReview ();
 					} else {
-						// Webに飛ばす
+						// メッセージ送信なら
+						if (!messageDoneFlg) {
+							// Webに飛ばす
+							AskForMessage ();
+						}
 					}
 				}
 			);
-			//
-			// 確認のみのダイアログ
-			DialogManager.Instance.ShowSubmitDialog (
-				"submit dialog",
-				(bool result) => { Debug.Log ("submited!"); }
-			);
-
-			// タイトルを表示する場合
-			DialogManager.Instance.ShowSubmitDialog (
-				"dialog title",
-				"submit dialog",
-				(bool result) => { Debug.Log ("submited!"); }
-			);
 		}
 	}
-	//「はい」の場合
-
-	//レビューする
-	//レビュー画面に飛ばす
-	//Reviewed
-	//今はしない。
-	//終了
-	//もう表示しない。
-	//DontAskフラグを立てて終了
-	//「いいえ」の場合
-	//「改善のため、不具合や気になる点があればお問い合わせまでご連絡いただければお願いします」
-	//報告・問い合わせ (Webブラウザが起動します)
-	//問い合わせフォームに飛ばす
-	//今はしない。
-	//終了
-	//今後もしない。
-	//DontAskフラグを立てて終了
 
 	bool dontAskFlg;
 	bool reviewDoneFlg;
+	bool messageDoneFlg;
 	void AskForReview () {
 		DialogManager.Instance.SetLabel ("Yes", "No", "Later");
 
@@ -82,15 +51,13 @@ public class ReviewRequestCtrl : MonoBehaviour {
 				if (result) {
 					setReviewDoneFlg (true);
 					// ストアへ
-
-				} else {
-					//
+					Application.OpenURL (Const.APP_STORE_URL);
 				}
 			}
 		);
 	}
 
-	void AskForFAQ () {
+	void AskForMessage () {
 		DialogManager.Instance.SetLabel ("Send message", "No", "Later");
 
 		// YES NO ダイアログ
@@ -99,11 +66,9 @@ public class ReviewRequestCtrl : MonoBehaviour {
 			"We'd love to hear your comment, advice, bug report and so in order to make our app better.  If you don't mind:",
 			(bool result) => {
 				if (result) {
-					setReviewDoneFlg (true);
+					setMessageDoneFlg (true);
 					// Webビュー
-
-				} else {
-					//
+					Application.OpenURL (Const.SUPPORT_URL);
 				}
 			}
 		);	
@@ -111,5 +76,10 @@ public class ReviewRequestCtrl : MonoBehaviour {
 
 	void setReviewDoneFlg (bool pFlg) {
 		reviewDoneFlg = pFlg;
+
+	}
+
+	void setMessageDoneFlg (bool pFlg) {
+		messageDoneFlg = pFlg;
 	}
 }

@@ -2,6 +2,27 @@
 using System.Collections;
 
 public class Const {
+	#region STORE
+#if UNITY_ANDROID
+	public const string APP_ID = "jp.pixelbeat.touchyy";
+	public const string APP_STORE_URL = "jp.pixelbeat.touchyy";
+	public const string APP_STORE_REVIEW_URL = "";
+#elif UNITY_IPHONE
+	//public const string APP_ID = "1161341169";
+	public const string APP_ID = "493470467"; //テスト用:パズドラが開くはず
+	public const string APP_STORE_URL = 
+		"https://itunes.apple.com/jp/app/pazuru-doragonzu/id"
+		+APP_ID
+		+"?mt=8";
+	public const string APP_STORE_REVIEW_URL =
+		"itms-apps://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?id="
+		+APP_ID
+		+"&onlyLatestVersion=true&pageNumber=0&sortOrdering=1&type=Purple+Software";
+#endif
+	public const string SUPPORT_URL = "pixelbeat.jp";
+	#endregion
+
+
 	public const float GAME_SCREEN_POSITION_X = 6.4f;
 
 	public const float ApplicationFrameRate = 30f;
@@ -86,6 +107,8 @@ public class Const {
 	public const string PREF_LV_TIME_BOMB 		= "PREF_LV_TIME_BOMB";
 
 	public const string PREF_NEXT_FREE_GIFT	 	= "PREF_NEXT_FREE_GIFT";
+	public const string PREF_REVIEW_DONE = "PREF_REVIEW_DONE";
+	public const string PREF_MESSAGE_DONE = "PREF_MESSAGE_DONE";
 
 	public const string DATETIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
