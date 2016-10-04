@@ -19,8 +19,10 @@ public class ResultCtrl : MonoBehaviour {
 	public GameObject SHOP_BADGE;
 
 	GiftCtrl _giftCtrl;
+	ReviewRequestCtrl _reviewCtrl;
 
 	void Start() {
+		_reviewCtrl = this.GetComponent<ReviewRequestCtrl> ();
 		_giftCtrl = this.GetComponent<GiftCtrl> ();
 		_giftCtrl.Init ();
 	}
@@ -69,16 +71,7 @@ public class ResultCtrl : MonoBehaviour {
 		PBClass.BigInteger coinNow = _userData.coin;
 		PBClass.BigInteger coinAdded = coinNow + _result.score;
 
-		//iTween.ValueTo (gameObject,
-		//                iTween.Hash (
-		//	                "from", coinNow, 
-		//	                "to", coinAdded, 
-		//	                "time", 1.0f, 
-		//	                "onupdate", "CoinValueChange", 
-		//	                "oncomplete", "callback"
-		//	               )
-		//               );
-		StartCoroutine (coinAddMotion (coinNow, coinAdded, LBL_SCORE.transform.position, LBL_COIN.transform.position, true));
+		StartCoroutine (coinAddMotion (coinNow, coinAdded, LBL_SCORE.gameObject, LBL_COIN.gameObject, true));
 		_userData.coin = coinAdded;
 
 		// SAVE
@@ -87,6 +80,7 @@ public class ResultCtrl : MonoBehaviour {
 		// SHOP
 		_gameCtrl._shopCtrl.initUserItems ();
 		// GIFT REWARD CHECK
+		_giftCtrl.isRewardMovieWatched = false;
 		_giftCtrl.statusCheck ();
 		checkShop ();
 	}
@@ -101,13 +95,26 @@ public class ResultCtrl : MonoBehaviour {
 	}
 
 	// COIN付与演出
-	IEnumerator coinAddMotion (	PBClass.BigInteger pFrom,
-	                        	PBClass.BigInteger pValue,
-	                        	Vector3 pFromPosition,
-	                       	 	Vector3 pToPosition,
-	                       		bool pIsCallback = true) 
+	IEnumerator coinAddMotion (PBClass.BigInteger pFrom,
+	                           PBClass.BigInteger pValue,
+	                           GameObject pFromPositionObj,
+	                           GameObject pToPositionObj,
+	                           bool pIsCallback = true) 
 	{
+		float zPadding = - 1f;
+
 		CoinValueChange (pFrom);
+
+		Vector3 pFromPosition = pFromPositionObj.transform.position;
+		Vector3 pToPosition = pToPositionObj.transform.position;
+
+		pFromPosition.z = pFromPosition.z + zPadding;
+		pToPosition.z = pToPosition.z + zPadding;
+
+		// ターゲットの文字色を薄くしておく
+		ColorEditor.setColorFromColorCode (pToPositionObj, Const.COLOR_CODE_LIGHTER_BASE);
+
+		// 演出用文字オブジェクトを生成し、pToPositionObjまで動かす
 		GameObject cp = Instantiate (LBL_SCORE.gameObject,
 		                             pFromPosition,
 									 LBL_SCORE.transform.rotation) as GameObject;
@@ -117,18 +124,32 @@ public class ResultCtrl : MonoBehaviour {
 		if (cp.transform.childCount > 0) {
 			cp.transform.FindChild (BEST_ICON_NAME).gameObject.SetActive (false);	
 		}
-
-		iTween.MoveTo (cp, iTween.Hash ("position", pToPosition, "time", 1.0f, "islocal", true));
+		iTween.MoveTo (cp, iTween.Hash ("position", pToPosition, 
+		                                "time", 1.0f, 
+		                                "easetype", iTween.EaseType.easeInOutQuart, 
+		                                "islocal", true)
+		              );
 		yield return new WaitForSeconds (1.0f);
-		iTween.ScaleTo (cp, iTween.Hash ("scale", cp.transform.localScale * 1.5f, "time", 0.2f));
+
+		// 演出文字用オブジェクトが拡大して消える
+		ColorEditor.setColorFromColorCode (pToPositionObj, Const.COLOR_CODE_LIGHTER_BASE);
+		iTween.ScaleTo (cp, iTween.Hash ("scale", cp.transform.
+		                                 localScale * 1.5f,
+		                                 "time", 0.2f)
+		               );
 		iTween.FadeTo (cp, iTween.Hash ("a", 0, "time", 0.2f));
+
+		// ターゲットの文字を戻し、数値を書き換える
+		ColorEditor.setColorFromColorCode (pToPositionObj, Const.COLOR_CODE_BASE_COLOR);
 		CoinValueChange (pValue);
+
 		yield return new WaitForSeconds (0.5f);
 
 		Destroy (cp);
 		if (pIsCallback) {
-			callback ();
+			resultMotionCallback ();
 		}
+		_gameCtrl.finishResultAnimation ();
 	}
 
 	// インタースティシャルを表示するかどうか確認し、表示
@@ -182,40 +203,25 @@ public class ResultCtrl : MonoBehaviour {
 		LBL_COIN.text = "" + pValue;
 	}
 
-	// todo 時間別で
-	//void CoinValueChange (PBClass.BigInteger pValueFrom, PBClass.BigInteger pValueTo, float pTime) {
-	//	StartCoroutine (coinValueChangeCoroutine (pValueTo, pValueTo, pTime);
-		
-	//}
-
-	//IEnumerator coinValueChangeCoroutine (PBClass.BigInteger pValueFrom, PBClass.BigInteger pValueTo, float pTime) {
-	//	// 時間を掛けて算出
-	//	PBClass.BigInteger frameRate = new PBClass.BigInteger (Application.targetFrameRate);
-	//	PBClass.BigInteger unit = (pValueFrom - pValueTo) / frameRate;
-
-	//	for (int i = 0; i < PBClass.BigInteger.ToInt32 (frameRate); i++) {
-	//		PBClass.BigInteger value = pValueFrom + (new PBClass.BigInteger (i) * frameRate);
-
-	//		yield return 0;
-	//	}
-	//}
-
 	public void SetCoinValue () {
 		LBL_COIN.text = ""+_gameCtrl._userData.coin;
 	}
 
-	void callback () {
-		// INTERSTITIAL CHECK
-		checkInterstitial ();
-
-		_gameCtrl.finishResultAnimation ();
+	void resultMotionCallback () {
+		// REVIEW CHECK
+		// x回に一回レビューリクエストポップアップ表示
+		// レビュー依頼が無い時にインタースティシャル表示のチェック
+		if (!_reviewCtrl.ReviewRequest ()) {
+			// INTERSTITIAL CHECK
+			checkInterstitial ();
+		}
 	}
 
 	void giveFreeCoin(PBClass.BigInteger pCoin) {
 		PBClass.BigInteger coinNow = _gameCtrl._userData.coin;
 
 		// todo Animation
-		StartCoroutine (coinAddMotion (coinNow, coinNow + pCoin, GameObject.Find ("GiftBtn").transform.position, LBL_COIN.transform.position, false));
+		StartCoroutine (coinAddMotion (coinNow, coinNow + pCoin, GameObject.Find ("GiftBtn"), LBL_COIN.gameObject, false));
 
 		_gameCtrl._userData.coin += pCoin;
 		_gameCtrl._userData.nextFreeGift = _giftCtrl.nextTimeFreeGift.ToString ("yyyy/MM/dd HH:mm:ss");
@@ -227,15 +233,13 @@ public class ResultCtrl : MonoBehaviour {
 	public void giveRewardCoin(PBClass.BigInteger pCoin) {
 		PBClass.BigInteger coinNow = _gameCtrl._userData.coin;
 
-		StartCoroutine(coinAddMotion (coinNow, coinNow + pCoin, GameObject.Find ("GiftBtn").transform.position, LBL_COIN.transform.position, false));
+		StartCoroutine(coinAddMotion (coinNow, coinNow + pCoin, GameObject.Find ("GiftBtn"), LBL_COIN.gameObject, false));
 
 		_gameCtrl._userData.coin += pCoin;
 
 		// SAVE
 		_gameCtrl._userData.save ();
 	}
-
-
 
 	#region action
 	void actionReplayBtn ()

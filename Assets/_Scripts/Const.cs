@@ -29,10 +29,14 @@ public class Const {
 	public const int COUNTDOWN_TIME = 3;
 
 	#region color codes
-	public const string COLOR_CODE_BASE_COLOR = "37474F";
-	public const string COLOR_CODE_BG_GRAY = "F5F5F5";
-	public const string COLOR_CODE_PINK = "EC407A";
+	// MaterialColors From https://www.materialui.co/colors
+	public const string COLOR_CODE_BASE_COLOR = "37474F"; // Blue... 800
+	public const string COLOR_CODE_LIGHTER_BASE = "78909C"; // Blue... 400
 
+	public const string COLOR_CODE_BG_GRAY = "F5F5F5"; // Gray : 100
+
+	// COLOR 400
+	public const string COLOR_CODE_PINK = "EC407A";	
 	public const string COLOR_CODE_RED = "ef5350";
 	public const string COLOR_CODE_BLUE = "42A5F5";
 	public const string COLOR_CODE_GREEN = "66BB6A";

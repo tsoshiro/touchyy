@@ -8,13 +8,13 @@ public class ReviewRequestCtrl : MonoBehaviour {
 		_resultCtrl = this.gameObject.GetComponent<ResultCtrl> ();
 	}
 
-	void ReviewRequest () {
+	public bool ReviewRequest () {
 		// プレイ回数がx回以上のユーザーに対して
 		int playCount = _resultCtrl._gameCtrl._userData.playCount;
 		if (playCount <= Const.INTERVAL_REVIEW_REQUEST || // 規定回以上プレイていない
 		    _resultCtrl._gameCtrl._userData.reviewDoneFlg == 1) // レビュー済み
 		{
-			return; // 何もしない
+			return false; // 何もしない
 		}
 
 		if (playCount % Const.INTERVAL_REVIEW_REQUEST == 0) { // 規定回の倍数ならレビュー依頼してみる															  
@@ -39,6 +39,7 @@ public class ReviewRequestCtrl : MonoBehaviour {
 				}
 			);
 		}
+		return true;
 	}
 
 	void AskForReview () {
