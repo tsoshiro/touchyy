@@ -94,7 +94,11 @@ public class GiftCtrl : MonoBehaviour {
 
 		GameCtrl gc = GameCtrl.GetInstance ();
 		int lv = _resultCtrl._gameCtrl._userData._userParamsList [Const.PARAM_LV_BASE];
-		value = gc._userParam._userMasterDataCtrl.getReward(lv);
+		if (lv > Const.CUSTOM_LV_MAX) {
+			value = gc._userParam.basePoint * 100 * 5;
+		} else {
+			value = gc._userParam._userMasterDataCtrl.getReward (lv);	
+		}
 		return value;
 	}
 
@@ -103,7 +107,11 @@ public class GiftCtrl : MonoBehaviour {
 
 		GameCtrl gc = GameCtrl.GetInstance ();
 		int lv = _resultCtrl._gameCtrl._userData._userParamsList [Const.PARAM_LV_BASE];
-		value = gc._userParam._userMasterDataCtrl.getFree (lv);
+		if (lv > Const.CUSTOM_LV_MAX) {
+			value = gc._userParam.basePoint * 100 * 2;
+		} else {
+			value = gc._userParam._userMasterDataCtrl.getFree (lv);
+		}
 		return value;
 	}
 

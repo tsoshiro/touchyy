@@ -27,8 +27,18 @@ public class UserParam {
 		timeBombRate 	= getBombRate (pUserData._userParamsList[Const.PARAM_LV_TIME_BOMB]);
 	}
 
+	// BaseValueの算出
 	PBClass.BigInteger getBasePoint (int pLv) {
-		return _userMasterDataCtrl.getBaseValue (pLv);
+		PBClass.BigInteger value = 0;
+		if (pLv > Const.CUSTOM_LV_MAX) { // LV.100以下ならMasterデータから取得
+			PBClass.BigInteger lastValue = _userMasterDataCtrl.getBaseValue (Const.CUSTOM_LV_MAX);
+			int addTimes = pLv - Const.CUSTOM_LV_MAX;
+			PBClass.BigInteger unitValue = lastValue / Const.OVER_LV_VALUE_ADD_RATE;
+			value = lastValue + (unitValue * addTimes);
+		} else {
+			value = _userMasterDataCtrl.getBaseValue (pLv);
+		}
+		return value;
 	}
 
 	float START_RATE = 0.05f;

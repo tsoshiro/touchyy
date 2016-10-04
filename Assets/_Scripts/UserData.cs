@@ -3,7 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
+[System.Serializable]
 public class UserData {
+
 	#region PRIVATE PlayerPrefs
 	int DEFAULT_VALUE_INT = 0;
 	float DEFAULT_VALUE_FLOAT = 0.0f;
@@ -153,6 +155,13 @@ public class UserData {
 		messageDoneFlg = getUserDataInt (Const.PREF_MESSAGE_DONE);
 	}
 
+	public void debugDataSetUp () {
+		if (GameCtrl.GetInstance ().isDebugParamSet) {
+			// デバッグ用書き換え
+			_userParamsList [Const.PARAM_LV_BASE] = 100;
+		}
+	}
+
 	void checkNewUser () {
 		if (getUserDataInt (Const.PREF_LV_BASE) <= 0) {
 			createBaseUserData ();
@@ -172,6 +181,56 @@ public class UserData {
 	}
 
 	public UserData () {
+	}
+	#endregion
+
+	#region for debug
+	/// <summary>
+	/// 作成中
+	/// </summary>
+	/// <returns>The value if exists.</returns>
+	/// <param name="value">Value.</param>
+	/// <param name="targetField">Target field.</param>
+	/// <typeparam name="Type">The 1st type parameter.</typeparam>
+	Type setValueIfExists<Type> (Type value, Type targetField)
+		where Type : IComparable
+	{
+		Type defVal = default (Type);
+		if (value.CompareTo(defVal) == 0) { // 未設定
+			return targetField;
+		}
+		return value;
+	}
+
+	void setCustomData (UserData pUserData) {
+		bestScore = pUserData.bestScore;
+		maxCombo = pUserData.maxCombo;
+		maxDeleteCount = pUserData.maxDeleteCount;
+		maxKillAllCount = pUserData.maxKillAllCount;
+
+		totalScore = pUserData.totalScore;
+		totalDeleteCount = pUserData.totalDeleteCount;
+		totalKillAllCount = pUserData.totalKillAllCount;
+		playCount = pUserData.playCount;
+
+		coin = pUserData.coin;
+
+		// userParamList
+		_userParamsList.Clear ();
+		_userParamsList.Add (pUserData._userParamsList [Const.PARAM_LV_BASE]);
+		_userParamsList.Add (pUserData._userParamsList [Const.PARAM_LV_AREA_BOMB]);
+		_userParamsList.Add (pUserData._userParamsList [Const.PARAM_LV_LINE_BOMB]);
+		_userParamsList.Add (pUserData._userParamsList [Const.PARAM_LV_RENEWAL_BOMB]);
+		_userParamsList.Add (pUserData._userParamsList [Const.PARAM_LV_COLOR_LOCK_BOMB]);
+		_userParamsList.Add (pUserData._userParamsList [Const.PARAM_LV_TIME_BOMB]);
+
+		nextFreeGift = pUserData.nextFreeGift;
+		if (nextFreeGift == "") {
+			nextFreeGift = DateTime.Now.ToString (Const.DATETIME_FORMAT);
+		}
+
+		reviewDoneFlg = pUserData.reviewDoneFlg;
+		messageDoneFlg = pUserData.messageDoneFlg;
 	}
 	#endregion
 }

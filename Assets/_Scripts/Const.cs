@@ -119,7 +119,8 @@ public class Const {
 	// PARAM LIMIT
 	// 100まではゲームデータで管理。それ以降は決め打ちロジック。
 	public const int CUSTOM_LV_MAX = 100; // 
-	public const float OVER_LV_COST_ADD_RATE = 1.02f;
+	public const int OVER_LV_COST_ADD_RATE = 20; //  5%
+	public const int OVER_LV_VALUE_ADD_RATE = 50; // 2%
 
 	// PARAM ID
 	public const int PARAM_LV_BASE 				= 0;

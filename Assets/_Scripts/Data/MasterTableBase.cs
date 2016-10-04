@@ -47,7 +47,6 @@ public class MasterTableBase<T> where T : MasterBase, new() {
 	// 例: UserMasterTable → User
 	public string convertClassToFilePath(string className) {
 		className = className.Replace ("MasterTable", "");
-		Debug.Log (className);
 		className = className.LowerCamelToSnake ();
 		Debug.Log (className);
 		return className;
@@ -64,7 +63,6 @@ public class MasterBase
 
 	private void SetField(string key, string value) 
 	{
-		Debug.Log ("key: " + key + " value: " + value);
 		PropertyInfo propertyInfo = this.GetType ().GetProperty (key, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 		if (propertyInfo.PropertyType == typeof (PBClass.BigInteger))
 			propertyInfo.SetValue (this, new PBClass.BigInteger (value), null);

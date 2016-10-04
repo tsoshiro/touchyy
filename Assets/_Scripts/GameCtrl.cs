@@ -104,6 +104,7 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 		// UserData初期化
 		_userData = new UserData ();
 		_userData.initUserData ();
+		_userData.debugDataSetUp ();
 
 		// UserParam初期化
 		_userParam = new UserParam (_userData, this.GetComponent<UserMasterDataCtrl>());
@@ -849,5 +850,10 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 			}
 		}
 	}
+	#endregion
+
+	#region DEBUG
+	public bool isDebugParamSet = false;
+	public UserData CustomUserData;
 	#endregion
 }

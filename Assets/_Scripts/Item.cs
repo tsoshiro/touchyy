@@ -24,17 +24,21 @@ public class Item {
 		releaseFlg = isReleased ();
 	}
 
+	// コストの算出
 	PBClass.BigInteger getCostFromId (int pId, int pLv)
 	{
+		Debug.Log ("getCostFromId(" + pId + "," + pLv + ")");
 		PBClass.BigInteger value = 0;
+
 		if (pLv > Const.CUSTOM_LV_MAX) {
 			PBClass.BigInteger lastValue = getCostFromId (pId, Const.CUSTOM_LV_MAX);
 			int addTimes = pLv - Const.CUSTOM_LV_MAX;
-			PBClass.BigInteger unitValue = lastValue / 10;
-			value = lastValue + (unitValue * addTimes);
+			PBClass.BigInteger unitValue = lastValue * Const.OVER_LV_COST_ADD_RATE;
+			value = lastValue + (unitValue / addTimes);
 		} else {
 			value = getCostFromIdAndCSV (pId, pLv);
 		}
+		Debug.Log ("value:" + value);
 		return value;
 	}
 
