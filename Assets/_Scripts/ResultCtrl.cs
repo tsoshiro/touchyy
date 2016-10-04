@@ -78,7 +78,7 @@ public class ResultCtrl : MonoBehaviour {
 		//	                "oncomplete", "callback"
 		//	               )
 		//               );
-		StartCoroutine (resultMove (coinNow, coinAdded));
+		StartCoroutine (coinAddMotion (coinNow, coinAdded, LBL_SCORE.transform.position, LBL_COIN.transform.position, true));
 		_userData.coin = coinAdded;
 
 		// SAVE
@@ -101,26 +101,34 @@ public class ResultCtrl : MonoBehaviour {
 	}
 
 	// COIN付与演出
-	IEnumerator resultMove (PBClass.BigInteger pFrom, PBClass.BigInteger pValue) {
+	IEnumerator coinAddMotion (	PBClass.BigInteger pFrom,
+	                        	PBClass.BigInteger pValue,
+	                        	Vector3 pFromPosition,
+	                       	 	Vector3 pToPosition,
+	                       		bool pIsCallback = true) 
+	{
 		CoinValueChange (pFrom);
 		GameObject cp = Instantiate (LBL_SCORE.gameObject,
-							 LBL_SCORE.transform.position,
-							 LBL_SCORE.transform.rotation) as GameObject;
+		                             pFromPosition,
+									 LBL_SCORE.transform.rotation) as GameObject;
 		cp.name = "ScoreMoving";
 
-		// BESTアイコンが表示されている場合は、消してておく
+		// BESTアイコンが表示されている場合は、消しておく
 		if (cp.transform.childCount > 0) {
 			cp.transform.FindChild (BEST_ICON_NAME).gameObject.SetActive (false);	
 		}
 
-		iTween.MoveTo (cp, iTween.Hash ("position", LBL_COIN.transform.position, "time", 1.0f, "islocal", true));
+		iTween.MoveTo (cp, iTween.Hash ("position", pToPosition, "time", 1.0f, "islocal", true));
 		yield return new WaitForSeconds (1.0f);
 		iTween.ScaleTo (cp, iTween.Hash ("scale", cp.transform.localScale * 1.5f, "time", 0.2f));
 		iTween.FadeTo (cp, iTween.Hash ("a", 0, "time", 0.2f));
 		CoinValueChange (pValue);
 		yield return new WaitForSeconds (0.5f);
-		callback ();
+
 		Destroy (cp);
+		if (pIsCallback) {
+			callback ();
+		}
 	}
 
 	// インタースティシャルを表示するかどうか確認し、表示
@@ -207,7 +215,7 @@ public class ResultCtrl : MonoBehaviour {
 		PBClass.BigInteger coinNow = _gameCtrl._userData.coin;
 
 		// todo Animation
-		//iTween.ValueTo (gameObject, iTween.Hash ("from", coinNow, "to", coinNow + pCoin, "time", 1.0f, "onupdate", "CoinValueChange"));
+		StartCoroutine (coinAddMotion (coinNow, coinNow + pCoin, GameObject.Find ("GiftBtn").transform.position, LBL_COIN.transform.position, false));
 
 		_gameCtrl._userData.coin += pCoin;
 		_gameCtrl._userData.nextFreeGift = _giftCtrl.nextTimeFreeGift.ToString ("yyyy/MM/dd HH:mm:ss");
@@ -219,7 +227,7 @@ public class ResultCtrl : MonoBehaviour {
 	public void giveRewardCoin(PBClass.BigInteger pCoin) {
 		PBClass.BigInteger coinNow = _gameCtrl._userData.coin;
 
-		//iTween.ValueTo (gameObject, iTween.Hash ("from", coinNow, "to", coinNow + pCoin, "time", 1.0f, "onupdate", "CoinValueChange"));
+		StartCoroutine(coinAddMotion (coinNow, coinNow + pCoin, GameObject.Find ("GiftBtn").transform.position, LBL_COIN.transform.position, false));
 
 		_gameCtrl._userData.coin += pCoin;
 

@@ -24,4 +24,8 @@ public class TextCtrl : MonoBehaviour {
 
 		Destroy (this.gameObject);
 	}
+
+	IEnumerator addValueMotion (GameObject pTarget, float pTime) {
+		yield return 0;
+	}
 }

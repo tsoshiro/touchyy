@@ -664,6 +664,7 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 			textObj.GetComponent<TextCtrl> ().init (2, 1);
 		}
 
+		// TODO コンボの算出
 		_result.score += _userParam.basePoint * _result.comboCount;
 		scoreText.text = "SCORE : " + _result.score;
 
