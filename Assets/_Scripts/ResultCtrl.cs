@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 public class ResultCtrl : MonoBehaviour {
 	public GameCtrl _gameCtrl;
@@ -34,7 +35,7 @@ public class ResultCtrl : MonoBehaviour {
 		UserData _userData = _gameCtrl._userData;
 		cleanBestIcons ();
 
-		LBL_SCORE.text = ""+_result.score;
+		LBL_SCORE.text = String.Format("{0:#,0}", _result.score);
 		if (checkBestRecord (_userData.bestScore, _result.score, LBL_SCORE)) {
 			_userData.bestScore = _result.score;		
 		};
@@ -143,6 +144,11 @@ public class ResultCtrl : MonoBehaviour {
 		ColorEditor.setColorFromColorCode (pToPositionObj, Const.COLOR_CODE_BASE_COLOR);
 		CoinValueChange (pValue);
 
+		iTween.ShakeScale (pToPositionObj, iTween.Hash ("x", 2, 
+		                                                "y", 2,
+		                                                "time", 0.2f)
+		                  );
+
 		yield return new WaitForSeconds (0.5f);
 
 		Destroy (cp);
@@ -200,11 +206,11 @@ public class ResultCtrl : MonoBehaviour {
 	}
 
 	void CoinValueChange (PBClass.BigInteger pValue) {
-		LBL_COIN.text = "" + pValue;
+		LBL_COIN.text = String.Format ("{0:#,0}", pValue);
 	}
 
 	public void SetCoinValue () {
-		LBL_COIN.text = ""+_gameCtrl._userData.coin;
+		LBL_COIN.text = String.Format ("{0:#,0}", _gameCtrl._userData.coin);
 	}
 
 	void resultMotionCallback () {

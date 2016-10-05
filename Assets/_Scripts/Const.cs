@@ -122,6 +122,17 @@ public class Const {
 	public const int OVER_LV_COST_ADD_RATE = 20; //  5%
 	public const int OVER_LV_VALUE_ADD_RATE = 50; // 2%
 
+	// ボーナス
+	public const int COMBO_BONUS_RATE = 20; // 5%
+	public const int KILL_ALL_BONUS_RATE = 50; // 2%
+	public const int NO_MISS_BONUS_RATE = 20; // 5%
+
+	// リワードでもらえるスコア
+	// basePoint * 100(=平均スコア) * 5回
+	public const int REWARD_BASE_SCORE = 100;
+	public const int REWARD_BASE_TIMES = 5;
+	public const int FREE_BASE_TIMES = 2;
+
 	// PARAM ID
 	public const int PARAM_LV_BASE 				= 0;
 	public const int PARAM_LV_AREA_BOMB 		= 1;

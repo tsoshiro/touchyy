@@ -2,11 +2,10 @@
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 	public float timeLeft;
-
-	float COLOR_CLEAR_BONUS_RATE = 2f;
 
 	Result _result;
 	public UserData _userData;
@@ -382,9 +381,26 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 		pauseBtn.SetActive (false);
 		touchableSign.SetActive (true);
 
+		addKillAllBonus ();
+		addNoMissBonus ();
+
 		showResult ();
 
 		yield return 0;
+	}
+
+	void addKillAllBonus () {
+		// Kill All Bonus算出
+		PBClass.BigInteger bonusValue = _result.score / Const.KILL_ALL_BONUS_RATE;
+		bonusValue = bonusValue * _result.killAllCount;
+		_result.score += bonusValue;
+	}
+
+	void addNoMissBonus () {
+		if (_result.missCount == 0) {
+			PBClass.BigInteger bonusValue = _result.score / Const.NO_MISS_BONUS_RATE;
+			_result.score += bonusValue;
+		}
 	}
 
 	public void finishResultAnimation () {
@@ -403,9 +419,6 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 			               "oncompleteparams", _result
 			              )
 		              );
-		//TODO アニメーション中に触らせない処理
-		// showResult
-		//_resultCtrl.showResult (_result);
 	}
 
 	public void replay() {
@@ -489,7 +502,7 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 	float ANIMATION_TIME = 0.2f;
 	void changeTargetColor() {
 		do {
-			targetColor = (Colors)Random.Range (0, 5);
+			targetColor = (Colors)UnityEngine.Random.Range (0, 5);
 		} while (!hasEnableCube(targetColor));
 
 		changeTimeLeft = CHANGE_TIME;
@@ -536,7 +549,7 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 	}
 
 	Const.BombType bombRate () {
-		float rate = Random.Range (0, 100);
+		float rate = UnityEngine.Random.Range (0, 100);
 		if (rate <= 33) {
 			return Const.BombType.PLUS;
 		} else if (rate <= 66) {
@@ -593,8 +606,8 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 
 		int aColor =
 			(isColorRestrictionValid)
-			? (int)restrictColors[Random.Range (0, restrictColors.Count)]
-	        : Random.Range (0, 5);
+			? (int)restrictColors[UnityEngine.Random.Range (0, restrictColors.Count)]
+	        : UnityEngine.Random.Range (0, 5);
 		cubeCtrl.setColor(aColor);
 
 		return cubeCtrl;
@@ -615,7 +628,7 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 
 		// TARGET CUBE
 		do {
-			targetColor = (Colors)Random.Range (0, 5);
+			targetColor = (Colors)UnityEngine.Random.Range (0, 5);
 		} while (!hasEnableCube (targetColor));
 
 		targetCube = Instantiate(cubeObj);
@@ -665,9 +678,13 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 			textObj.GetComponent<TextCtrl> ().init (2, 1);
 		}
 
-		// TODO コンボの算出
-		_result.score += _userParam.basePoint * _result.comboCount;
-		scoreText.text = "SCORE : " + _result.score;
+		// コンボの算出
+		PBClass.BigInteger comboBonusValue = _userParam.basePoint / Const.COMBO_BONUS_RATE;
+		comboBonusValue = comboBonusValue * (_result.comboCount - 1);
+
+		_result.score += _userParam.basePoint + comboBonusValue;
+
+		scoreText.text = "SCORE : " + String.Format ("{0:#,0}", _result.score);
 
 		if (!hasEnableCube (targetColor)) {
 			// 色全滅ボーナス
@@ -678,7 +695,6 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 
 	void colorClearBonus () {
 		_result.killAllCount++;
-		_result.score += (int)((float)_result.killAllCount * COLOR_CLEAR_BONUS_RATE);
 
 		// 表示
 		GameObject textObj = Instantiate (killAllText,
@@ -744,7 +760,7 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 
 		restrictColors = new List<Colors> ();
 		do {
-			Colors aColor = (Colors)(int)Random.Range (0, 5);
+			Colors aColor = (Colors)(int)UnityEngine.Random.Range (0, 5);
 			if (!restrictColors.Contains (aColor)) {
 				restrictColors.Add (aColor);		
 			}
@@ -813,7 +829,7 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 	}
 
 	int decideCubeType () {
-		float value = Random.Range (0, 100);
+		float value = UnityEngine.Random.Range (0, 100);
 
 		int fixId = -1;
 		float rangeValue = 0;
