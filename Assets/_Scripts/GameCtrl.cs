@@ -18,6 +18,7 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 	#endregion
 
 	#region UI
+	public TextMesh guideText;
 	public TextMesh scoreText;
 	public TextMesh comboText;
 	public TextMesh timeText;
@@ -59,6 +60,9 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 	//AUDIO
 	public AudioMgr _audioMgr;
 
+	// LANGUAGE
+	public LanguageCtrl _languageCtrl;
+
 
 	public GameObject cubeGroup;
 	GameObject targetCube;
@@ -99,6 +103,7 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 	void Awake () {
 		// MasterData取得
 		this.GetComponent<UserMasterDataCtrl> ().initMasterData ();
+		setLanguageTexts ();
 
 		// UserData初期化
 		_userData = new UserData ();
@@ -117,6 +122,17 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 		_shopCtrl.initUserItems ();
 
 		SetGame();
+	}
+
+	void setLanguageTexts () {
+		// Localization
+		_languageCtrl = this.GetComponent<LanguageCtrl> ();
+		_languageCtrl.initLocalization ();
+
+		guideText.text = _languageCtrl.getMessageFromCode (Const.instruction + "_01");
+		guideText.text += "\n" + _languageCtrl.getMessageFromCode (Const.instruction + "_02");
+		guideText.text += "\n" + _languageCtrl.getMessageFromCode (Const.instruction + "_03");
+		guideText.text += "\n" + _languageCtrl.getMessageFromCode (Const.instruction + "_04");
 	}
 
 	// 表示系初期化
@@ -684,7 +700,8 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 
 		_result.score += _userParam.basePoint + comboBonusValue;
 
-		scoreText.text = "SCORE : " + String.Format ("{0:#,0}", _result.score);
+		//scoreText.text = "SCORE : " + String.Format ("{0:#,0}", _result.score);
+		scoreText.text = "SCORE : " + new IntValueConverter().FixBigInteger(_result.score);
 
 		if (!hasEnableCube (targetColor)) {
 			// 色全滅ボーナス

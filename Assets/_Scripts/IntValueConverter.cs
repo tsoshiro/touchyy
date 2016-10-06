@@ -64,4 +64,21 @@ public class IntValueConverter {
 		}
 		return str;
 	}
+
+
+	public string FixBigInteger (PBClass.BigInteger pBigInteger) {
+		string value = "" + pBigInteger;
+		char[] c = value.ToCharArray ();
+		value = "";
+		int counts = 0;
+		for (int i = c.Length - 1; i >= 0; i--) {
+			value = c [i] + value;
+			counts++;
+			if (counts == 3 && i != 0) {
+				value = "," + value;
+				counts = 0;
+			}
+		}
+		return value;
+	}
 }

@@ -16,7 +16,7 @@ public class ItemCtrl : MonoBehaviour {
 		setImage(_MyItem.id);
 
 		cardTextLevel.text = ""+_MyItem.lv;
-		cardTextCost.text = ""+_MyItem.cost;
+		cardTextCost.text = new IntValueConverter ().FixBigInteger (_MyItem.cost);
 
 		if (_MyItem.releaseFlg) {
 			ColorEditor.setFade (this.gameObject, 1.0f);

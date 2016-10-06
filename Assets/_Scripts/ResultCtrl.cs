@@ -35,7 +35,7 @@ public class ResultCtrl : MonoBehaviour {
 		UserData _userData = _gameCtrl._userData;
 		cleanBestIcons ();
 
-		LBL_SCORE.text = String.Format("{0:#,0}", _result.score);
+		LBL_SCORE.text = new IntValueConverter ().FixBigInteger (_result.score);
 		if (checkBestRecord (_userData.bestScore, _result.score, LBL_SCORE)) {
 			_userData.bestScore = _result.score;		
 		};
@@ -206,11 +206,11 @@ public class ResultCtrl : MonoBehaviour {
 	}
 
 	void CoinValueChange (PBClass.BigInteger pValue) {
-		LBL_COIN.text = String.Format ("{0:#,0}", pValue);
-	}
+		LBL_COIN.text = new IntValueConverter().FixBigInteger(pValue);
 
+	}
 	public void SetCoinValue () {
-		LBL_COIN.text = String.Format ("{0:#,0}", _gameCtrl._userData.coin);
+		LBL_COIN.text = new IntValueConverter ().FixBigInteger (_gameCtrl._userData.coin);
 	}
 
 	void resultMotionCallback () {

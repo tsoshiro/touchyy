@@ -19,19 +19,22 @@ public class ReviewRequestCtrl : MonoBehaviour {
 
 		if (playCount % Const.INTERVAL_REVIEW_REQUEST == 0) { // 規定回の倍数ならレビュー依頼してみる															  
 			// 使う前に setlabel を呼んどく。
-			DialogManager.Instance.SetLabel ("Yes", "It's ok...", "No");
+			DialogManager.Instance.SetLabel (
+				GameCtrl.GetInstance()._languageCtrl.getMessageFromCode(Const.answer_01_y),
+				GameCtrl.GetInstance ()._languageCtrl.getMessageFromCode (Const.answer_01_n),
+				"Close");
 
 			// YES NO ダイアログ
 			//「楽しんでいただけていますか？」とのダイアログを出す。
 			DialogManager.Instance.ShowSelectDialog (
-				"Are you having fun?",
+				GameCtrl.GetInstance()._languageCtrl.getMessageFromCode(Const.dialog_01),
 				(bool result) => {
 					if (result) {
 						//「ありがとうございます！よければレビューお願いします」
 						AskForReview ();
 					} else {
 						// メッセージ送信したことないなら
-						if (_resultCtrl._gameCtrl._userData.messageDoneFlg == 1) {
+						if (_resultCtrl._gameCtrl._userData.messageDoneFlg == 0) {
 							// Webに飛ばす
 							AskForMessage ();
 						}
@@ -43,12 +46,15 @@ public class ReviewRequestCtrl : MonoBehaviour {
 	}
 
 	void AskForReview () {
-		DialogManager.Instance.SetLabel ("Yes", "No", "Later");
+		DialogManager.Instance.SetLabel (
+			GameCtrl.GetInstance()._languageCtrl.getMessageFromCode(Const.answer_02_y),
+			GameCtrl.GetInstance ()._languageCtrl.getMessageFromCode (Const.answer_02_n),
+			"Close");
 
 		// YES NO ダイアログ
 		//レビュー依頼
 		DialogManager.Instance.ShowSelectDialog (
-			"Would you review our app?  We'll be so happy to hear from you!",
+			GameCtrl.GetInstance ()._languageCtrl.getMessageFromCode (Const.dialog_02),
 			(bool result) => {
 				if (result) {
 					_resultCtrl._gameCtrl._userData.reviewDoneFlg = 1;
@@ -62,12 +68,15 @@ public class ReviewRequestCtrl : MonoBehaviour {
 	}
 
 	void AskForMessage () {
-		DialogManager.Instance.SetLabel ("Send message", "No", "Later");
+		DialogManager.Instance.SetLabel (
+			GameCtrl.GetInstance ()._languageCtrl.getMessageFromCode (Const.answer_03_y),
+			GameCtrl.GetInstance ()._languageCtrl.getMessageFromCode (Const.answer_03_n),
+			"Close");
 
 		// YES NO ダイアログ
 		// お問合せ
 		DialogManager.Instance.ShowSelectDialog (
-			"We'd love to hear your comment, advice, bug report and so in order to make our app better.  If you don't mind:",
+			GameCtrl.GetInstance ()._languageCtrl.getMessageFromCode (Const.dialog_03),
 			(bool result) => {
 				if (result) {
 					_resultCtrl._gameCtrl._userData.messageDoneFlg = 1;

@@ -63,10 +63,10 @@ public class MasterBase
 
 	private void SetField(string key, string value) 
 	{
+		Debug.Log ("key:" + key + " value:" + value);
 		PropertyInfo propertyInfo = this.GetType ().GetProperty (key, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-		if (propertyInfo.PropertyType == typeof (PBClass.BigInteger))
-			propertyInfo.SetValue (this, new PBClass.BigInteger (value), null);
-		else if (propertyInfo.PropertyType == typeof(int))
+
+		if (propertyInfo.PropertyType == typeof(int))
 			propertyInfo.SetValue (this, int.Parse (value), null);
 		else if (propertyInfo.PropertyType == typeof(string))
 			propertyInfo.SetValue (this, value, null);
@@ -74,6 +74,8 @@ public class MasterBase
 			propertyInfo.SetValue (this, double.Parse (value), null);
 		else if (propertyInfo.PropertyType == typeof(float))
 			propertyInfo.SetValue (this, float.Parse (value), null);
+		else if (propertyInfo.PropertyType == typeof (PBClass.BigInteger))
+			propertyInfo.SetValue (this, new PBClass.BigInteger (value), null);
 	}
 
 }

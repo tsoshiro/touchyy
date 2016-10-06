@@ -19,11 +19,11 @@ public class ShopCtrl : MonoBehaviour
 	// -2
 
 	public void Start () {
-		_coin.text = "" + _gameCtrl._userData.coin;
+		_coin.text = new IntValueConverter ().FixBigInteger ( _gameCtrl._userData.coin);
 	}
 
 	public void initUserItems () {
-		_coin.text = "" + _gameCtrl._userData.coin;
+		_coin.text = new IntValueConverter ().FixBigInteger (_gameCtrl._userData.coin);
 		if (itemCtrlList.Count > 0) {
 			return;
 		}
@@ -60,7 +60,7 @@ public class ShopCtrl : MonoBehaviour
 			itemCtrlList [i].init (aItem);
 		}
 
-		_coin.text = "" + _gameCtrl._userData.coin;
+		_coin.text = new IntValueConverter ().FixBigInteger (_gameCtrl._userData.coin);
 	}
 
 	// PURCHASE

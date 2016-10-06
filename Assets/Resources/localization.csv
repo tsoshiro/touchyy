@@ -1,0 +1,14 @@
+MESSAGE_CODE,JP,EN
+instruction_01,大きな円と,TOUCH OR SWIPE
+instruction_02,同じ色の円を,the same colored
+instruction_03,タッチ/スワイプ,circles as
+instruction_04,しましょう。,the large one.
+dialog_01,楽しんでいただけていますか？,Are you having fun?
+answer_01_n,いまいち…,Not really
+answer_01_y,はい！,Yes!
+dialog_02,よかったらレビューしていただけると嬉しいです！,Would you review our app?  We'll be so happy to hear from you!
+answer_02_n,後で,Later
+answer_02_y,レビューする,Sure
+dialog_03,気になる点・不具合などありましたらぜひ教えてください！,"We'd love to hear your comment, advice, bug report and so in order to make our app better.  If you don't mind:"
+answer_03_n,後で,Later
+answer_03_y,教える,Send message

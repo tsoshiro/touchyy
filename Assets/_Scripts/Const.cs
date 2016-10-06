@@ -158,4 +158,16 @@ public class Const {
 	public const int SE_NO = 3;
 	#endregion
 
+	#region Language
+	public const string instruction 	= "instruction";
+	public const string dialog_01 		= "dialog_01";
+	public const string answer_01_n 	= "answer_01_n";
+	public const string answer_01_y 	= "answer_01_y";
+	public const string dialog_02 		= "dialog_02";
+	public const string answer_02_n		= "answer_02_n";
+	public const string answer_02_y 	= "answer_02_y";
+	public const string dialog_03 		= "dialog_03";
+	public const string answer_03_n 	= "answer_03_n";
+	public const string answer_03_y 	= "answer_03_y";
+	#endregion
 }
