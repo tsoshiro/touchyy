@@ -11,7 +11,7 @@ public class ReviewRequestCtrl : MonoBehaviour {
 	public bool ReviewRequest () {
 		// プレイ回数がx回以上のユーザーに対して
 		int playCount = _resultCtrl._gameCtrl._userData.playCount;
-		if (playCount <= Const.INTERVAL_REVIEW_REQUEST || // 規定回以上プレイていない
+		if (playCount <= Const.INTERVAL_REVIEW_REQUEST || // 規定回以上プレイしていない
 		    _resultCtrl._gameCtrl._userData.reviewDoneFlg == 1) // レビュー済み
 		{
 			return false; // 何もしない
@@ -20,8 +20,8 @@ public class ReviewRequestCtrl : MonoBehaviour {
 		if (playCount % Const.INTERVAL_REVIEW_REQUEST == 0) { // 規定回の倍数ならレビュー依頼してみる															  
 			// 使う前に setlabel を呼んどく。
 			DialogManager.Instance.SetLabel (
-				GameCtrl.GetInstance()._languageCtrl.getMessageFromCode(Const.answer_01_y),
 				GameCtrl.GetInstance ()._languageCtrl.getMessageFromCode (Const.answer_01_n),
+				GameCtrl.GetInstance()._languageCtrl.getMessageFromCode(Const.answer_01_y),
 				"Close");
 
 			// YES NO ダイアログ
@@ -30,14 +30,14 @@ public class ReviewRequestCtrl : MonoBehaviour {
 				GameCtrl.GetInstance()._languageCtrl.getMessageFromCode(Const.dialog_01),
 				(bool result) => {
 					if (result) {
-						//「ありがとうございます！よければレビューお願いします」
-						AskForReview ();
-					} else {
 						// メッセージ送信したことないなら
 						if (_resultCtrl._gameCtrl._userData.messageDoneFlg == 0) {
 							// Webに飛ばす
 							AskForMessage ();
 						}
+					} else {
+						//「ありがとうございます！よければレビューお願いします」
+						AskForReview ();
 					}
 				}
 			);
@@ -47,8 +47,8 @@ public class ReviewRequestCtrl : MonoBehaviour {
 
 	void AskForReview () {
 		DialogManager.Instance.SetLabel (
-			GameCtrl.GetInstance()._languageCtrl.getMessageFromCode(Const.answer_02_y),
 			GameCtrl.GetInstance ()._languageCtrl.getMessageFromCode (Const.answer_02_n),
+			GameCtrl.GetInstance()._languageCtrl.getMessageFromCode(Const.answer_02_y),
 			"Close");
 
 		// YES NO ダイアログ
@@ -57,6 +57,8 @@ public class ReviewRequestCtrl : MonoBehaviour {
 			GameCtrl.GetInstance ()._languageCtrl.getMessageFromCode (Const.dialog_02),
 			(bool result) => {
 				if (result) {
+
+				} else {
 					_resultCtrl._gameCtrl._userData.reviewDoneFlg = 1;
 					_resultCtrl._gameCtrl._userData.save ();
 
@@ -69,8 +71,8 @@ public class ReviewRequestCtrl : MonoBehaviour {
 
 	void AskForMessage () {
 		DialogManager.Instance.SetLabel (
-			GameCtrl.GetInstance ()._languageCtrl.getMessageFromCode (Const.answer_03_y),
 			GameCtrl.GetInstance ()._languageCtrl.getMessageFromCode (Const.answer_03_n),
+			GameCtrl.GetInstance ()._languageCtrl.getMessageFromCode (Const.answer_03_y),
 			"Close");
 
 		// YES NO ダイアログ
@@ -79,6 +81,8 @@ public class ReviewRequestCtrl : MonoBehaviour {
 			GameCtrl.GetInstance ()._languageCtrl.getMessageFromCode (Const.dialog_03),
 			(bool result) => {
 				if (result) {
+
+				} else {
 					_resultCtrl._gameCtrl._userData.messageDoneFlg = 1;
 					_resultCtrl._gameCtrl._userData.save ();
 

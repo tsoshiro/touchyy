@@ -81,4 +81,43 @@ public class IntValueConverter {
 		}
 		return value;
 	}
+
+	public string GetMillionBillion(PBClass.BigInteger pBigInteger) {
+		string value = "" + pBigInteger;
+		char[] c = value.ToCharArray ();
+
+		int valueType = 0; // 2: Billion, 1:Million, 0:None
+		if (c.Length >= 10) { // Billion
+			valueType = 2;
+		} else if (c.Length >= 7) { // Million
+			valueType = 1;
+		}
+
+		value = "";
+		int counts = 0;
+		for (int i = c.Length - 1; i >= 0; i--) {
+			if (valueType == 2) {
+				if (i < 7) {
+					continue;
+				} else {
+
+				}
+			} else if (valueType == 1) {
+				
+			} else {
+
+			}
+			value = c [i] + value;
+
+			counts++;
+			if (counts == 3 && i != 0) {
+				if (i == 7) {
+
+				}
+				value = "," + value;
+				counts = 0;
+			}
+		}
+		return value;
+	}
 }

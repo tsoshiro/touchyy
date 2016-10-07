@@ -9,6 +9,6 @@ answer_01_y,はい！,Yes!
 dialog_02,よかったらレビューしていただけると嬉しいです！,Would you review our app?  We'll be so happy to hear from you!
 answer_02_n,後で,Later
 answer_02_y,レビューする,Sure
-dialog_03,気になる点・不具合などありましたらぜひ教えてください！,"We'd love to hear your comment, advice, bug report and so in order to make our app better.  If you don't mind:"
+dialog_03,気になる点・不具合などありましたらぜひ教えてください！,We'd love to hear your comment, advice, bug report and so in order to make our app better.  If you don't mind:
 answer_03_n,後で,Later
 answer_03_y,教える,Send message
