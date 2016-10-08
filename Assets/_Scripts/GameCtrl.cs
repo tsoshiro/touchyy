@@ -580,6 +580,8 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 			return Const.BombType.VERTICAL;
 		} else if (pConstType == Const.TYPE_HORIZONTAL) {
 			return Const.BombType.HORIZONTAL;
+		} else if (pConstType == Const.TYPE_CROSS) {
+			return Const.BombType.CROSS;
 		} else if (pConstType == Const.TYPE_PLUS) {
 			return Const.BombType.PLUS;
 		} else if (pConstType == Const.TYPE_MULTIPLE) {
@@ -809,7 +811,7 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 	// 8		: TIME
 	float rate_vertical		= 2f;
 	float rate_horizontal	= 2f;
-	float rate_cross		= 1f;
+	float rate_cross		= 50f;
 	float rate_plus			= 2f;
 	float rate_multiple		= 2f;
 	float rate_around		= 1f;

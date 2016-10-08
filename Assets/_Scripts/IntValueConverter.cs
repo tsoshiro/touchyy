@@ -78,7 +78,6 @@ public class IntValueConverter {
 		} else {
 			str = getStringUnderMillion (pKeta, pC, pValue);
 		}
-		Debug.Log (str);
 		return str;
 	}
 
