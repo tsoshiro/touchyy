@@ -1,8 +1,5 @@
 MESSAGE_CODE,JP,EN
-instruction_01,大きな円と,TOUCH OR SWIPE
-instruction_02,同じ色の円を,the same colored
-instruction_03,タッチ/スワイプ,circles as
-instruction_04,しましょう。,the large one.
+instruction_01,同じ色を<br>タッチ/スワイプ<br>しましょう。,TOUCH OR SWIPE<br>the same color.
 dialog_01,楽しんでいただけていますか？,Are you having fun?
 answer_01_n,いまいち…,Not really
 answer_01_y,はい！,Yes!
@@ -12,3 +9,9 @@ answer_02_y,レビューする,Sure
 dialog_03,気になる点・不具合などありましたらぜひ教えてください！,We'd love to hear your comment<comma> advice<comma> bug report and so in order to make our app better.  If you don't mind:
 answer_03_n,後で,Later
 answer_03_y,教える,Send message
+item_info_01,ベリー1個あたりの<br>獲得スコアが増えます。,Increases score per berry.
+item_info_02,周囲のボールを消す<br>エリアベリーの出現率が増えます。,Increases the rate of AREA berry :<br>erases berrys around.
+item_info_03,縦・横一列を消す<br>ラインベリーの出現率が増えます。,Increases the rate of LINE berry :<br>erases vertical and/or horizontal lines.
+item_info_04,画面上の色を塗り替える<br>ペイントベリーの出現率が増えます。,Increases the rate of PAINT berry :<br>changes all the colors in the scene.
+item_info_05,少しの時間、出現色が1色になる<br>ロックベリーの出現率が増えます。,Increases the rate of LOCK berry :<br>gets only 1 color for a while.
+item_info_06,残り時間が少し増える<br>タイムベリーの出現率が増えます。,Increases the rate of TIME berry :<br>gets an extra time.

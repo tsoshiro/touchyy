@@ -42,6 +42,9 @@ public class MasterTableBase<T> where T : MasterBase, new() {
 			if (element.Contains("<comma>")) {
 				element = element.Replace ("<comma>", ",");
 			}
+			if (element.Contains ("<br>")) {
+				element = element.Replace ("<br>", "\n");
+			}
 
 			    param.Add (headerElements [i], element);
 		}

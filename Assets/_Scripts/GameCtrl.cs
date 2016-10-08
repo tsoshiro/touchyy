@@ -133,9 +133,6 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 		_languageCtrl.initLocalization ();
 
 		guideText.text = _languageCtrl.getMessageFromCode (Const.instruction + "_01");
-		guideText.text += "\n" + _languageCtrl.getMessageFromCode (Const.instruction + "_02");
-		guideText.text += "\n" + _languageCtrl.getMessageFromCode (Const.instruction + "_03");
-		guideText.text += "\n" + _languageCtrl.getMessageFromCode (Const.instruction + "_04");
 	}
 
 	// 表示系初期化

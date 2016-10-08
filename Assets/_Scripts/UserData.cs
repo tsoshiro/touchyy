@@ -123,6 +123,7 @@ public class UserData {
 
 	// 初期データ作成
 	public void initUserData() {
+		Debug.Log ("initUserData");
 		checkNewUser ();
 
 		bestScore 			= new PBClass.BigInteger(getUserDataString (Const.PREF_BEST_SCORE));
@@ -147,7 +148,7 @@ public class UserData {
 		_userParamsList.Add (getUserDataInt (Const.PREF_LV_TIME_BOMB));
 
 		nextFreeGift = getUserDataString (Const.PREF_NEXT_FREE_GIFT);
-		if (nextFreeGift == "") {
+		if (String.IsNullOrEmpty(nextFreeGift)) {
 			nextFreeGift = DateTime.Now.ToString (Const.DATETIME_FORMAT);
 		}
 

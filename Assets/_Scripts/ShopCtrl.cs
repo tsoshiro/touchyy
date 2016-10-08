@@ -18,6 +18,8 @@ public class ShopCtrl : MonoBehaviour
 	// 1.2f
 	// -2
 
+	public InfoCtrl _infoCtrl;
+
 	public void Start () {
 		_coin.text = new IntValueConverter ().FixBigInteger ( _gameCtrl._userData.coin);
 	}
@@ -93,6 +95,10 @@ public class ShopCtrl : MonoBehaviour
 	// GO BACK
 	void actionBackBtn () {
 		_gameCtrl.backFromShop ();
+	}
+
+	void actionInfoBtn () {
+		_infoCtrl.gameObject.SetActive (true);
 	}
 
 	void actionResetDataBtn ()

@@ -55,7 +55,6 @@ public class IntValueConverter {
 		string value = ""+pBigInteger;
 		char[] c = value.ToCharArray ();
 
-		Debug.Log (value+" =");
 		value = "";
 		ValueType valueType = (ValueType)getValueType (c.Length);
 
@@ -72,11 +71,11 @@ public class IntValueConverter {
 	//
 	string getStringValue (int pKeta, int pLastKeta, int pC, string pValue, ValueType pValueType) {
 		string str = "";
-		Debug.Log (pKeta + " " + pLastKeta + " " + pC + " " + pValue + " " + pValueType);
+		//Debug.Log (pKeta + " " + pLastKeta + " " + pC + " " + pValue + " " + pValueType);
 
 		if ((int)pValueType > 0) {
 			int us = getUnderShosutenKeta (pValueType); // UnderShosuten
-			Debug.Log ("us:" + us);
+			//Debug.Log ("us:" + us);
 			if (pKeta < us) {
 				str = pValue;
 			} else if (pKeta == us) {
@@ -90,7 +89,6 @@ public class IntValueConverter {
 		} else {
 			str = getStringUnderMillion (pKeta, pC, pValue);
 		}
-		Debug.Log ("getStringValue:" + str);
 		return str;
 	}
 
@@ -135,6 +133,8 @@ public class IntValueConverter {
 
 	// 
 	int getUnderShosutenKeta (ValueType pValueType) {
+		// Million
+		// 1.2M 1234567
 		return ((int)pValueType + 1) * 3;
 	}
 
