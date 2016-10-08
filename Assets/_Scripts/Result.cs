@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
+[System.Serializable]
 public class Result {
 	public PBClass.BigInteger score;
 	public int maxCombo;

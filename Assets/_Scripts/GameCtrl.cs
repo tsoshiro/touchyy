@@ -122,6 +122,9 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 		_shopCtrl.initUserItems ();
 
 		SetGame();
+
+		// 数値部分算出テスト
+		//DisplayTest ();
 	}
 
 	void setLanguageTexts () {

@@ -7,15 +7,27 @@ public class IntValueConverter {
 		UNDER_MILLION,
 		MILLION,
 		BILLION,
-		TRILLION
+		TRILLION,
+		QUARDRILLION,
+		QUINTILLION,
+		COUNT
 	}
 
 	public void test ()
 	{
 		Debug.Log ("===============================TEST START!!!!===============================");
-		showSample (new PBClass.BigInteger (12345678));
-		showSample (new PBClass.BigInteger (12345678901));
-		showSample (new PBClass.BigInteger (1234567890123));
+		for (int i = 1; i < 20; i++) {
+			string str = "";
+			int count = 0;
+			for (int j = 1; j <= i; j++) {
+				count++;
+				if (count >= 10) {
+					count = 0;
+				}
+				str += count.ToString();
+			}
+			showSample (new PBClass.BigInteger (str));
+		}
 		Debug.Log ("===============================TEST END!!!!===============================");
 	}
 
@@ -43,15 +55,9 @@ public class IntValueConverter {
 		string value = ""+pBigInteger;
 		char[] c = value.ToCharArray ();
 
+		Debug.Log (value+" =");
 		value = "";
-		ValueType valueType = ValueType.UNDER_MILLION; // 2: Billion, 1:Million, 0:None
-		if (c.Length >= 13) {
-			valueType = ValueType.TRILLION;
-		} else if (c.Length >= 10) { // Billion
-			valueType = ValueType.BILLION;
-		} else if (c.Length >= 7) { // Million
-			valueType = ValueType.MILLION;
-		}
+		ValueType valueType = (ValueType)getValueType (c.Length);
 
 		int ketaCount = 1;
 		int lastKetaNumber = 0;
@@ -66,14 +72,16 @@ public class IntValueConverter {
 	//
 	string getStringValue (int pKeta, int pLastKeta, int pC, string pValue, ValueType pValueType) {
 		string str = "";
+		Debug.Log (pKeta + " " + pLastKeta + " " + pC + " " + pValue + " " + pValueType);
 
-		if (pValueType > 0) {
+		if ((int)pValueType > 0) {
 			int us = getUnderShosutenKeta (pValueType); // UnderShosuten
+			Debug.Log ("us:" + us);
 			if (pKeta < us) {
 				str = pValue;
 			} else if (pKeta == us) {
 				//Round
-				str = SimpleRound (pC, pLastKeta) + getTBM (pValueType) + pValue;
+				str = "" + SimpleRound (pC, pLastKeta) + getTBM (pValueType) + pValue;
 			} else if (pKeta == us + 1) {
 				str = pC + "." + pValue;
 			} else {
@@ -82,7 +90,19 @@ public class IntValueConverter {
 		} else {
 			str = getStringUnderMillion (pKeta, pC, pValue);
 		}
+		Debug.Log ("getStringValue:" + str);
 		return str;
+	}
+
+	// valueTypeの境界を桁数から取得
+	int getValueType (int pKeta) { 
+		// 0	1234
+		// 1	1234567
+		// 2	1234567890
+		// 3	1234567890123
+
+		int vt = ((pKeta - 1) / 3) - 1;
+		return vt;
 	}
 
 	string getStringUnderMillion (int pKeta, int pC, string pValue) {
@@ -98,7 +118,11 @@ public class IntValueConverter {
 	}
 
 	string getTBM (ValueType pValueType) {
-		if (pValueType == ValueType.TRILLION) {
+		if (pValueType == ValueType.QUARDRILLION) {
+			return "QD";
+		} else if (pValueType == ValueType.QUINTILLION) {
+			return "QT";
+		} else if (pValueType == ValueType.TRILLION) {
 			return "T";
 		} else if (pValueType == ValueType.BILLION) {
 			return "B";
