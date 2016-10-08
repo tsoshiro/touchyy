@@ -30,17 +30,29 @@ public class MasterTableBase<T> where T : MasterBase, new() {
 		var elements = line.Split (',');
 		if (elements.Length == 1)
 			return;
-		if (elements.Length != headerElements.Length) {
+		if (elements.Length != headerElements.Length) { // 何かがおかしい
 			Debug.LogWarning (string.Format ("can't load: {0}", line));
 			return;
 		}
 
 		var param = new Dictionary<string, string> ();
-		for (int i = 0; i < elements.Length; i++)
-			param.Add (headerElements [i], elements [i]);
+		for (int i = 0; i < elements.Length; i++) {
+			var element = elements [i];
+
+			if (element.Contains("<comma>")) {
+				element = element.Replace ("<comma>", ",");
+			}
+
+			    param.Add (headerElements [i], element);
+		}
 		var master = new T ();
 		master.Load (param);
 		masters.Add (master);
+	}
+
+	// TODO カンマ入りstringの処理をいずれ考えたい
+	void ParseWierdLine (string[] elements) {
+		
 	}
 
 	// MasterTableという文言を省いたファイルを取得

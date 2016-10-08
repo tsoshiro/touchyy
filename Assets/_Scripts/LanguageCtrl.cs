@@ -3,22 +3,26 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class LanguageCtrl : MonoBehaviour {
-	enum LanguageSetting
+	public enum LanguageSetting
 	{
 		JP,
 		EN
 	};
-	LanguageSetting _lang;
-
+	public LanguageSetting _lang;
+	public bool isLanguageSettingDebug = false;
 
 	List<LocalizationMaster> _localizationMasterList = new List<LocalizationMaster> ();
 
 	public void initLocalization () 
 	{
-		if (Application.systemLanguage == SystemLanguage.Japanese) {
-			_lang = LanguageSetting.JP;
+		if (isLanguageSettingDebug) {
+			//
 		} else {
-			_lang = LanguageSetting.EN;
+			if (Application.systemLanguage == SystemLanguage.Japanese) {
+				_lang = LanguageSetting.JP;
+			} else {
+				_lang = LanguageSetting.EN;
+			}			
 		}
 		initMasterData ();
 	}

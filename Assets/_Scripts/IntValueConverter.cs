@@ -3,8 +3,12 @@ using System.Collections;
 using System;
 
 public class IntValueConverter {
-	PBClass.BigInteger k = 1000;
-	long m, b, t, q;
+	enum ValueType {
+		UNDER_MILLION,
+		MILLION,
+		BILLION,
+		TRILLION
+	}
 
 	public void test ()
 	{
@@ -40,13 +44,13 @@ public class IntValueConverter {
 		char[] c = value.ToCharArray ();
 
 		value = "";
-		int valueType = 0; // 2: Billion, 1:Million, 0:None
+		ValueType valueType = ValueType.UNDER_MILLION; // 2: Billion, 1:Million, 0:None
 		if (c.Length >= 13) {
-			valueType = 3;
+			valueType = ValueType.TRILLION;
 		} else if (c.Length >= 10) { // Billion
-			valueType = 2;
+			valueType = ValueType.BILLION;
 		} else if (c.Length >= 7) { // Million
-			valueType = 1;
+			valueType = ValueType.MILLION;
 		}
 
 		int ketaCount = 1;
@@ -60,7 +64,7 @@ public class IntValueConverter {
 	}
 
 	//
-	string getStringValue (int pKeta, int pLastKeta, int pC, string pValue, int pValueType) {
+	string getStringValue (int pKeta, int pLastKeta, int pC, string pValue, ValueType pValueType) {
 		string str = "";
 
 		if (pValueType > 0) {
@@ -93,12 +97,12 @@ public class IntValueConverter {
 		return str;
 	}
 
-	string getTBM (int pValueType) {
-		if (pValueType == 3) {
+	string getTBM (ValueType pValueType) {
+		if (pValueType == ValueType.TRILLION) {
 			return "T";
-		} else if (pValueType == 2) {
+		} else if (pValueType == ValueType.BILLION) {
 			return "B";
-		} else if (pValueType == 1) {
+		} else if (pValueType == ValueType.MILLION) {
 			return "M";
 		} else {
 			return "";
@@ -106,8 +110,8 @@ public class IntValueConverter {
 	}
 
 	// 
-	int getUnderShosutenKeta (int pValueType) {
-		return (pValueType + 1) * 3;
+	int getUnderShosutenKeta (ValueType pValueType) {
+		return ((int)pValueType + 1) * 3;
 	}
 
 	// SimpleRound

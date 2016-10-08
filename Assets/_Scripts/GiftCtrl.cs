@@ -159,20 +159,16 @@ public class GiftCtrl : MonoBehaviour {
 	#region movie reward
 	public bool isRewardMovieWatched = false;
 	public bool checkIsMovieRewardAvailable() {
-		Debug.Log ("reached");
-		Debug.Log ("playCount:"+_resultCtrl._gameCtrl._userData.playCount);
 		// Play回数が3回に1回、出す
 		if (_resultCtrl._gameCtrl._userData.playCount % Const.AD_INTERVAL_REWARD_MOVIE == 0 &&
 			!isRewardMovieWatched)
 		{
-			Debug.Log ("reached");
 			return true;
 		}
 		return false;
 	}
 
 	public void playMovieReward() {
-		Debug.Log ("reached");
 		AdvertisementManager adMng = _resultCtrl._gameCtrl.gameObject.GetComponent<AdvertisementManager> ();
 		adMng.ShowRewardedAd (this.gameObject);
 

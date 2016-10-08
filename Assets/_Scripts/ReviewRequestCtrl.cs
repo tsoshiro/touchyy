@@ -6,7 +6,6 @@ public class ReviewRequestCtrl : MonoBehaviour {
 
 	void Start () {
 		_resultCtrl = this.gameObject.GetComponent<ResultCtrl> ();
-		test ();
 	}
 
 	public void test ()
