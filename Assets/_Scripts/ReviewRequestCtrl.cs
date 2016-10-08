@@ -6,7 +6,25 @@ public class ReviewRequestCtrl : MonoBehaviour {
 
 	void Start () {
 		_resultCtrl = this.gameObject.GetComponent<ResultCtrl> ();
+		test ();
 	}
+
+	public void test ()
+	{
+		LanguageCtrl _lngCtrl = GameCtrl.GetInstance ()._languageCtrl;
+		Debug.Log (
+			_lngCtrl.getMessageFromCode (Const.answer_01_n)	+ "\n" +
+			_lngCtrl.getMessageFromCode (Const.answer_01_y) + "\n" +
+			_lngCtrl.getMessageFromCode (Const.dialog_01) 	+ "\n" +
+			_lngCtrl.getMessageFromCode (Const.answer_02_n) + "\n" +
+			_lngCtrl.getMessageFromCode (Const.answer_02_y) + "\n" +
+			_lngCtrl.getMessageFromCode (Const.dialog_02) 	+ "\n" +
+			_lngCtrl.getMessageFromCode (Const.answer_03_n) + "\n" +
+			_lngCtrl.getMessageFromCode (Const.answer_03_y) + "\n" +
+			_lngCtrl.getMessageFromCode (Const.dialog_03)
+		);
+	}
+
 
 	public bool ReviewRequest () {
 		// プレイ回数がx回以上のユーザーに対して

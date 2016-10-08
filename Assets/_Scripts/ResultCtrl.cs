@@ -27,7 +27,7 @@ public class ResultCtrl : MonoBehaviour {
 		_giftCtrl = this.GetComponent<GiftCtrl> ();
 		_giftCtrl.Init ();
 	}
-		
+			
 	public void showResult (Result pResult) {
 		Result _result = pResult;
 		new AnalyticsManager ().SendGameResult (pResult);
@@ -182,8 +182,10 @@ public class ResultCtrl : MonoBehaviour {
 			go.transform.localPosition = BEST_ICON_POS;
 			go.name = BEST_ICON_NAME;
 			ColorEditor.setColorFromColorCode (go, Const.COLOR_CODE_PINK);
+			ColorEditor.setColorFromColorCode (pScoreTextMesh.gameObject, Const.COLOR_CODE_PINK);
 		} else {
 			pScoreTextMesh.transform.Find (BEST_ICON_NAME).gameObject.SetActive (true);
+			ColorEditor.setColorFromColorCode (pScoreTextMesh.gameObject, Const.COLOR_CODE_BASE_COLOR);
 		}
 	}
 		
