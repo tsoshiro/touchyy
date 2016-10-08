@@ -60,7 +60,7 @@ public class UserData {
 		setUserData (Const.PREF_MAX_KILL_ALL_COUNT, maxKillAllCount);
 
 		setUserData (Const.PREF_TOTAL_SCORE,totalScore.ToString ());
-		setUserData (Const.PREF_TOTAL_DELETE_COUNT,totalDeleteCount.ToString ());
+		setUserData (Const.PREF_TOTAL_DELETE_COUNT,totalDeleteCount);
 		setUserData (Const.PREF_TOTAL_KILL_ALL_COUNT,totalKillAllCount);
 		setUserData (Const.PREF_PLAY_COUNT,playCount);
 
@@ -109,7 +109,7 @@ public class UserData {
 
 	// TOTAL RECORDS
 	public PBClass.BigInteger totalScore;
-	public PBClass.BigInteger totalDeleteCount;
+	public int totalDeleteCount;
 	public int totalKillAllCount;
 	public int playCount;
 
@@ -132,7 +132,7 @@ public class UserData {
 		maxKillAllCount		= getUserDataInt (Const.PREF_MAX_KILL_ALL_COUNT);
 
 		totalScore			= new PBClass.BigInteger (getUserDataString (Const.PREF_TOTAL_SCORE));
-		totalDeleteCount	= new PBClass.BigInteger (getUserDataString (Const.PREF_TOTAL_DELETE_COUNT));
+		totalDeleteCount	= getUserDataInt (Const.PREF_TOTAL_DELETE_COUNT);
 		totalKillAllCount	= getUserDataInt (Const.PREF_TOTAL_KILL_ALL_COUNT);
 		playCount			= getUserDataInt (Const.PREF_PLAY_COUNT);
 

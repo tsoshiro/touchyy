@@ -7,7 +7,7 @@ using System;
 public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 	public float timeLeft;
 
-	Result _result;
+	public Result _result;
 	public UserData _userData;
 	public UserParam _userParam;
 
@@ -125,6 +125,9 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 
 		// 数値部分算出テスト
 		//DisplayTest ();
+
+		// GameCenterログイン
+		iOSRankingUtility.Auth ();
 	}
 
 	void setLanguageTexts () {

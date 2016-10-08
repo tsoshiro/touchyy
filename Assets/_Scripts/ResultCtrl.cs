@@ -37,22 +37,38 @@ public class ResultCtrl : MonoBehaviour {
 
 		LBL_SCORE.text = new IntValueConverter ().FixBigInteger (_result.score);
 		if (checkBestRecord (_userData.bestScore, _result.score, LBL_SCORE)) {
-			_userData.bestScore = _result.score;		
+			_userData.bestScore = _result.score;
+
+			// Leaderboard
+			iOSRankingUtility.ReportScore (Const.LB_HIGH_SCORE_SCORE, 
+			                               PBClass.BigInteger.ToInt64(_result.score));
 		};
 
 		LBL_MAX_COMBO.text = ""+_result.maxCombo;
 		if (checkBestRecord (_userData.maxCombo, _result.maxCombo, LBL_MAX_COMBO)) {
 			_userData.maxCombo = _result.maxCombo;
+
+			// Leaderboard
+			iOSRankingUtility.ReportScore (Const.LB_HIGH_SCORE_MAX_COMBO,
+			                               (long)_result.maxCombo);
 		}
 
 		LBL_CUBES.text = ""+_result.deleteCount;
 		if (checkBestRecord(_userData.maxDeleteCount, _result.deleteCount, LBL_CUBES)) {
-			_userData.maxDeleteCount = _result.deleteCount;	
+			_userData.maxDeleteCount = _result.deleteCount;
+
+			// Leaderboard
+			iOSRankingUtility.ReportScore (Const.LB_HIGH_SCORE_COUNT,
+			                              (long)_result.deleteCount);
 		}
 
 		LBL_KILL_ALL.text = "" + _result.killAllCount;
 		if (checkBestRecord(_userData.maxKillAllCount, _result.killAllCount, LBL_KILL_ALL)) {
-			_userData.maxKillAllCount = _result.killAllCount;	
+			_userData.maxKillAllCount = _result.killAllCount;
+
+			// Leaderboard
+			iOSRankingUtility.ReportScore (Const.LB_HIGH_SCORE_KILL_ALL,
+			                              (long)_result.killAllCount);
 		}
 
 
@@ -67,6 +83,10 @@ public class ResultCtrl : MonoBehaviour {
 		_userData.totalDeleteCount += _result.deleteCount;
 		_userData.totalKillAllCount += _result.killAllCount;
 		_userData.playCount++;
+
+		// Leaderboard
+		iOSRankingUtility.ReportScore (Const.LB_TOTAL_COUNT,
+		                               (long)_userData.totalDeleteCount);
 
 		// GET COIN
 		PBClass.BigInteger coinNow = _userData.coin;
@@ -286,6 +306,19 @@ public class ResultCtrl : MonoBehaviour {
 			PBClass.BigInteger addValue =_giftCtrl.getGiftCoinValue();
 			giveFreeCoin (addValue);
 		}
+	}
+
+	void actionShareBtn () {
+		if (!_gameCtrl.canGoNext) {
+			return;
+		}
+
+		ShareCtrl shareCtrl = this.gameObject.GetComponent<ShareCtrl> ();
+		shareCtrl.shareResult ();
+	}
+
+	void actionLeaderboardBtn () {
+		iOSRankingUtility.ShowLeaderboardUI ();
 	}
 	#endregion
 }

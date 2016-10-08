@@ -170,4 +170,12 @@ public class Const {
 	public const string answer_03_n 	= "answer_03_n";
 	public const string answer_03_y 	= "answer_03_y";
 	#endregion
+
+	#region Leaderboard
+	public const string LB_HIGH_SCORE_SCORE = "TouchyyHighScoreScore";
+	public const string LB_HIGH_SCORE_COUNT = "TouchyyHighScoreCount";
+	public const string LB_HIGH_SCORE_KILL_ALL = "TouchyyHighScoreKillAll";
+	public const string LB_HIGH_SCORE_MAX_COMBO = "TouchyyHighScoreMaxCombo";
+	public const string LB_TOTAL_COUNT = "TouchyyTotalCount";
+	#endregion
 }
