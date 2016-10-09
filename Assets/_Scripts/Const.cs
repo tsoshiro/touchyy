@@ -19,7 +19,7 @@ public class Const {
 		+APP_ID
 		+"&onlyLatestVersion=true&pageNumber=0&sortOrdering=1&type=Purple+Software";
 #endif
-	public const string SUPPORT_URL = "pixelbeat.jp";
+	public const string SUPPORT_URL = "http://pixelbeat.jp";
 	#endregion
 
 
@@ -144,7 +144,7 @@ public class Const {
 	// ADS & REVIEWS
 	public const int AD_INTERVAL_INTER = 5;
 	public const int AD_INTERVAL_REWARD_MOVIE = 3;
-	public const int INTERVAL_REVIEW_REQUEST = 20;
+	public const int INTERVAL_REVIEW_REQUEST = 3; // 本来は20
 
 	public const string AD_MOVIE_STATE_FINISHED = "0";
 	public const string AD_MOVIE_STATE_SKIPPED = "1";

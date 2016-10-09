@@ -15,7 +15,7 @@ public class ResultCtrl : MonoBehaviour {
 
 	public GameObject BEST_ICON;
 	string BEST_ICON_NAME = "BEST_ICON";
-	Vector3 BEST_ICON_POS = new Vector3 (0, -0.4f, 0);
+	Vector3 BEST_ICON_POS = new Vector3 (0, -0.5f, 0);
 
 	public GameObject SHOP_BADGE;
 
@@ -73,7 +73,8 @@ public class ResultCtrl : MonoBehaviour {
 
 
 		if (_result.missCount == 0) {
-			LBL_MISS.text = "NO MISS";
+			float noMissRate = 1 / (float)Const.NO_MISS_BONUS_RATE;
+			LBL_MISS.text = "NO MISS\n+"+noMissRate.ToString("P0");
 		} else {
 			LBL_MISS.text = "" + _result.missCount;
 		}
@@ -154,8 +155,7 @@ public class ResultCtrl : MonoBehaviour {
 
 		// 演出文字用オブジェクトが拡大して消える
 		ColorEditor.setColorFromColorCode (pToPositionObj, Const.COLOR_CODE_LIGHTER_BASE);
-		iTween.ScaleTo (cp, iTween.Hash ("scale", cp.transform.
-		                                 localScale * 1.5f,
+		iTween.ScaleTo (cp, iTween.Hash ("scale", cp.transform.localScale * 1.5f,
 		                                 "time", 0.2f)
 		               );
 		iTween.FadeTo (cp, iTween.Hash ("a", 0, "time", 0.2f));
@@ -163,12 +163,12 @@ public class ResultCtrl : MonoBehaviour {
 		// ターゲットの文字を戻し、数値を書き換える
 		ColorEditor.setColorFromColorCode (pToPositionObj, Const.COLOR_CODE_BASE_COLOR);
 		CoinValueChange (pValue);
-
-		iTween.ShakeScale (pToPositionObj, iTween.Hash ("x", 2, 
-		                                                "y", 2,
-		                                                "time", 0.2f)
-		                  );
-
+		// ターゲットの文字を一瞬拡大し、戻す
+		iTween.ScaleTo (pToPositionObj, iTween.Hash ("scale", pToPositionObj.transform.localScale * 2f,
+		                                 "time", 0.1f));
+		yield return new WaitForSeconds (0.1f);
+		iTween.ScaleTo (pToPositionObj, iTween.Hash ("scale", pToPositionObj.transform.localScale / 2f,
+		                                 "time", 0.1f));
 		yield return new WaitForSeconds (0.5f);
 
 		Destroy (cp);

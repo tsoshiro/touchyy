@@ -63,7 +63,6 @@ public class MasterTableBase<T> where T : MasterBase, new() {
 	public string convertClassToFilePath(string className) {
 		className = className.Replace ("MasterTable", "");
 		className = className.LowerCamelToSnake ();
-		Debug.Log (className);
 		return className;
 	}
 }

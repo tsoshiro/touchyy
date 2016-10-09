@@ -37,6 +37,12 @@ public class InfoCtrl : MonoBehaviour {
 	}
 
 	void actionBackBg () {
+		iTween.FadeTo (this.gameObject,
+					   iTween.Hash ("a", 0f, "time", 0.1f, "oncomplete", "setMyselfFalse"));
+		
+	}
+
+	void setMyselfFalse () {
 		this.gameObject.SetActive (false);
 	}
 }

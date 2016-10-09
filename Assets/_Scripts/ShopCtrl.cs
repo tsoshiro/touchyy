@@ -100,7 +100,11 @@ public class ShopCtrl : MonoBehaviour
 
 	void actionInfoBtn () {
 		_gameCtrl._audioMgr.play (Const.SE_BUTTON);
+
 		_infoCtrl.gameObject.SetActive (true);
+		//_infoCtrl.gameObject.i
+		iTween.FadeTo (_infoCtrl.gameObject,
+		               iTween.Hash ("a", 1.0f, "time", 0.2f));
 	}
 
 	void actionResetDataBtn ()

@@ -123,7 +123,6 @@ public class UserData {
 
 	// 初期データ作成
 	public void initUserData() {
-		Debug.Log ("initUserData");
 		checkNewUser ();
 
 		bestScore 			= new PBClass.BigInteger(getUserDataString (Const.PREF_BEST_SCORE));

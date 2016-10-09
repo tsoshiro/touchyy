@@ -404,7 +404,6 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 		pauseBtn.SetActive (false);
 		touchableSign.SetActive (true);
 
-		addKillAllBonus ();
 		addNoMissBonus ();
 
 		showResult ();
@@ -412,11 +411,27 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 		yield return 0;
 	}
 
+	// ================================================================================
+	// <案1> *使わない
+	// ゲーム終了時点で、Kill ALl Bonusの回数x規定パーセンテージをScoreに追加する
+	// ================================================================================
 	void addKillAllBonus () {
 		// Kill All Bonus算出
 		PBClass.BigInteger bonusValue = _result.score / Const.KILL_ALL_BONUS_RATE;
 		bonusValue = bonusValue * _result.killAllCount;
 		_result.score += bonusValue;
+	}
+
+
+	// ================================================================================
+	// <案2> *こちらを採用
+	// Kill All が発生するごとに、その時点での獲得ポイントの2%を加算
+	// ================================================================================
+	PBClass.BigInteger addSingleKillAllBonus () {
+		PBClass.BigInteger bonusValue = _result.score / Const.KILL_ALL_BONUS_RATE;
+		bonusValue = bonusValue * _result.killAllCount;
+		_result.score += bonusValue;
+		return bonusValue;
 	}
 
 	void addNoMissBonus () {
@@ -723,11 +738,14 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 		_result.killAllCount++;
 
 		_audioMgr.play (Const.SE_KILL_ALL);
+
 		// 表示
 		GameObject textObj = Instantiate (killAllText,
 										  killAllText.transform.position,
 										  killAllText.transform.rotation) as GameObject;
-		textObj.GetComponent<TextMesh> ().text = "Kill All!\nx" + _result.killAllCount;
+		textObj.GetComponent<TextMesh> ().text = "Kill All!\n+"
+			+ (1/(float)Const.KILL_ALL_BONUS_RATE).ToString("P0");
+		
 		textObj.SetActive (true);
 		textObj.GetComponent<TextCtrl> ().init (0.2f, 0.1f);
 	}
