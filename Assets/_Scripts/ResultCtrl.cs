@@ -293,6 +293,8 @@ public class ResultCtrl : MonoBehaviour {
 		}
 		bool flg = _gameCtrl._audioMgr.isMute;	
 		_gameCtrl._audioMgr.isMute = !flg;
+		_gameCtrl._audioMgr.muteBgm (!flg);
+
 		pObj.GetComponent<ButtonCtrl> ().setOnFlg (flg); // ミュートなし=ON=true
 	}
 

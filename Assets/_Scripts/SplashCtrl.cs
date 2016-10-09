@@ -31,7 +31,8 @@ public class SplashCtrl : MonoBehaviour {
 		iTween.FadeTo (this.gameObject, iTween.Hash ("a", 0f, "time", 0.5f));
 		yield return new WaitForSeconds (0.5f);
 
-		// 終了
+		// 終了 BGM再生
+		GameCtrl.GetInstance ().endSplashThenstartBgm ();
 		this.gameObject.SetActive (false);
 	}
 }

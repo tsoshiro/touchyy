@@ -162,6 +162,9 @@ public class Const {
 	public const int SE_BUTTON = 4;
 
 	public const int SE_KILL_ALL = 5;
+
+
+	public const float BGM_VOLUME = 0.4f;
 	#endregion
 
 	#region Language

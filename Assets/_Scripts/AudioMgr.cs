@@ -5,6 +5,9 @@ using System.Collections.Generic;
 public class AudioMgr : MonoBehaviour {
 	public AudioClip[] sounds;
 	List<AudioSource> audioSources = new List<AudioSource>();
+
+	public AudioSource bgmSource;
+	public AudioClip [] bgm;
 	AudioSource _audio;
 	public bool isMute;
 
@@ -54,5 +57,16 @@ public class AudioMgr : MonoBehaviour {
 		}
 		_audio.clip = sampleSounds [id] [sampleSoundsDirector [id]];
 		_audio.Play ();		
+	}
+
+	public void playBGM () {
+		bgmSource.clip = bgm[0];
+		bgmSource.volume = Const.BGM_VOLUME;
+		bgmSource.loop = true;
+		bgmSource.Play ();
+	}
+
+	public void muteBgm (bool pFlg) {
+		bgmSource.mute = pFlg;
 	}
 }

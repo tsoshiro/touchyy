@@ -130,6 +130,10 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 		iOSRankingUtility.Auth ();
 	}
 
+	public void endSplashThenstartBgm () {
+		_audioMgr.playBGM ();
+	}
+
 	void setLanguageTexts () {
 		// Localization
 		_languageCtrl = this.GetComponent<LanguageCtrl> ();
