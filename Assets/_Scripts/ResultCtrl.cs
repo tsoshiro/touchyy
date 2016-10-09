@@ -248,7 +248,6 @@ public class ResultCtrl : MonoBehaviour {
 	void giveFreeCoin(PBClass.BigInteger pCoin) {
 		PBClass.BigInteger coinNow = _gameCtrl._userData.coin;
 
-		// todo Animation
 		StartCoroutine (coinAddMotion (coinNow, coinNow + pCoin, GameObject.Find ("GiftBtn"), LBL_COIN.gameObject, false));
 
 		_gameCtrl._userData.coin += pCoin;

@@ -147,7 +147,8 @@ public class UserData {
 		_userParamsList.Add (getUserDataInt (Const.PREF_LV_TIME_BOMB));
 
 		nextFreeGift = getUserDataString (Const.PREF_NEXT_FREE_GIFT);
-		if (String.IsNullOrEmpty(nextFreeGift)) {
+		if (String.IsNullOrEmpty (nextFreeGift) ||
+			nextFreeGift == "0") {
 			nextFreeGift = DateTime.Now.ToString (Const.DATETIME_FORMAT);
 		}
 
