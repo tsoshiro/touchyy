@@ -275,6 +275,7 @@ public class ResultCtrl : MonoBehaviour {
 		if (!_gameCtrl.canGoNext) {
 			return;
 		}
+		_gameCtrl._audioMgr.play (Const.SE_BUTTON);
 		_gameCtrl.replay ();
 	}
 
@@ -282,6 +283,7 @@ public class ResultCtrl : MonoBehaviour {
 		if (!_gameCtrl.canGoNext) {
 			return;
 		}
+		_gameCtrl._audioMgr.play (Const.SE_BUTTON);
 		_gameCtrl.OpenShop ();
 	}
 
@@ -302,6 +304,7 @@ public class ResultCtrl : MonoBehaviour {
 			_giftCtrl.playMovieReward ();
 			return;
 		}
+		_gameCtrl._audioMgr.play (Const.SE_BUTTON);
 		if (_giftCtrl.giveGiftFree ()) {
 			PBClass.BigInteger addValue =_giftCtrl.getGiftCoinValue();
 			giveFreeCoin (addValue);
@@ -312,12 +315,13 @@ public class ResultCtrl : MonoBehaviour {
 		if (!_gameCtrl.canGoNext) {
 			return;
 		}
-
+		_gameCtrl._audioMgr.play (Const.SE_BUTTON);
 		ShareCtrl shareCtrl = this.gameObject.GetComponent<ShareCtrl> ();
 		shareCtrl.shareResult ();
 	}
 
 	void actionLeaderboardBtn () {
+		_gameCtrl._audioMgr.play (Const.SE_BUTTON);
 		iOSRankingUtility.ShowLeaderboardUI ();
 	}
 	#endregion

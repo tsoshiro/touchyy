@@ -77,7 +77,7 @@ public class ShopCtrl : MonoBehaviour
 			_gameCtrl._audioMgr.play (Const.SE_UP);
 		} else {
 			Debug.Log ("CAN'T BUY");
-			_gameCtrl._audioMgr.play (Const.SE_BAD);
+			_gameCtrl._audioMgr.play (Const.SE_NO);
 		}
 	}
 
@@ -94,10 +94,12 @@ public class ShopCtrl : MonoBehaviour
 
 	// GO BACK
 	void actionBackBtn () {
+		_gameCtrl._audioMgr.play (Const.SE_BUTTON);
 		_gameCtrl.backFromShop ();
 	}
 
 	void actionInfoBtn () {
+		_gameCtrl._audioMgr.play (Const.SE_BUTTON);
 		_infoCtrl.gameObject.SetActive (true);
 	}
 

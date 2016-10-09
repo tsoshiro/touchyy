@@ -152,10 +152,16 @@ public class Const {
 
 
 	#region Sound
+	// IN GAME
 	public const int SE_GOOD = 0;
 	public const int SE_BAD = 1;
+
+	// MENU
 	public const int SE_UP = 2;
 	public const int SE_NO = 3;
+	public const int SE_BUTTON = 4;
+
+	public const int SE_KILL_ALL = 5;
 	#endregion
 
 	#region Language

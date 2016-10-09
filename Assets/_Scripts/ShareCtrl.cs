@@ -9,7 +9,6 @@ public class ShareCtrl : MonoBehaviour {
 	}
 
 	string SCORE_KEY = "[SCORE]";
-	string URL_KEY = "[URL]";
 	public void shareResult () {
 		string score = ""+_resultCtrl._gameCtrl._result.score;
 		string msg = _resultCtrl._gameCtrl._languageCtrl.getMessageFromCode ("share");

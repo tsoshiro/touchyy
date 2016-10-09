@@ -271,6 +271,8 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 	#region actionBtn
 	public void actionStartBtn() {
 		if (!isCountingDown) {
+			_audioMgr.play (Const.SE_BUTTON);
+
 			StartCoroutine (startCountDown (Const.COUNTDOWN_TIME));
 			iTween.FadeTo (_readyCtrl, iTween.Hash ("a", 0, "time", 0.5f));
 		}
@@ -278,6 +280,7 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 
 	public void actionPauseBtn () {
 		if (state == STATE.PLAYING) {
+			_audioMgr.play (Const.SE_BUTTON);
 			enablePause (true);	
 		}
 	}
@@ -285,6 +288,7 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 	void actionContinueBtn () {
 		if (state == STATE.PAUSE) {
 			if (!isCountingDown) {
+				_audioMgr.play (Const.SE_BUTTON);
 				// 表示系処理
 				// Pauseオブジェクトを非表示
 				pauseDiplay.SetActive (false);
@@ -718,6 +722,7 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 	void colorClearBonus () {
 		_result.killAllCount++;
 
+		_audioMgr.play (Const.SE_KILL_ALL);
 		// 表示
 		GameObject textObj = Instantiate (killAllText,
 										  killAllText.transform.position,
