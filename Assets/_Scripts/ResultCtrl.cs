@@ -28,8 +28,8 @@ public class ResultCtrl : MonoBehaviour {
 		_giftCtrl.Init ();
 	}
 			
-	public void showResult (Result pResult) {
-		Result _result = pResult;
+	public void showResult (GameResult pResult) {
+		GameResult _result = pResult;
 		new AnalyticsManager ().SendGameResult (pResult);
 
 		UserData _userData = _gameCtrl._userData;

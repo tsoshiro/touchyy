@@ -27,21 +27,11 @@ namespace GooglePlayServices
     {
 
         bool mEnableAutoResolution;
-        bool mInstallAndroidPackages;
-
-        public void Initialize()
-        {
-            minSize = new Vector2(300, 200);
-            position = new Rect(UnityEngine.Screen.width / 3, UnityEngine.Screen.height / 3,
-                                minSize.x, minSize.y);
-        }
 
         public void OnEnable()
         {
             mEnableAutoResolution =
                 EditorPrefs.GetBool("GooglePlayServices.AutoResolverEnabled", true);
-            mInstallAndroidPackages =
-                EditorPrefs.GetBool("GooglePlayServices.AndroidPackageInstallationEnabled", true);
         }
 
         /// <summary>
@@ -51,22 +41,18 @@ namespace GooglePlayServices
         {
             GUI.skin.label.wordWrap = true;
             GUILayout.BeginVertical();
+            GUILayout.BeginHorizontal();
             GUILayout.Label("Enable Background resolution", EditorStyles.boldLabel);
             mEnableAutoResolution = EditorGUILayout.Toggle(mEnableAutoResolution);
-            GUILayout.Label("Install Android packages", EditorStyles.boldLabel);
-            mInstallAndroidPackages = EditorGUILayout.Toggle(mInstallAndroidPackages);
+            GUILayout.EndHorizontal();
             GUILayout.Space(10);
             if (GUILayout.Button("OK"))
             {
                 EditorPrefs.SetBool(
                     "GooglePlayServices.AutoResolverEnabled",
                     mEnableAutoResolution);
-                EditorPrefs.SetBool(
-                    "GooglePlayServices.AndroidPackageInstallationEnabled",
-                    mInstallAndroidPackages);
                 Close();
             }
-            GUILayout.EndVertical();
         }
     }
 }

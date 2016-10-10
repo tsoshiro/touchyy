@@ -7,7 +7,7 @@ using System;
 public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 	public float timeLeft;
 
-	public Result _result;
+	public GameResult _result;
 	public UserData _userData;
 	public UserParam _userParam;
 
@@ -170,7 +170,7 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 		initRate ();
 
 		// Resultクラスの初期化
-		_result = new Result ();
+		_result = new GameResult ();
 
 		// Display
 		scoreText.text = "SCORE : " + _result.score;

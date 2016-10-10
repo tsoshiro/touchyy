@@ -9,7 +9,7 @@ public class AnalyticsManager {
 		Analytics.CustomEvent (pCustomEventName, pObject);
 	}
 
-	public void SendGameResult (Result pResult) {
+	public void SendGameResult (GameResult pResult) {
 		Dictionary<string, object> obj = new Dictionary<string, object> {
 			{ "score", 		pResult.score.ToString() },
 			{ "maxCombo", 	pResult.maxCombo },
