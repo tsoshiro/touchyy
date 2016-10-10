@@ -88,7 +88,7 @@ public class AdvertisementManager : MonoBehaviour {
 		gameId = ios_gameId;
 	#endif
 		if (Advertisement.isSupported) { // If the platform is supported,
-			Advertisement.Initialize (gameId, isUnityAdsTestMode); // initialize Unity Ads.
+			Advertisement.Initialize (gameId); // initialize Unity Ads.
 		}
 	}
 
@@ -109,7 +109,7 @@ public class AdvertisementManager : MonoBehaviour {
 		_interstitial = new InterstitialAd(adUnitId);
 		// create an empty request
 		request = new AdRequest.Builder().
-		                       AddTestDevice(TEST_DEVICE_ID).
+		                       //AddTestDevice(TEST_DEVICE_ID). // TEST MODE
 		                       Build();
 		// load inters
 		_interstitial.LoadAd(request);

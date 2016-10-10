@@ -3,6 +3,8 @@ using System.Collections;
 
 public class SplashCtrl : MonoBehaviour {
 	public GameObject _logo;
+	public GameObject _frame;
+	bool isSplashStarted = false;
 
 	// Use this for initialization
 	void Start () {
@@ -12,8 +14,12 @@ public class SplashCtrl : MonoBehaviour {
 
 	void Update () {
 		if (!Application.isShowingSplashScreen) {
-			StartCoroutine (splashFlow ());
+			if (!isSplashStarted) {
+				StartCoroutine (splashFlow ());
+				isSplashStarted = true;
+			}
 		}
+
 	}
 
 	IEnumerator splashFlow () {
@@ -31,11 +37,16 @@ public class SplashCtrl : MonoBehaviour {
 		iTween.FadeTo (_logo, iTween.Hash ("a", 0f, "time", 0.5f));
 		yield return new WaitForSeconds (0.5f);
 
-		iTween.FadeTo (this.gameObject, iTween.Hash ("a", 0f, "time", 0.5f));
+		iTween.FadeTo (_frame, iTween.Hash ("a", 0f, "time", 0.5f));
 		yield return new WaitForSeconds (0.5f);
 
+		finishSplashFlow ();
+	}
+
+	void finishSplashFlow () {
 		// 終了 BGM再生
 		GameCtrl.GetInstance ().endSplashThenstartBgm ();
 		this.gameObject.SetActive (false);
+
 	}
 }

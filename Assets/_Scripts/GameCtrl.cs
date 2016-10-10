@@ -24,7 +24,6 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 	public TextMesh timeText;
 	public GameObject timeGauge;
 	public GameObject colorTimeGauge;
-	public GameObject colorRestrictionGauge;
 	public TextMesh resultText;
 	public GameObject cubeObj;
 	public GameObject bombObj;
@@ -796,8 +795,6 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 			cubes [i].setColor (pColor);
 		}
 	}
-
-	public GameObject ColorRestrictionGauge;
 
 	bool isColorRestrictionValid = false;
 	float colorRestrictionTimeLeft;

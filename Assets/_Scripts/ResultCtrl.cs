@@ -89,12 +89,15 @@ public class ResultCtrl : MonoBehaviour {
 		iOSRankingUtility.ReportScore (Const.LB_TOTAL_COUNT,
 		                               (long)_userData.totalDeleteCount);
 
+
 		// GET COIN
 		PBClass.BigInteger coinNow = _userData.coin;
 		PBClass.BigInteger coinAdded = coinNow + _result.score;
 
-		StartCoroutine (coinAddMotion (coinNow, coinAdded, LBL_SCORE.gameObject, LBL_COIN.gameObject, true));
+		// COIN MOTION
+		StartCoroutine (coinAddMotion (coinNow, _result.score, LBL_SCORE.gameObject, LBL_COIN.gameObject, true));
 		_userData.coin = coinAdded;
+
 
 		// SAVE
 		_userData.save ();
@@ -117,30 +120,36 @@ public class ResultCtrl : MonoBehaviour {
 	}
 
 	// COIN付与演出
-	IEnumerator coinAddMotion (PBClass.BigInteger pFrom,
-	                           PBClass.BigInteger pValue,
+	IEnumerator coinAddMotion (PBClass.BigInteger pCoinNow,
+	                           PBClass.BigInteger pAddCoinValue,
 	                           GameObject pFromPositionObj,
 	                           GameObject pToPositionObj,
 	                           bool pIsCallback = true) 
 	{
-		float zPadding = - 1f;
 
-		CoinValueChange (pFrom);
 
+		CoinValueChange (pCoinNow); // Change COIN Label's value to NOW COIN VALUE
+
+		// Get position data from FROM OBJ (=SCORE OR BUTTON) and TO OBJ (COIN)
 		Vector3 pFromPosition = pFromPositionObj.transform.position;
 		Vector3 pToPosition = pToPositionObj.transform.position;
 
+		float zPadding = -1f;
 		pFromPosition.z = pFromPosition.z + zPadding;
 		pToPosition.z = pToPosition.z + zPadding;
 
 		// ターゲットの文字色を薄くしておく
 		ColorEditor.setColorFromColorCode (pToPositionObj, Const.COLOR_CODE_LIGHTER_BASE);
 
+
 		// 演出用文字オブジェクトを生成し、pToPositionObjまで動かす
 		GameObject cp = Instantiate (LBL_SCORE.gameObject,
 		                             pFromPosition,
 									 LBL_SCORE.transform.rotation) as GameObject;
 		cp.name = "ScoreMoving";
+		// 演出用文字オブジェクトの数値を修正
+		cp.GetComponent<TextMesh>().text = "+"+pAddCoinValue;
+
 
 		// BESTアイコンが表示されている場合は、消しておく
 		if (cp.transform.childCount > 0) {
@@ -151,6 +160,9 @@ public class ResultCtrl : MonoBehaviour {
 		                                "easetype", iTween.EaseType.easeInOutQuart, 
 		                                "islocal", true)
 		              );
+
+
+		// Wait until cp moves to the target position
 		yield return new WaitForSeconds (1.0f);
 
 		// 演出文字用オブジェクトが拡大して消える
@@ -162,7 +174,8 @@ public class ResultCtrl : MonoBehaviour {
 
 		// ターゲットの文字を戻し、数値を書き換える
 		ColorEditor.setColorFromColorCode (pToPositionObj, Const.COLOR_CODE_BASE_COLOR);
-		CoinValueChange (pValue);
+		CoinValueChange (pCoinNow+pAddCoinValue);
+
 		// ターゲットの文字を一瞬拡大し、戻す
 		iTween.ScaleTo (pToPositionObj, iTween.Hash ("scale", pToPositionObj.transform.localScale * 2f,
 		                                 "time", 0.1f));
@@ -171,6 +184,8 @@ public class ResultCtrl : MonoBehaviour {
 		                                 "time", 0.1f));
 		yield return new WaitForSeconds (0.5f);
 
+
+		// 
 		Destroy (cp);
 		if (pIsCallback) {
 			resultMotionCallback ();
@@ -185,12 +200,21 @@ public class ResultCtrl : MonoBehaviour {
 		}
 	}
 
+	// ベストレコードかチェック
+	// trueならBESTテキスト表示+結果テキストの色変更
+	// falseなら結果テキストの色を元の色にする
 	bool checkBestRecord(PBClass.BigInteger pBestScore, PBClass.BigInteger pScore, TextMesh pScoreTextMesh) {
 		if (pScore > pBestScore) {
 			showBestScoreLabel (pScoreTextMesh);
 			return true;
+		} else {
+			resetLabelColor (pScoreTextMesh);
+			return false;
 		}
-		return false;
+	}
+
+	void resetLabelColor (TextMesh pScoreTextMesh) {
+		ColorEditor.setColorFromColorCode (pScoreTextMesh.gameObject, Const.COLOR_CODE_BASE_COLOR);
 	}
 
 	void showBestScoreLabel(TextMesh pScoreTextMesh){
@@ -202,11 +226,10 @@ public class ResultCtrl : MonoBehaviour {
 			go.transform.localPosition = BEST_ICON_POS;
 			go.name = BEST_ICON_NAME;
 			ColorEditor.setColorFromColorCode (go, Const.COLOR_CODE_PINK);
-			ColorEditor.setColorFromColorCode (pScoreTextMesh.gameObject, Const.COLOR_CODE_PINK);
 		} else {
 			pScoreTextMesh.transform.Find (BEST_ICON_NAME).gameObject.SetActive (true);
-			ColorEditor.setColorFromColorCode (pScoreTextMesh.gameObject, Const.COLOR_CODE_BASE_COLOR);
 		}
+		ColorEditor.setColorFromColorCode (pScoreTextMesh.gameObject, Const.COLOR_CODE_PINK);
 	}
 		
 	void cleanBestIcon(GameObject pScoreTextObj) {
@@ -248,7 +271,7 @@ public class ResultCtrl : MonoBehaviour {
 	void giveFreeCoin(PBClass.BigInteger pCoin) {
 		PBClass.BigInteger coinNow = _gameCtrl._userData.coin;
 
-		StartCoroutine (coinAddMotion (coinNow, coinNow + pCoin, GameObject.Find ("GiftBtn"), LBL_COIN.gameObject, false));
+		StartCoroutine (coinAddMotion (coinNow, pCoin, GameObject.Find ("GiftBtn"), LBL_COIN.gameObject, false));
 
 		_gameCtrl._userData.coin += pCoin;
 		_gameCtrl._userData.nextFreeGift = _giftCtrl.nextTimeFreeGift.ToString ("yyyy/MM/dd HH:mm:ss");
@@ -260,7 +283,7 @@ public class ResultCtrl : MonoBehaviour {
 	public void giveRewardCoin(PBClass.BigInteger pCoin) {
 		PBClass.BigInteger coinNow = _gameCtrl._userData.coin;
 
-		StartCoroutine(coinAddMotion (coinNow, coinNow + pCoin, GameObject.Find ("GiftBtn"), LBL_COIN.gameObject, false));
+		StartCoroutine(coinAddMotion (coinNow, pCoin, GameObject.Find ("GiftBtn"), LBL_COIN.gameObject, false));
 
 		_gameCtrl._userData.coin += pCoin;
 

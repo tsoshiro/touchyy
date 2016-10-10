@@ -8,12 +8,13 @@ public class Const {
 	public const string APP_STORE_URL = "jp.pixelbeat.touchyy";
 	public const string APP_STORE_REVIEW_URL = "";
 #elif UNITY_IPHONE
-	//public const string APP_ID = "1161341169";
-	public const string APP_ID = "493470467"; //テスト用:パズドラが開くはず
+	public const string APP_ID = "1161341169";
+	//public const string APP_ID = "493470467"; //テスト用:パズドラが開くはず
 	public const string APP_STORE_URL = 
-		"https://itunes.apple.com/jp/app/pazuru-doragonzu/id"
+		"https://itunes.apple.com/us/app/id"
 		+APP_ID
-		+"?mt=8";
+		+"?l=ja&ls=1&mt=8";
+	
 	public const string APP_STORE_REVIEW_URL =
 		"itms-apps://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?id="
 		+APP_ID
@@ -144,7 +145,7 @@ public class Const {
 	// ADS & REVIEWS
 	public const int AD_INTERVAL_INTER = 5;
 	public const int AD_INTERVAL_REWARD_MOVIE = 3;
-	public const int INTERVAL_REVIEW_REQUEST = 3; // 本来は20
+	public const int INTERVAL_REVIEW_REQUEST = 20; // 本来は20
 
 	public const string AD_MOVIE_STATE_FINISHED = "0";
 	public const string AD_MOVIE_STATE_SKIPPED = "1";
