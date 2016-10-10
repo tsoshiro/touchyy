@@ -40,7 +40,7 @@ public class ResultCtrl : MonoBehaviour {
 			_userData.bestScore = _result.score;
 
 			// Leaderboard
-			iOSRankingUtility.ReportScore (Const.LB_HIGH_SCORE_SCORE, 
+			GPGSManager.ReportScore (Const.LB_HIGH_SCORE_SCORE, 
 			                               PBClass.BigInteger.ToInt64(_result.score));
 		};
 
@@ -49,7 +49,7 @@ public class ResultCtrl : MonoBehaviour {
 			_userData.maxCombo = _result.maxCombo;
 
 			// Leaderboard
-			iOSRankingUtility.ReportScore (Const.LB_HIGH_SCORE_MAX_COMBO,
+			GPGSManager.ReportScore (Const.LB_HIGH_SCORE_MAX_COMBO,
 			                               (long)_result.maxCombo);
 		}
 
@@ -58,7 +58,7 @@ public class ResultCtrl : MonoBehaviour {
 			_userData.maxDeleteCount = _result.deleteCount;
 
 			// Leaderboard
-			iOSRankingUtility.ReportScore (Const.LB_HIGH_SCORE_COUNT,
+			GPGSManager.ReportScore (Const.LB_HIGH_SCORE_COUNT,
 			                              (long)_result.deleteCount);
 		}
 
@@ -67,7 +67,7 @@ public class ResultCtrl : MonoBehaviour {
 			_userData.maxKillAllCount = _result.killAllCount;
 
 			// Leaderboard
-			iOSRankingUtility.ReportScore (Const.LB_HIGH_SCORE_KILL_ALL,
+			GPGSManager.ReportScore (Const.LB_HIGH_SCORE_KILL_ALL,
 			                              (long)_result.killAllCount);
 		}
 
@@ -86,8 +86,10 @@ public class ResultCtrl : MonoBehaviour {
 		_userData.playCount++;
 
 		// Leaderboard
-		iOSRankingUtility.ReportScore (Const.LB_TOTAL_COUNT,
+		GPGSManager.ReportScore (Const.LB_TOTAL_COUNT,
 		                               (long)_userData.totalDeleteCount);
+
+		// todo Achievement
 
 
 		// GET COIN
@@ -195,7 +197,9 @@ public class ResultCtrl : MonoBehaviour {
 
 	// インタースティシャルを表示するかどうか確認し、表示
 	void checkInterstitial() {
+		Debug.Log ("playCount:" + _gameCtrl._userData.playCount);
 		if (_gameCtrl._userData.playCount % Const.AD_INTERVAL_INTER == 0) {
+			Debug.Log ("SHOW INTERSTITIAL!");
 			_gameCtrl.gameObject.GetComponent<AdvertisementManager> ().showInterstitial ();
 		}
 	}
@@ -291,6 +295,10 @@ public class ResultCtrl : MonoBehaviour {
 		_gameCtrl._userData.save ();
 	}
 
+	void sendAchievement () {
+		
+	}
+
 	#region action
 	void actionReplayBtn ()
 	{
@@ -346,7 +354,7 @@ public class ResultCtrl : MonoBehaviour {
 
 	void actionLeaderboardBtn () {
 		_gameCtrl._audioMgr.play (Const.SE_BUTTON);
-		iOSRankingUtility.ShowLeaderboardUI ();
+		GPGSManager.ShowLeaderboardUI ();
 	}
 	#endregion
 }

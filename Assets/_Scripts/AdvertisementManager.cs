@@ -57,7 +57,7 @@ public class AdvertisementManager : MonoBehaviour {
 	// UnityAds
 	public string Android_gameId;
 	public string ios_gameId;
-	public bool isUnityAdsTestMode = false;
+	public bool isUnityAdsTestMode = false; // 本番=false テスト=true
 	[SerializeField]
 	string gameId;
 
@@ -88,20 +88,23 @@ public class AdvertisementManager : MonoBehaviour {
 		gameId = ios_gameId;
 	#endif
 		if (Advertisement.isSupported) { // If the platform is supported,
-			Advertisement.Initialize (gameId); // initialize Unity Ads.
+			Advertisement.Initialize (gameId, isUnityAdsTestMode); // initialize Unity Ads.
 		}
 	}
 
 	public void RequestInterstitial() {
-		#if UNITY_ADROID
+		#if UNITY_ANDROID
 		adUnitId = Android_interstitial;
-		#elif UNITY_IPHONE
+		#elif UNITY_IOS
 		adUnitId = ios_interstitial;
 		#else
 		adUnitId = "unexpected_platform";
 		#endif
 
+		Debug.Log ("RequestInterstitial adUnitId:"+adUnitId);
+
 		if (is_close_interstitial) {
+			Debug.Log ("Destroy ad");
 			_interstitial.Destroy ();
 		}
 
@@ -123,6 +126,7 @@ public class AdvertisementManager : MonoBehaviour {
 	}
 
 	public void HandleInterstitialClosed(object sender, System.EventArgs args) {
+		Debug.Log ("HandleInterstitialClosed");
 		is_close_interstitial = true;
 		RequestInterstitial ();
 	}

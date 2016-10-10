@@ -46,6 +46,7 @@ public class SplashCtrl : MonoBehaviour {
 	void finishSplashFlow () {
 		// 終了 BGM再生
 		GameCtrl.GetInstance ().endSplashThenstartBgm ();
+		GameCtrl.GetInstance ().LeaderboardLogin ();
 		this.gameObject.SetActive (false);
 
 	}

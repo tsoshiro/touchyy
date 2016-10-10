@@ -124,9 +124,11 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 
 		// 数値部分算出テスト
 		//DisplayTest ();
+	}
 
-		// GameCenterログイン
-		iOSRankingUtility.Auth ();
+	public void LeaderboardLogin () {
+		// GameCenter/Google Play Serviceログイン
+		GPGSManager.Auth ();
 	}
 
 	public void endSplashThenstartBgm () {
