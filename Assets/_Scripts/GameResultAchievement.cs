@@ -14,4 +14,14 @@ public class GameResultAchievement {
 		float progress = (float)pScore / (float)targetCount;
 		return progress;
 	}
+
+	public void sendProgress (int pScore) {
+		float progress = (float)pScore / (float)targetCount;
+
+		// IF already achieved
+		if (progress > 1.0f) {
+			return;
+		}
+		GPGSManager.ReportProgress (achievementId, progress);
+	}
 }

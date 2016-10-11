@@ -1,5 +1,5 @@
 MESSAGE_CODE,JP,EN
-instruction_01,同じ色を<br>タップ/スワイプ<br>しましょう。,TOUCH OR SWIPE<br>the same color.
+instruction_01,同じ色を<br>タップ/スワイプ<br>しましょう。,TAP OR SWIPE<br>the same color.
 dialog_01,楽しんでいただけていますか？,Are you having fun?
 answer_01_n,いまいち…,Not really
 answer_01_y,はい！,Yes!
@@ -16,3 +16,6 @@ item_info_04,画面上の色を塗り替える<br>ペイントベリーの出現
 item_info_05,少しの時間、出現色が1色になる<br>ロックベリーの出現率が増えます。,Increases the rate of LOCK berry :<br>gets only 1 color for a while.
 item_info_06,残り時間が少し増える<br>タイムベリーの出現率が増えます。,Increases the rate of TIME berry :<br>gets an extra time.
 share,快感パズル「touchyy」で[SCORE]点を獲得しました！挑戦者求む。 #touchyy,I've just scored [SCORE]! #touchyy
+quit_yes,終了する,Quit
+quit_no,キャンセル,Cancel
+quit_confirm,ゲームを終了してよろしいですか？,Are you sure you want to quit?

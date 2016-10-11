@@ -241,6 +241,11 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 	}
 
 	void Update() {
+#if UNITY_ANDROID
+		// パックポタンが押された時の処理
+		CheckBackButtonPressed ();
+#endif
+
 		if (state == STATE.READY) {
 			updateReady();
 		} else if (state == STATE.PAUSE) {
@@ -914,6 +919,46 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 			}
 		}
 	}
+	#endregion
+
+
+	#region Android backbutton
+	void CheckBackButtonPressed () {
+		// プラットフォームがアンドロイドかチェック
+		if (Application.platform == RuntimePlatform.Android) {
+			// バックボタンが押されたか検知
+			if (Input.GetKeyDown (KeyCode.Escape)) {
+				// アプリケーション終了確認
+				QuitApplicationConfirm ();
+			}
+		}
+	}
+
+	void QuitApplicationConfirm () {
+		//ゲームプレイ中ならポーズにする
+		if (state == STATE.PLAYING) {
+			enablePause (true);
+		}
+
+		// 使う前に setlabel を呼んどく。
+		DialogManager.Instance.SetLabel (
+			GameCtrl.GetInstance ()._languageCtrl.getMessageFromCode ("quit_yes"),
+			GameCtrl.GetInstance ()._languageCtrl.getMessageFromCode ("quit_no"),
+			"Close");
+
+		// YES NO ダイアログ
+		//「楽しんでいただけていますか？」とのダイアログを出す。
+		DialogManager.Instance.ShowSelectDialog (
+			GameCtrl.GetInstance ()._languageCtrl.getMessageFromCode ("quit_confirm"),
+			(bool result) => {
+				if (result) { // YES
+					Application.Quit ();
+					return;
+				}
+			}
+		);
+	}
+
 	#endregion
 
 	#region DEBUG

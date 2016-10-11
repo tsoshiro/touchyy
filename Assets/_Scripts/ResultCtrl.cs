@@ -89,8 +89,8 @@ public class ResultCtrl : MonoBehaviour {
 		GPGSManager.ReportScore (Const.LB_TOTAL_COUNT,
 		                               (long)_userData.totalDeleteCount);
 
-		// todo Achievement
-
+		// Send Achievement
+		sendAchievement (_userData.playCount);
 
 		// GET COIN
 		PBClass.BigInteger coinNow = _userData.coin;
@@ -110,6 +110,22 @@ public class ResultCtrl : MonoBehaviour {
 		_giftCtrl.isRewardMovieWatched = false;
 		_giftCtrl.statusCheck ();
 		checkShop ();
+	}
+
+
+	void sendAchievement (int pScore)
+	{
+		GameResultAchievement [] achievements = {
+			new GameResultAchievement(Const.AC_PLAY_10_TIMES, 10),
+			new GameResultAchievement(Const.AC_PLAY_20_TIMES, 20),
+			new GameResultAchievement(Const.AC_PLAY_50_TIMES, 50),
+			new GameResultAchievement(Const.AC_PLAY_100_TIMES, 100),
+			new GameResultAchievement(Const.AC_PLAY_200_TIMES, 200)
+		};
+
+		for (int i = 0; i < achievements.Length; i++) {
+			achievements [i].sendProgress (pScore);
+		}
 	}
 
 	// ショップで購入できるものがあれば「!」マークをショップボタン上につける
