@@ -34,7 +34,13 @@ public class ReviewRequestCtrl : MonoBehaviour {
 			return false; // 何もしない
 		}
 
-		if (playCount % Const.INTERVAL_REVIEW_REQUEST == 0) { // 規定回の倍数ならレビュー依頼してみる															  
+		int reviewRequestFreqCount
+		= (_resultCtrl._gameCtrl._userData.deniedFlg == 0)
+			? Const.INTERVAL_REVIEW_REQUEST
+           	: Const.INTERVAL_REVIEW_REQUEST_CANCELED_ONCE;
+
+
+		if (playCount % reviewRequestFreqCount == 0) { // 規定回の倍数ならレビュー依頼してみる															  
 			// 使う前に setlabel を呼んどく。
 			DialogManager.Instance.SetLabel (
 				GameCtrl.GetInstance ()._languageCtrl.getMessageFromCode (Const.answer_01_n),
@@ -74,14 +80,13 @@ public class ReviewRequestCtrl : MonoBehaviour {
 			GameCtrl.GetInstance ()._languageCtrl.getMessageFromCode (Const.dialog_02),
 			(bool result) => {
 				if (result) {
-
+					_resultCtrl._gameCtrl._userData.deniedFlg = 1;
 				} else {
 					_resultCtrl._gameCtrl._userData.reviewDoneFlg = 1;
-					_resultCtrl._gameCtrl._userData.save ();
-
 					// ストアへ
 					Application.OpenURL (Const.APP_STORE_URL);
 				}
+				_resultCtrl._gameCtrl._userData.save ();
 			}
 		);
 	}
@@ -98,14 +103,13 @@ public class ReviewRequestCtrl : MonoBehaviour {
 			GameCtrl.GetInstance ()._languageCtrl.getMessageFromCode (Const.dialog_03),
 			(bool result) => {
 				if (result) {
-
+					_resultCtrl._gameCtrl._userData.deniedFlg = 1;
 				} else {
 					_resultCtrl._gameCtrl._userData.messageDoneFlg = 1;
-					_resultCtrl._gameCtrl._userData.save ();
-
 					// Webビュー
 					Application.OpenURL (Const.SUPPORT_URL);
 				}
+				_resultCtrl._gameCtrl._userData.save ();
 			}
 		);	
 	}

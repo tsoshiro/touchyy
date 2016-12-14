@@ -20,7 +20,7 @@ public class Const {
 		+APP_ID
 		+"&onlyLatestVersion=true&pageNumber=0&sortOrdering=1&type=Purple+Software";
 #endif
-	public const string SUPPORT_URL = "http://pixelbeat.jp";
+	public const string SUPPORT_URL = "http://pixelbeat.jp/support";
 	#endregion
 
 
@@ -112,6 +112,7 @@ public class Const {
 	public const string PREF_LV_TIME_BOMB 		= "PREF_LV_TIME_BOMB";
 
 	public const string PREF_NEXT_FREE_GIFT	 	= "PREF_NEXT_FREE_GIFT";
+	public const string PREF_DENIED = "PREF_DENIED";
 	public const string PREF_REVIEW_DONE = "PREF_REVIEW_DONE";
 	public const string PREF_MESSAGE_DONE = "PREF_MESSAGE_DONE";
 
@@ -145,7 +146,8 @@ public class Const {
 	// ADS & REVIEWS
 	public const int AD_INTERVAL_INTER = 5;
 	public const int AD_INTERVAL_REWARD_MOVIE = 3;
-	public const int INTERVAL_REVIEW_REQUEST = 20; // 本来は20
+	public const int INTERVAL_REVIEW_REQUEST = 20;
+	public const int INTERVAL_REVIEW_REQUEST_CANCELED_ONCE = 60;
 
 	public const string AD_MOVIE_STATE_FINISHED = "0";
 	public const string AD_MOVIE_STATE_SKIPPED = "1";

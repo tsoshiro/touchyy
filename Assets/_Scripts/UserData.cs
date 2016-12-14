@@ -118,6 +118,7 @@ public class UserData {
 	public List<int> _userParamsList = new List<int> ();
 
 	public string nextFreeGift;
+	public int deniedFlg; // 楽しんでいない OR レビューを今はしない、を選択したユーザーは1。デフォルトは0。
 	public int reviewDoneFlg; // レビュー 0:未レビュー, 1:レビュー済み
 	public int messageDoneFlg; // コメントや不具合など	0:未送信, 1:送信済み
 
@@ -152,6 +153,7 @@ public class UserData {
 			nextFreeGift = DateTime.Now.ToString (Const.DATETIME_FORMAT);
 		}
 
+		deniedFlg = getUserDataInt (Const.PREF_DENIED);
 		reviewDoneFlg = getUserDataInt(Const.PREF_REVIEW_DONE);
 		messageDoneFlg = getUserDataInt (Const.PREF_MESSAGE_DONE);
 	}
