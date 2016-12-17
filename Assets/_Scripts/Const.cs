@@ -146,8 +146,8 @@ public class Const {
 	// ADS & REVIEWS
 	public const int AD_INTERVAL_INTER = 5;
 	public const int AD_INTERVAL_REWARD_MOVIE = 3;
-	public const int INTERVAL_REVIEW_REQUEST = 20;
-	public const int INTERVAL_REVIEW_REQUEST_CANCELED_ONCE = 60;
+	public const int INTERVAL_REVIEW_REQUEST = 30;
+	public const int INTERVAL_REVIEW_REQUEST_CANCELED_ONCE = 70;
 
 	public const string AD_MOVIE_STATE_FINISHED = "0";
 	public const string AD_MOVIE_STATE_SKIPPED = "1";

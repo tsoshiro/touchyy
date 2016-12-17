@@ -28,7 +28,7 @@ public class ReviewRequestCtrl : MonoBehaviour {
 	public bool ReviewRequest () {
 		// プレイ回数がx回以上のユーザーに対して
 		int playCount = _resultCtrl._gameCtrl._userData.playCount;
-		if (playCount <= Const.INTERVAL_REVIEW_REQUEST || // 規定回以上プレイしていない
+		if (playCount < Const.INTERVAL_REVIEW_REQUEST || // 規定回以上プレイしていない
 		    _resultCtrl._gameCtrl._userData.reviewDoneFlg == 1) // レビュー済み
 		{
 			return false; // 何もしない
