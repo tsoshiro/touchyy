@@ -3,65 +3,6 @@ using UnityEditor;
 using NUnit.Framework;
 
 public class TestReviewRequest {
-
-	[Test]
-	public void ReviewRequestFeedbackRequestTest ()
-	{
-		GameCtrl gameCtrl = GameObject.Find ("GameCtrl").GetComponent<GameCtrl> ();
-		ResultCtrl resultCtrl = gameCtrl._resultCtrl;
-
-		ReviewRequestCtrl reviewRequestCtrl = resultCtrl.gameObject.GetComponent<ReviewRequestCtrl>();
-
-		// テストで書き換えられてしまうデータを一時保存
-		int playCountTmp = gameCtrl._userData.playCount;
-		int reviewDoneFlgTmp = gameCtrl._userData.reviewDoneFlg;
-		int deniedFlgTmp = gameCtrl._userData.deniedFlg;
-		int messageDoneFlgTmp = gameCtrl._userData.messageDoneFlg;
-
-
-		bool flg;
-		// プレイ1回目 - false
-		gameCtrl._userData.playCount = 1;
-		gameCtrl._userData.save ();
-		flg = reviewRequestCtrl.ReviewRequest();
-		Assert.IsFalse (flg);
-
-		// プレイ20回目 - true
-		gameCtrl._userData.playCount = 20;
-		gameCtrl._userData.save ();
-		flg = reviewRequestCtrl.ReviewRequest ();
-		Assert.IsTrue (flg);
-
-		// 40回目・レビュー済み - false
-		gameCtrl._userData.playCount = 40;
-		gameCtrl._userData.reviewDoneFlg = 1;
-		gameCtrl._userData.save ();
-		flg = reviewRequestCtrl.ReviewRequest ();
-		Assert.IsFalse (flg);
-
-		// 40回目・楽しんでないORレビューしないを選択済み - false
-		gameCtrl._userData.playCount = 40;
-		gameCtrl._userData.reviewDoneFlg = 0;
-		gameCtrl._userData.deniedFlg = 1;
-		gameCtrl._userData.save ();
-		flg = reviewRequestCtrl.ReviewRequest ();
-		Assert.IsFalse (flg);
-
-		// 120回目・楽しんでないORレビューしないを選択済み - true
-		gameCtrl._userData.playCount = 120;
-		gameCtrl._userData.reviewDoneFlg = 0;
-		gameCtrl._userData.deniedFlg = 1;
-		gameCtrl._userData.save ();
-		flg = reviewRequestCtrl.ReviewRequest ();
-		Assert.IsTrue (flg);
-
-		// Test が完了したので設定を元に戻す
-		gameCtrl._userData.playCount = playCountTmp;
-		gameCtrl._userData.reviewDoneFlg = reviewDoneFlgTmp;
-		gameCtrl._userData.deniedFlg = deniedFlgTmp;
-		gameCtrl._userData.messageDoneFlg = messageDoneFlgTmp;
-	}
-
 	[Test]
 	public void ResultIntervalSimulate () {
 		// 0: DO NOTHING
