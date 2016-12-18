@@ -75,7 +75,8 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 		BLUE,
 		GREEN,
 		YELLOW,
-		PURPLE
+		PURPLE,
+		NUM
 	}
 	public string[] colorCodes = {
 		Const.COLOR_CODE_RED,
@@ -550,7 +551,7 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 	float ANIMATION_TIME = 0.2f;
 	void changeTargetColor() {
 		do {
-			targetColor = (Colors)UnityEngine.Random.Range (0, 5);
+			targetColor = (Colors)UnityEngine.Random.Range (0, (int)Colors.NUM);
 		} while (!hasEnableCube(targetColor));
 
 		changeTimeLeft = CHANGE_TIME;
@@ -654,13 +655,28 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 		cubeCtrl.init();
 		cubeCtrl.setGameCtrl(this);
 
-		int aColor =
-			(isColorRestrictionValid)
-			? (int)restrictColors[UnityEngine.Random.Range (0, restrictColors.Count)]
-	        : UnityEngine.Random.Range (0, 5);
+		// TODO 生成前の色を記録 (サンプルで色を仮決め)
+		Colors beforeColor = Colors.RED;
+
+		int aColor = decideColor (isColorRestrictionValid,
+		                          restrictColors,
+		                          beforeColor);
 		cubeCtrl.setColor(aColor);
 
 		return cubeCtrl;
+	}
+
+	// 色設定メソッド
+	public int decideColor (bool pIsColorRestrictionValid, List<Colors> pRestrictColors, Colors pBeforeColor) {
+		int aColor;
+		do {
+			aColor =
+				(pIsColorRestrictionValid)
+				? (int)restrictColors [UnityEngine.Random.Range (0, pRestrictColors.Count)]
+				: UnityEngine.Random.Range (0, (int)Colors.NUM);
+		} while (aColor == (int)pBeforeColor); // beforeColorと同じ色だったら、やり直す
+		
+		return aColor;
 	}
 	
 	void setCubes() {
@@ -678,7 +694,7 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 
 		// TARGET CUBE
 		do {
-			targetColor = (Colors)UnityEngine.Random.Range (0, 5);
+			targetColor = (Colors)UnityEngine.Random.Range (0, (int)Colors.NUM);
 		} while (!hasEnableCube (targetColor));
 
 		targetCube = Instantiate(cubeObj);
@@ -813,7 +829,7 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 
 		restrictColors = new List<Colors> ();
 		do {
-			Colors aColor = (Colors)(int)UnityEngine.Random.Range (0, 5);
+			Colors aColor = (Colors)(int)UnityEngine.Random.Range (0, (int)Colors.NUM);
 			if (!restrictColors.Contains (aColor)) {
 				restrictColors.Add (aColor);		
 			}
