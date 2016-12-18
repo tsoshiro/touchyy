@@ -24,23 +24,17 @@ public class ReviewRequestCtrl : MonoBehaviour {
 		);
 	}
 
-
 	public bool ReviewRequest () {
 		// プレイ回数がx回以上のユーザーに対して
 		int playCount = _resultCtrl._gameCtrl._userData.playCount;
-		if (playCount < Const.INTERVAL_REVIEW_REQUEST || // 規定回以上プレイしていない
-		    _resultCtrl._gameCtrl._userData.reviewDoneFlg == 1) // レビュー済み
+		if (CheckIsPlayCountUnderOrAlreadyReviewed (playCount,
+		                                            _resultCtrl._gameCtrl._userData.reviewDoneFlg))
 		{
 			return false; // 何もしない
 		}
 
-		int reviewRequestFreqCount
-		= (_resultCtrl._gameCtrl._userData.deniedFlg == 0)
-			? Const.INTERVAL_REVIEW_REQUEST
-           	: Const.INTERVAL_REVIEW_REQUEST_CANCELED_ONCE;
-
-
-		if (playCount % reviewRequestFreqCount == 0) { // 規定回の倍数ならレビュー依頼してみる															  
+		if (CheckIsOkToAskReview(playCount, _resultCtrl._gameCtrl._userData.deniedFlg))
+		{ // 規定回の倍数ならレビュー依頼してみる
 			// 使う前に setlabel を呼んどく。
 			DialogManager.Instance.SetLabel (
 				GameCtrl.GetInstance ()._languageCtrl.getMessageFromCode (Const.answer_01_n),
@@ -66,6 +60,30 @@ public class ReviewRequestCtrl : MonoBehaviour {
 			);
 		}
 		return true;
+	}
+
+	public bool CheckIsPlayCountUnderOrAlreadyReviewed (int playCount, int reviewDoneFlg)
+	{
+		if (playCount < Const.INTERVAL_REVIEW_REQUEST || // 規定回以上プレイしていない
+			reviewDoneFlg == 1) // レビュー済み
+		{
+			return true; // 何もしない
+		}
+		return false;
+	}
+
+	public bool CheckIsOkToAskReview (int playCount, int deniedFlg)
+	{
+		// 以前レビュー以来を断ったかどうかによって間隔を変える
+		int reviewRequestFreqCount
+			= (deniedFlg == 0)
+			? Const.INTERVAL_REVIEW_REQUEST
+	   		: Const.INTERVAL_REVIEW_REQUEST_CANCELED_ONCE;
+
+		if (playCount % reviewRequestFreqCount == 0) {
+			return true;
+		}
+		return false;
 	}
 
 	void AskForReview () {
