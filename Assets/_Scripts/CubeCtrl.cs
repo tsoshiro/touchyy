@@ -111,7 +111,7 @@ public class CubeCtrl : MonoBehaviour {
 	}
 
 	public void vanish() {
-		_GameCtrl.createNew(this.transform.position, cubeId);
+		_GameCtrl.createNew(this.transform.position, cubeId, myColor);
 		Destroy(this.gameObject);
 	}
 

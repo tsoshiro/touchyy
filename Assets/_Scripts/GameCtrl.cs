@@ -716,7 +716,7 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 		}
 	}
 
-	public void createNew (Vector3 pPosition, int pId)
+	public void createNew (Vector3 pPosition, int pId, int pDeletingColor)
 	{
 		_audioMgr.play (Const.SE_GOOD);
 
