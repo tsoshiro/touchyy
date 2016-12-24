@@ -628,7 +628,10 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 	int colorRestrictionCount = 2;
 	float colorRestrictionTime = 5f;
 
-	CubeCtrl createCube(Vector3 pPosition) {
+	// 新規ベリーの生成。
+	// pFadingColorには、ベリーを消す場合、消える色が入る。
+	// 特にない場合はColors.NUMを入れるとする。
+	CubeCtrl createCube(Vector3 pPosition, Colors pFadingColor = Colors.NUM) { 
 		GameObject obj;
 
 		int cubeType = decideCubeType ();
@@ -655,12 +658,9 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 		cubeCtrl.init();
 		cubeCtrl.setGameCtrl(this);
 
-		// TODO 生成前の色を記録 (サンプルで色を仮決め)
-		Colors beforeColor = Colors.RED;
-
 		int aColor = decideColor (isColorRestrictionValid,
 		                          restrictColors,
-		                          beforeColor);
+		                          pFadingColor);
 		cubeCtrl.setColor(aColor);
 
 		return cubeCtrl;
@@ -675,6 +675,7 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 				? (int)restrictColors [UnityEngine.Random.Range (0, pRestrictColors.Count)]
 				: UnityEngine.Random.Range (0, (int)Colors.NUM);
 		} while (aColor == (int)pBeforeColor); // beforeColorと同じ色だったら、やり直す
+		// Colors.NUMが入ってきた場合は、初回の生成時
 		
 		return aColor;
 	}
@@ -716,11 +717,11 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 		}
 	}
 
-	public void createNew (Vector3 pPosition, int pId, int pDeletingColor)
+	public void createNew (Vector3 pPosition, int pId, Colors pFadingColor)
 	{
 		_audioMgr.play (Const.SE_GOOD);
 
-		cubes [pId - 1] = createCube (pPosition);
+		cubes [pId - 1] = createCube (pPosition, pFadingColor);
 		cubes [pId - 1].setId (pId);
 		cubes [pId - 1].gameObject.name = "CUBE_" + pId.ToString ("D2");
 

@@ -1,5 +1,5 @@
-lastUpgrade=00934
-proj.pluginVersion=0.9.34
+lastUpgrade=00936
+proj.pluginVersion=0.9.36
 proj.AppId=964944304189
 and.BundleId=jp.pixelbeat.touchyy
 proj.classDir=Assets

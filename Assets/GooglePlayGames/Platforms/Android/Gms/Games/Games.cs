@@ -181,7 +181,7 @@ namespace Com.Google.Android.Gms.Games
         }
     }
     public class Games_BaseGamesApiMethodImpl<R> : JavaObjWrapper
-        where R : GameResult
+        where R : Result
     {
         public Games_BaseGamesApiMethodImpl (IntPtr ptr) : base(ptr)
         {
