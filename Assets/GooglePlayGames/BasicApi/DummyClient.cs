@@ -42,21 +42,29 @@ namespace GooglePlayGames.BasicApi
         /// </remarks>
         /// <param name="callback">Callback when completed.</param>
         /// <param name="silent">If set to <c>true</c> silent.</param>
-        public void Authenticate(Action<bool, string> callback, bool silent)
+        public void Authenticate(Action<bool> callback, bool silent)
         {
             LogUsage();
             if (callback != null)
             {
-                callback(false, "Not implemented on this platform");
+                callback.Invoke(false);
             }
         }
 
-        /// <summary>
-        /// Returns whether or not user is authenticated.
-        /// </summary>
-        /// <returns>true if authenticated</returns>
-        /// <c>false</c>
-        public bool IsAuthenticated()
+		// バグ対応用
+		public void Authenticate (System.Action<bool, string> callback, bool silent)
+		{
+			LogUsage ();
+			if (callback != null) {
+				//callback.Invoke (false);
+			}
+		}
+		/// <summary>
+		/// Returns whether or not user is authenticated.
+		/// </summary>
+		/// <returns>true if authenticated</returns>
+		/// <c>false</c>
+		public bool IsAuthenticated()
         {
             LogUsage();
             return false;
