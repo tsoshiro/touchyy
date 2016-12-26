@@ -40,10 +40,10 @@ namespace GooglePlayGames
             mStats = null;
         }
 
-		/// <summary>
-		/// Authenticates the local user. Equivalent to calling
-		/// <see cref="PlayGamesPlatform.Authenticate" />.
-		/// </summary>
+        /// <summary>
+        /// Authenticates the local user. Equivalent to calling
+        /// <see cref="PlayGamesPlatform.Authenticate" />.
+        /// </summary>
         public void Authenticate(Action<bool> callback)
         {
             mPlatform.Authenticate(callback);

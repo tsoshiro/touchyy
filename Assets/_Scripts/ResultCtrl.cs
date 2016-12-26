@@ -137,6 +137,31 @@ public class ResultCtrl : MonoBehaviour {
 		}
 	}
 
+	// NO MISS BONUS + COIN付与演出
+	IEnumerator NoMissBonusMotion (GameObject pBonusLabel, GameObject pScoreText)
+	{
+		// pBonusLabelを強調
+		GameObject cp = Instantiate (pBonusLabel.gameObject,
+		                             pBonusLabel.transform.position,
+		                             pBonusLabel.transform.rotation) as GameObject;
+		
+		ColorEditor.setColorFromColorCode (cp, Const.COLOR_CODE_LIGHTER_BASE);
+		iTween.ScaleTo (cp, iTween.Hash ("scale", cp.transform.localScale * 1.5f,
+										 "time", 0.2f)
+					   );
+		iTween.FadeTo (cp, iTween.Hash ("a", 0, "time", 0.2f));
+
+		// 同時にpScoreTextをカウントアップ
+
+
+
+		yield return new WaitForSeconds (0.2f);
+		Destroy (cp);
+
+
+		yield return 0;
+	}
+
 	// COIN付与演出
 	IEnumerator coinAddMotion (PBClass.BigInteger pCoinNow,
 	                           PBClass.BigInteger pAddCoinValue,
@@ -272,8 +297,8 @@ public class ResultCtrl : MonoBehaviour {
 
 	void CoinValueChange (PBClass.BigInteger pValue) {
 		LBL_COIN.text = new IntValueConverter().FixBigInteger(pValue);
-
 	}
+
 	public void SetCoinValue () {
 		LBL_COIN.text = new IntValueConverter ().FixBigInteger (_gameCtrl._userData.coin);
 	}
