@@ -12,6 +12,8 @@ public class GameResult {
 	public int missCount;
 	public List<int> itemCountList;
 
+	public PBClass.BigInteger noMissBonusValue;
+
 	public GameResult ()
 	{
 		score = 0;

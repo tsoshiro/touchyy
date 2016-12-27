@@ -35,7 +35,10 @@ public class ResultCtrl : MonoBehaviour {
 		UserData _userData = _gameCtrl._userData;
 		cleanBestIcons ();
 
-		LBL_SCORE.text = new IntValueConverter ().FixBigInteger (_result.score);
+		// スコアラベルには一時的に、NO MISS BONUS加算前の値を入れる
+		// _result.scoreの値はそのままで、見栄えだけ元に戻す
+		LBL_SCORE.text = new IntValueConverter ().FixBigInteger (_result.score - _result.noMissBonusValue);
+
 		if (checkBestRecord (_userData.bestScore, _result.score, LBL_SCORE)) {
 			_userData.bestScore = _result.score;
 
@@ -137,8 +140,20 @@ public class ResultCtrl : MonoBehaviour {
 		}
 	}
 
+	IEnumerator resultAnimation (GameResult pResult) {
+		if (pResult.missCount == 0) {
+			// NO MISS BONUS 演出
+			yield return StartCoroutine (NoMissBonusMotion (LBL_MISS, LBL_SCORE, pResult.score));
+		}
+		// COIN ADD 演出
+
+		yield return 0;
+	}
+
 	// NO MISS BONUS + COIN付与演出
-	IEnumerator NoMissBonusMotion (GameObject pBonusLabel, GameObject pScoreText)
+	IEnumerator NoMissBonusMotion (TextMesh pBonusLabel,
+	                               TextMesh pScoreText, 
+	                               PBClass.BigInteger pScore)
 	{
 		// pBonusLabelを強調
 		GameObject cp = Instantiate (pBonusLabel.gameObject,
@@ -152,12 +167,10 @@ public class ResultCtrl : MonoBehaviour {
 		iTween.FadeTo (cp, iTween.Hash ("a", 0, "time", 0.2f));
 
 		// 同時にpScoreTextをカウントアップ
-
-
+		pScoreText.text = new IntValueConverter ().FixBigInteger (pScore);
 
 		yield return new WaitForSeconds (0.2f);
 		Destroy (cp);
-
 
 		yield return 0;
 	}
@@ -169,8 +182,6 @@ public class ResultCtrl : MonoBehaviour {
 	                           GameObject pToPositionObj,
 	                           bool pIsCallback = true) 
 	{
-
-
 		CoinValueChange (pCoinNow); // Change COIN Label's value to NOW COIN VALUE
 
 		// Get position data from FROM OBJ (=SCORE OR BUTTON) and TO OBJ (COIN)

@@ -448,7 +448,8 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 	void addNoMissBonus () {
 		if (_result.missCount == 0) {
 			PBClass.BigInteger bonusValue = _result.score / Const.NO_MISS_BONUS_RATE;
-			_result.score += bonusValue;
+			_result.noMissBonusValue = bonusValue;
+			_result.score += _result.noMissBonusValue;
 		}
 	}
 
