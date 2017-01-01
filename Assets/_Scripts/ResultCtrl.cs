@@ -73,8 +73,8 @@ public class ResultCtrl : MonoBehaviour {
 			GPGSManager.ReportScore (Const.LB_HIGH_SCORE_KILL_ALL,
 			                              (long)_result.killAllCount);
 		}
-
-
+			
+		// NO MISSなら「NO MISS」ラベルを付ける
 		if (_result.missCount == 0) {
 			float noMissRate = 1 / (float)Const.NO_MISS_BONUS_RATE;
 			LBL_MISS.text = "NO MISS\n+"+noMissRate.ToString("P0");
@@ -99,8 +99,12 @@ public class ResultCtrl : MonoBehaviour {
 		PBClass.BigInteger coinNow = _userData.coin;
 		PBClass.BigInteger coinAdded = coinNow + _result.score;
 
+		// RESULT MOTION FLOW
+		StartCoroutine (resultAnimation(_result, coinNow));
+
 		// COIN MOTION
-		StartCoroutine (coinAddMotion (coinNow, _result.score, LBL_SCORE.gameObject, LBL_COIN.gameObject, true));
+//		StartCoroutine (coinAddMotion (coinNow, _result.score, LBL_SCORE.gameObject, LBL_COIN.gameObject, true));
+
 		_userData.coin = coinAdded;
 
 
@@ -140,17 +144,23 @@ public class ResultCtrl : MonoBehaviour {
 		}
 	}
 
-	IEnumerator resultAnimation (GameResult pResult) {
+	// Resultアニメーション演出まとめ
+	IEnumerator resultAnimation (GameResult pResult, PBClass.BigInteger pCoinNow) {
 		if (pResult.missCount == 0) {
 			// NO MISS BONUS 演出
 			yield return StartCoroutine (NoMissBonusMotion (LBL_MISS, LBL_SCORE, pResult.score));
+
+			// 1フレーム置く
+			yield return 0;
 		}
+
 		// COIN ADD 演出
+		yield return StartCoroutine(coinAddMotion(pCoinNow, pResult.score, LBL_SCORE.gameObject, LBL_COIN.gameObject, true));
 
 		yield return 0;
 	}
 
-	// NO MISS BONUS + COIN付与演出
+	// NO MISS BONUS + SCOREカウントアップ演出
 	IEnumerator NoMissBonusMotion (TextMesh pBonusLabel,
 	                               TextMesh pScoreText, 
 	                               PBClass.BigInteger pScore)
