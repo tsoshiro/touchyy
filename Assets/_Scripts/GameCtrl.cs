@@ -450,6 +450,10 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 			PBClass.BigInteger bonusValue = _result.score / Const.NO_MISS_BONUS_RATE;
 			_result.noMissBonusValue = bonusValue;
 			_result.score += _result.noMissBonusValue;
+
+			Debug.Log ("NO MISS BONUS:" + _result.noMissBonusValue);
+		} else {
+			_result.noMissBonusValue = 0;
 		}
 	}
 

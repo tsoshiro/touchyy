@@ -37,6 +37,8 @@ public class ResultCtrl : MonoBehaviour {
 
 		// スコアラベルには一時的に、NO MISS BONUS加算前の値を入れる
 		// _result.scoreの値はそのままで、見栄えだけ元に戻す
+		Debug.Log ("_result.score: " + _result.score + "\n_result.noMissBonusValue: "+_result.noMissBonusValue
+		          +"LBL_SCORE.text:" + new IntValueConverter ().FixBigInteger (_result.score - _result.noMissBonusValue));
 		LBL_SCORE.text = new IntValueConverter ().FixBigInteger (_result.score - _result.noMissBonusValue);
 
 		if (checkBestRecord (_userData.bestScore, _result.score, LBL_SCORE)) {
@@ -76,6 +78,7 @@ public class ResultCtrl : MonoBehaviour {
 			
 		// NO MISSなら「NO MISS」ラベルを付ける
 		if (_result.missCount == 0) {
+			Debug.Log ("NO MISS");
 			float noMissRate = 1 / (float)Const.NO_MISS_BONUS_RATE;
 			LBL_MISS.text = "NO MISS\n+"+noMissRate.ToString("P0");
 		} else {
@@ -146,12 +149,14 @@ public class ResultCtrl : MonoBehaviour {
 
 	// Resultアニメーション演出まとめ
 	IEnumerator resultAnimation (GameResult pResult, PBClass.BigInteger pCoinNow) {
+		Debug.Log ("resultAnimation Start");
+
 		if (pResult.missCount == 0) {
 			// NO MISS BONUS 演出
 			yield return StartCoroutine (NoMissBonusMotion (LBL_MISS, LBL_SCORE, pResult.score));
 
 			// 1フレーム置く
-			yield return 0;
+			yield return new WaitForSeconds(1f);
 		}
 
 		// COIN ADD 演出
@@ -165,6 +170,9 @@ public class ResultCtrl : MonoBehaviour {
 	                               TextMesh pScoreText, 
 	                               PBClass.BigInteger pScore)
 	{
+		Debug.Log ("NoMissBonusMotion start");
+		yield return new WaitForSeconds (0.4f);
+
 		// pBonusLabelを強調
 		GameObject cp = Instantiate (pBonusLabel.gameObject,
 		                             pBonusLabel.transform.position,
@@ -176,10 +184,10 @@ public class ResultCtrl : MonoBehaviour {
 					   );
 		iTween.FadeTo (cp, iTween.Hash ("a", 0, "time", 0.2f));
 
+		yield return new WaitForSeconds (0.4f);
+
 		// 同時にpScoreTextをカウントアップ
 		pScoreText.text = new IntValueConverter ().FixBigInteger (pScore);
-
-		yield return new WaitForSeconds (0.2f);
 		Destroy (cp);
 
 		yield return 0;
@@ -192,6 +200,8 @@ public class ResultCtrl : MonoBehaviour {
 	                           GameObject pToPositionObj,
 	                           bool pIsCallback = true) 
 	{
+		Debug.Log ("CoinAddMotion starts");
+
 		CoinValueChange (pCoinNow); // Change COIN Label's value to NOW COIN VALUE
 
 		// Get position data from FROM OBJ (=SCORE OR BUTTON) and TO OBJ (COIN)
