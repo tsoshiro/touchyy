@@ -422,20 +422,8 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 		yield return 0;
 	}
 
-	// ================================================================================
-	// <案1> *使わない
-	// ゲーム終了時点で、Kill ALl Bonusの回数x規定パーセンテージをScoreに追加する
-	// ================================================================================
-	void addKillAllBonus () {
-		// Kill All Bonus算出
-		PBClass.BigInteger bonusValue = _result.score / Const.KILL_ALL_BONUS_RATE;
-		bonusValue = bonusValue * _result.killAllCount;
-		_result.score += bonusValue;
-	}
-
 
 	// ================================================================================
-	// <案2> *こちらを採用
 	// Kill All が発生するごとに、その時点での獲得ポイントの2%を加算
 	// ================================================================================
 	PBClass.BigInteger addSingleKillAllBonus () {
@@ -450,8 +438,6 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 			PBClass.BigInteger bonusValue = _result.score / Const.NO_MISS_BONUS_RATE;
 			_result.noMissBonusValue = bonusValue;
 			_result.score += _result.noMissBonusValue;
-
-			Debug.Log ("NO MISS BONUS:" + _result.noMissBonusValue);
 		} else {
 			_result.noMissBonusValue = 0;
 		}
