@@ -155,7 +155,7 @@ public class ResultCtrl : MonoBehaviour {
 			// NO MISS BONUS 演出
 			yield return StartCoroutine (NoMissBonusMotion (LBL_MISS, LBL_SCORE, pResult.score));
 
-			// 1フレーム置く
+			// 待機
 			yield return new WaitForSeconds(1f);
 		}
 
@@ -171,26 +171,67 @@ public class ResultCtrl : MonoBehaviour {
 	                               PBClass.BigInteger pScore)
 	{
 		Debug.Log ("NoMissBonusMotion start");
-		yield return new WaitForSeconds (0.4f);
 
-		// pBonusLabelを強調
-		GameObject cp = Instantiate (pBonusLabel.gameObject,
-		                             pBonusLabel.transform.position,
-		                             pBonusLabel.transform.rotation) as GameObject;
-		
-		ColorEditor.setColorFromColorCode (cp, Const.COLOR_CODE_LIGHTER_BASE);
+		yield return StartCoroutine (addValueMotion (pBonusLabel, pScoreText, pScore));
+	}
+
+	// シンプルに、
+	// Fromのオブジェクトを複製・色付けして、
+	// Toのオブジェクトまで持っていき、
+	// Toのオブジェクトを複製・色付けして拡大し、最終的に複製されたオブジェクトは破棄される、
+	// 一連の演出を作る
+	IEnumerator addValueMotion (TextMesh pFromPositionObj,
+	                                    TextMesh pToPositionObj,
+	                                    PBClass.BigInteger pToValue) 
+	{
+		// Get position data from FROM OBJ and TO OBJ
+		Vector3 pFromPosition = pFromPositionObj.transform.position;
+		Vector3 pToPosition = pToPositionObj.transform.position;
+
+		float zPadding = -1f;
+		pFromPosition.z = pFromPosition.z + zPadding;
+		pToPosition.z = pToPosition.z + zPadding;
+
+		// ターゲットの文字色を薄くしておく
+		ColorEditor.setColorFromColorCode (pToPositionObj.gameObject, Const.COLOR_CODE_LIGHTER_BASE);
+
+
+		// 演出用文字オブジェクトを生成し、pToPositionObjまで動かす
+		GameObject cp = Instantiate (pFromPositionObj.gameObject,
+									 pFromPosition,
+									 pFromPositionObj.transform.rotation) as GameObject;
+		cp.name = "ObjMoving";
+
+		iTween.MoveTo (cp, iTween.Hash ("position", pToPosition,
+										"time", 1.0f,
+										"easetype", iTween.EaseType.easeInOutQuart,
+										"islocal", true)
+					  );
+
+
+		// Wait until cp moves to the target position
+		yield return new WaitForSeconds (1.0f);
+
+		// 演出文字用オブジェクトが拡大して消える
+		ColorEditor.setColorFromColorCode (pToPositionObj.gameObject, Const.COLOR_CODE_LIGHTER_BASE);
 		iTween.ScaleTo (cp, iTween.Hash ("scale", cp.transform.localScale * 1.5f,
 										 "time", 0.2f)
 					   );
 		iTween.FadeTo (cp, iTween.Hash ("a", 0, "time", 0.2f));
 
-		yield return new WaitForSeconds (0.4f);
+		// ターゲットの文字色を戻し、文字列を書き換える
+		ColorEditor.setColorFromColorCode (pToPositionObj.gameObject, Const.COLOR_CODE_BASE_COLOR);
+		pToPositionObj.text = new IntValueConverter ().FixBigInteger (pToValue);
 
-		// 同時にpScoreTextをカウントアップ
-		pScoreText.text = new IntValueConverter ().FixBigInteger (pScore);
+		// ターゲットの文字を一瞬拡大し、戻す
+		iTween.ScaleTo (pToPositionObj.gameObject, iTween.Hash ("scale", pToPositionObj.transform.localScale * 2f,
+										 "time", 0.1f));
+		yield return new WaitForSeconds (0.1f);
+		iTween.ScaleTo (pToPositionObj.gameObject, iTween.Hash ("scale", pToPositionObj.transform.localScale / 2f,
+										 "time", 0.1f));
+		yield return new WaitForSeconds (0.5f);
+
 		Destroy (cp);
-
-		yield return 0;
 	}
 
 	// COIN付与演出
@@ -258,8 +299,6 @@ public class ResultCtrl : MonoBehaviour {
 		                                 "time", 0.1f));
 		yield return new WaitForSeconds (0.5f);
 
-
-		// 
 		Destroy (cp);
 		if (pIsCallback) {
 			resultMotionCallback ();
