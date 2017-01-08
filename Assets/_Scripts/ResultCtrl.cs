@@ -105,11 +105,7 @@ public class ResultCtrl : MonoBehaviour {
 		// RESULT MOTION FLOW
 		StartCoroutine (resultAnimation(_result, coinNow));
 
-		// COIN MOTION
-//		StartCoroutine (coinAddMotion (coinNow, _result.score, LBL_SCORE.gameObject, LBL_COIN.gameObject, true));
-
 		_userData.coin = coinAdded;
-
 
 		// SAVE
 		_userData.save ();
@@ -156,7 +152,7 @@ public class ResultCtrl : MonoBehaviour {
 			yield return StartCoroutine (NoMissBonusMotion (LBL_MISS, LBL_SCORE, pResult.score));
 
 			// 待機
-			yield return new WaitForSeconds(1f);
+			yield return new WaitForSeconds(0.5f);
 		}
 
 		// COIN ADD 演出
