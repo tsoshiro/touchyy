@@ -309,6 +309,17 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 			}
 		}
 	}
+
+	void actionRestartBtn () {
+		if (state == STATE.PAUSE) {
+			// Pauseオブジェクトを非表示
+			pauseDiplay.SetActive (false);
+
+			_audioMgr.play (Const.SE_BUTTON);
+			replay ();
+		}
+	}
+
 	#endregion
 
 	IEnumerator startCountDown (int pSecond) {
