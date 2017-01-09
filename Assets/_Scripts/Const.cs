@@ -91,6 +91,7 @@ public class Const {
 	public const string PREF_TOTAL_DELETE_COUNT = "PREF_TOTAL_DELETE_COUNT";
 	public const string PREF_TOTAL_KILL_ALL_COUNT = "PREF_TOTAL_KILL_ALL_COUNT";
 	public const string PREF_PLAY_COUNT 		= "PREF_PLAY_COUNT";
+	public const string PREF_RESTART_COUNT		= "PREF_RESTART_COUNT";
 
 	// PARAM
 	public enum UserParams

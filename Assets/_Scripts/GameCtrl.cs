@@ -317,8 +317,8 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 			// Analyticsに送る
 			new AnalyticsManager ().SendCounterEvent ("playFromRestart", 1);
 
-			// PlayCountを一回加算してセーブ
-			_userData.playCount++;
+			// RestartCountを一回加算してセーブ
+			_userData.restartCount++;
 			_userData.save ();
 
 			// インタースティシャルチェック

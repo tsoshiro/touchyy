@@ -13,8 +13,12 @@ public class AdvertisementCtrl : MonoBehaviour {
 	// インタースティシャルを表示するかどうか確認し、表示
 	public void checkInterstitial ()
 	{
-		Debug.Log ("playCount:" + _gameCtrl._userData.playCount);
-		if (_gameCtrl._userData.playCount % Const.AD_INTERVAL_INTER == 0) {
+		int inter_value = _gameCtrl._userData.playCount + _gameCtrl._userData.restartCount;
+		Debug.Log ("playCount:" + _gameCtrl._userData.playCount + "\n"
+				   + "restartCount:" + _gameCtrl._userData.restartCount + "\n"
+				   + "inter_value:" + inter_value);
+
+		if (inter_value % Const.AD_INTERVAL_INTER == 0) {
 			Debug.Log ("SHOW INTERSTITIAL!");
 			_gameCtrl.gameObject.GetComponent<AdvertisementManager> ().showInterstitial ();
 		}

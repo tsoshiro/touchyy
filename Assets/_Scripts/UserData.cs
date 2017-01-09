@@ -63,6 +63,8 @@ public class UserData {
 		setUserData (Const.PREF_TOTAL_DELETE_COUNT,totalDeleteCount);
 		setUserData (Const.PREF_TOTAL_KILL_ALL_COUNT,totalKillAllCount);
 		setUserData (Const.PREF_PLAY_COUNT,playCount);
+		setUserData (Const.PREF_RESTART_COUNT,restartCount);
+
 
 		setUserData (Const.PREF_COIN,coin.ToString ());
 
@@ -113,6 +115,9 @@ public class UserData {
 	public int totalKillAllCount;
 	public int playCount;
 
+	// OTHER RECORDS
+	public int restartCount;
+
 	// PARAMETERS
 	public PBClass.BigInteger coin;
 	public List<int> _userParamsList = new List<int> ();
@@ -135,6 +140,8 @@ public class UserData {
 		totalDeleteCount	= getUserDataInt (Const.PREF_TOTAL_DELETE_COUNT);
 		totalKillAllCount	= getUserDataInt (Const.PREF_TOTAL_KILL_ALL_COUNT);
 		playCount			= getUserDataInt (Const.PREF_PLAY_COUNT);
+
+		restartCount 		= getUserDataInt (Const.PREF_RESTART_COUNT);
 
 		coin				= new PBClass.BigInteger(getUserDataString (Const.PREF_COIN));
 
@@ -215,6 +222,8 @@ public class UserData {
 		totalDeleteCount = pUserData.totalDeleteCount;
 		totalKillAllCount = pUserData.totalKillAllCount;
 		playCount = pUserData.playCount;
+
+		restartCount = pUserData.restartCount;
 
 		coin = pUserData.coin;
 
