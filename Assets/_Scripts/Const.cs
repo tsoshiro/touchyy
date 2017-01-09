@@ -5,11 +5,14 @@ public class Const {
 	#region STORE
 #if UNITY_ANDROID
 	public const string APP_ID = "jp.pixelbeat.touchyy";
-	public const string APP_STORE_URL = "jp.pixelbeat.touchyy";
-	public const string APP_STORE_REVIEW_URL = "";
+	public const string APP_STORE_URL = 
+		"https://play.google.com/store/apps/details?id="
+		+APP_ID
+		+"&hl=ja";
+	public const string APP_STORE_REVIEW_URL = 
+		APP_STORE_URL;
 #elif UNITY_IPHONE
 	public const string APP_ID = "1161341169";
-	//public const string APP_ID = "493470467"; //テスト用:パズドラが開くはず
 	public const string APP_STORE_URL = 
 		"https://itunes.apple.com/us/app/id"
 		+APP_ID
@@ -20,9 +23,8 @@ public class Const {
 		+APP_ID
 		+"&onlyLatestVersion=true&pageNumber=0&sortOrdering=1&type=Purple+Software";
 #endif
-	public const string SUPPORT_URL = "http://pixelbeat.jp/support";
+	public const string SUPPORT_URL = "http://bit.ly/2i4YJtp"; // http://pixelbeat.jp/feedback/
 	#endregion
-
 
 	public const float GAME_SCREEN_POSITION_X = 6.4f;
 
