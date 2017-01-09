@@ -302,15 +302,6 @@ public class ResultCtrl : MonoBehaviour {
 		_gameCtrl.finishResultAnimation ();
 	}
 
-	// インタースティシャルを表示するかどうか確認し、表示
-	void checkInterstitial() {
-		Debug.Log ("playCount:" + _gameCtrl._userData.playCount);
-		if (_gameCtrl._userData.playCount % Const.AD_INTERVAL_INTER == 0) {
-			Debug.Log ("SHOW INTERSTITIAL!");
-			_gameCtrl.gameObject.GetComponent<AdvertisementManager> ().showInterstitial ();
-		}
-	}
-
 	// ベストレコードかチェック
 	// trueならBESTテキスト表示+結果テキストの色変更
 	// falseなら結果テキストの色を元の色にする
@@ -375,7 +366,7 @@ public class ResultCtrl : MonoBehaviour {
 		// レビュー依頼が無い時にインタースティシャル表示のチェック
 		if (!_reviewCtrl.ReviewRequest ()) {
 			// INTERSTITIAL CHECK
-			checkInterstitial ();
+			_gameCtrl.gameObject.GetComponent<AdvertisementCtrl>().checkInterstitial ();
 		}
 	}
 

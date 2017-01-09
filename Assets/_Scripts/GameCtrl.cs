@@ -312,10 +312,21 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 
 	void actionRestartBtn () {
 		if (state == STATE.PAUSE) {
+			_audioMgr.play (Const.SE_BUTTON);
+
+			// Analyticsに送る
+			new AnalyticsManager ().SendCounterEvent ("playFromRestart", 1);
+
+			// PlayCountを一回加算してセーブ
+			_userData.playCount++;
+			_userData.save ();
+
+			// インタースティシャルチェック
+			this.GetComponent<AdvertisementCtrl> ().checkInterstitial ();
+
 			// Pauseオブジェクトを非表示
 			pauseDiplay.SetActive (false);
 
-			_audioMgr.play (Const.SE_BUTTON);
 			replay ();
 		}
 	}
