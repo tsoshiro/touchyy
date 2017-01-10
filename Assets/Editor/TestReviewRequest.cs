@@ -7,7 +7,6 @@ public class TestReviewRequest {
 	public void ResultIntervalSimulate () {
 		// 0: DO NOTHING
 		// 1: ASK IF HAVING FUN
-		int actionNumber = getActionNumber ();
 
 		Assert.AreEqual (0, getActionNumber (1, 0, 0, 0));
 		Assert.AreEqual (0, getActionNumber (20, 0, 0, 0));
@@ -44,4 +43,21 @@ public class TestReviewRequest {
 		return 0;
 	}
 
+	[Test]
+	public void AdIntervalSimulate () {
+		GameCtrl gameCtrl = GameObject.Find ("GameCtrl").GetComponent<GameCtrl> ();
+		AdvertisementCtrl adCtrl = gameCtrl.GetComponent<AdvertisementCtrl> ();
+
+		Assert.AreEqual (false, adCtrl.checkInterFlgFromValues (1, 0));
+		Assert.AreEqual (false, adCtrl.checkInterFlgFromValues (1, 3));
+		Assert.AreEqual (false, adCtrl.checkInterFlgFromValues (1, 5));
+
+		Assert.AreEqual (true, adCtrl.checkInterFlgFromValues(5,0));
+		Assert.AreEqual (true, adCtrl.checkInterFlgFromValues (5, 5));
+		Assert.AreEqual (true, adCtrl.checkInterFlgFromValues (6, 4));
+		Assert.AreEqual (true, adCtrl.checkInterFlgFromValues (11, 4));
+
+		Assert.AreEqual (true, adCtrl.checkInterFlgFromValues (100, 0));
+		Assert.AreEqual (false, adCtrl.checkInterFlgFromValues (101, 5));
+	}
 }
