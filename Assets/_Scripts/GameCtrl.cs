@@ -444,7 +444,6 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 		yield return 0;
 	}
 
-
 	// ================================================================================
 	// Kill All が発生するごとに、その時点での獲得ポイントの2%を加算
 	// ================================================================================
@@ -796,7 +795,6 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 	float mistakePenaltyTimeLeft;
 
 	public void wrongAnswer (int pId, int pColor) {
-//		howWrong = (Colors)pColor;
 		setHowWrong (pColor);
 		wrongAnswer ();
 	}
