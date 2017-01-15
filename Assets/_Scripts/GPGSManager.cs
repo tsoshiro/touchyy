@@ -115,5 +115,4 @@ public static class GPGSManager
 		iOSRankingUtility.ReportProgress (achievementKey, percent, callBack);
 #endif
 	}
-
 }

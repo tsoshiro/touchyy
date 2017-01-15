@@ -78,12 +78,12 @@ namespace GoogleMobileAds.iOS
                 nativeExpressAdClientPtr, adUnitId, adSize.Width, adSize.Height, (int)position);
 
             Externs.GADUSetNativeExpressAdCallbacks(
-                    this.NativeExpressAdViewPtr,
-                    this.NativeExpressAdViewDidReceiveAdCallback,
-                    this.NativeExpressAdViewDidFailToReceiveAdWithErrorCallback,
-                    this.NativeExpressAdViewWillPresentScreenCallback,
-                    this.NativeExpressAdViewDidDismissScreenCallback,
-                    this.NativeExpressAdViewWillLeaveApplicationCallback);
+                NativeExpressAdViewPtr,
+				NativeExpressAdViewDidReceiveAdCallback,
+                NativeExpressAdViewDidFailToReceiveAdWithErrorCallback,
+                NativeExpressAdViewWillPresentScreenCallback,
+                NativeExpressAdViewDidDismissScreenCallback,
+                NativeExpressAdViewWillLeaveApplicationCallback);
         }
 
         // Loads an ad.

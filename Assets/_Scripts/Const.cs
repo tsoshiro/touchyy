@@ -193,19 +193,18 @@ public class Const {
 	public const string LB_HIGH_SCORE_KILL_ALL = "CgkIvbCm2YocEAIQAw";
 	public const string LB_HIGH_SCORE_MAX_COMBO = "CgkIvbCm2YocEAIQBA";
 	public const string LB_TOTAL_COUNT = "CgkIvbCm2YocEAIQBQ";
-
-	public const string AC_PLAY_10_TIMES = "CgkIvbCm2YocEAIQBg";
-	public const string AC_PLAY_20_TIMES = "CgkIvbCm2YocEAIQBw";
-	public const string AC_PLAY_50_TIMES = "CgkIvbCm2YocEAIQCA";
-	public const string AC_PLAY_100_TIMES = "CgkIvbCm2YocEAIQCQ";
-	public const string AC_PLAY_200_TIMES = "CgkIvbCm2YocEAIQCg";
-
 	#else
 	public const string LB_HIGH_SCORE_SCORE = "TouchyyHighScoreScore";
 	public const string LB_HIGH_SCORE_COUNT = "TouchyyHighScoreCount";
 	public const string LB_HIGH_SCORE_KILL_ALL = "TouchyyHighScoreKillAll";
 	public const string LB_HIGH_SCORE_MAX_COMBO = "TouchyyHighScoreMaxCombo";
 	public const string LB_TOTAL_COUNT = "TouchyyTotalCount";
-	#endif
+#endif
+	public const string AC_PLAY_10_TIMES = "CgkIvbCm2YocEAIQBg";
+	public const string AC_PLAY_20_TIMES = "CgkIvbCm2YocEAIQBw";
+	public const string AC_PLAY_50_TIMES = "CgkIvbCm2YocEAIQCA";
+	public const string AC_PLAY_100_TIMES = "CgkIvbCm2YocEAIQCQ";
+	public const string AC_PLAY_200_TIMES = "CgkIvbCm2YocEAIQCg";
+
 	#endregion
 }
