@@ -41,6 +41,7 @@ public class ResultCtrl : MonoBehaviour {
 		          +"LBL_SCORE.text:" + new IntValueConverter ().FixBigInteger (_result.score - _result.noMissBonusValue));
 		LBL_SCORE.text = new IntValueConverter ().FixBigInteger (_result.score - _result.noMissBonusValue);
 
+		// スコアのBESTチェック
 		if (checkBestRecord (_userData.bestScore, _result.score, LBL_SCORE)) {
 			_userData.bestScore = _result.score;
 
@@ -49,6 +50,7 @@ public class ResultCtrl : MonoBehaviour {
 			                               PBClass.BigInteger.ToInt64(_result.score));
 		};
 
+		// コンボのBESTチェック
 		LBL_MAX_COMBO.text = ""+_result.maxCombo;
 		if (checkBestRecord (_userData.maxCombo, _result.maxCombo, LBL_MAX_COMBO)) {
 			_userData.maxCombo = _result.maxCombo;
@@ -58,6 +60,7 @@ public class ResultCtrl : MonoBehaviour {
 			                               (long)_result.maxCombo);
 		}
 
+		// deleteCountのBESTチェック
 		LBL_CUBES.text = ""+_result.deleteCount;
 		if (checkBestRecord(_userData.maxDeleteCount, _result.deleteCount, LBL_CUBES)) {
 			_userData.maxDeleteCount = _result.deleteCount;
@@ -67,6 +70,7 @@ public class ResultCtrl : MonoBehaviour {
 			                              (long)_result.deleteCount);
 		}
 
+		// killAllCountのBESTチェック
 		LBL_KILL_ALL.text = "" + _result.killAllCount;
 		if (checkBestRecord(_userData.maxKillAllCount, _result.killAllCount, LBL_KILL_ALL)) {
 			_userData.maxKillAllCount = _result.killAllCount;
@@ -91,7 +95,7 @@ public class ResultCtrl : MonoBehaviour {
 		_userData.totalKillAllCount += _result.killAllCount;
 		_userData.playCount++;
 
-		// Leaderboard
+		// TotalCountをLeaderboardに送信
 		GPGSManager.ReportScore (Const.LB_TOTAL_COUNT,
 		                               (long)_userData.totalDeleteCount);
 

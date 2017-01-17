@@ -187,24 +187,34 @@ public class Const {
 	#endregion
 
 	#region Leaderboard
-	#if UNITY_ANDROID
+#if UNITY_ANDROID
+	// LEADERBOARD ID
 	public const string LB_HIGH_SCORE_SCORE = "CgkIvbCm2YocEAIQAQ";
 	public const string LB_HIGH_SCORE_COUNT = "CgkIvbCm2YocEAIQAg";
 	public const string LB_HIGH_SCORE_KILL_ALL = "CgkIvbCm2YocEAIQAw";
 	public const string LB_HIGH_SCORE_MAX_COMBO = "CgkIvbCm2YocEAIQBA";
 	public const string LB_TOTAL_COUNT = "CgkIvbCm2YocEAIQBQ";
-	#else
-	public const string LB_HIGH_SCORE_SCORE = "TouchyyHighScoreScore";
-	public const string LB_HIGH_SCORE_COUNT = "TouchyyHighScoreCount";
-	public const string LB_HIGH_SCORE_KILL_ALL = "TouchyyHighScoreKillAll";
-	public const string LB_HIGH_SCORE_MAX_COMBO = "TouchyyHighScoreMaxCombo";
-	public const string LB_TOTAL_COUNT = "TouchyyTotalCount";
-#endif
+
+	// ACHIEVEMENT ID
 	public const string AC_PLAY_10_TIMES = "CgkIvbCm2YocEAIQBg";
 	public const string AC_PLAY_20_TIMES = "CgkIvbCm2YocEAIQBw";
 	public const string AC_PLAY_50_TIMES = "CgkIvbCm2YocEAIQCA";
 	public const string AC_PLAY_100_TIMES = "CgkIvbCm2YocEAIQCQ";
 	public const string AC_PLAY_200_TIMES = "CgkIvbCm2YocEAIQCg";
+#else
+	// LEADERBOARD ID
+	public const string LB_HIGH_SCORE_SCORE = "TouchyyHighScoreScore";
+	public const string LB_HIGH_SCORE_COUNT = "TouchyyHighScoreCount";
+	public const string LB_HIGH_SCORE_KILL_ALL = "TouchyyHighScoreKillAll";
+	public const string LB_HIGH_SCORE_MAX_COMBO = "TouchyyHighScoreMaxCombo";
+	public const string LB_TOTAL_COUNT = "TouchyyTotalCount";
 
+	// ACHIEVEMENT ID
+	public const string AC_PLAY_10_TIMES = "TouchyyPlay10Times";
+	public const string AC_PLAY_20_TIMES = "TouchyyPlay20Times";
+	public const string AC_PLAY_50_TIMES = "TouchyyPlay50Times";
+	public const string AC_PLAY_100_TIMES = "TouchyyPlay100Times";
+	public const string AC_PLAY_200_TIMES = "TouchyyPlay200Times";
+	#endif
 	#endregion
 }

@@ -23,14 +23,13 @@ public static class GPGSManager
 	/// </summary>
 	public static void Auth (Action<bool> callBack = null)
 	{
-#if UNITY_ANDROID
 		//コールバックが設定されていない場合はログを設定
 		if (callBack == null) {
 			callBack = (success) => {
 				Debug.Log (success ? "認証成功" : "認証失敗");
 			};
 		}
-
+#if UNITY_ANDROID
 		PlayGamesClientConfiguration config = new PlayGamesClientConfiguration.Builder ()
 			.Build ();
 		PlayGamesPlatform.InitializeInstance (config);
@@ -65,14 +64,13 @@ public static class GPGSManager
 	/// </summary>
 	public static void ReportScore (string leaderboardID, long score, Action<bool> callBack = null)
 	{
-#if UNITY_ANDROID
 		//コールバックが設定されていない場合はログを設定
 		if (callBack == null) {
 			callBack = (success) => {
 				Debug.Log (success ? "スコア送信成功" : "スコア送信失敗");
 			};
 		}
-
+#if UNITY_ANDROID
 		//送信
 		Social.ReportScore (score, leaderboardID, callBack);
 #else
