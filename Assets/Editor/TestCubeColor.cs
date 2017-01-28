@@ -31,7 +31,14 @@ public class TestCubeColor {
 		} while (n <= 10);
 
 		// 色制限時
+		GameCtrl gameCtrl = GameCtrl.GetInstance ();
+		restrictColors = gameCtrl.getAvailableColors (2);
 
+		do {
+			aftColor = GetColor (true, restrictColors, befColor);
+			Assert.AreNotEqual (befColor, aftColor);
+			n++;
+		} while (n <= 10);
 	}
 
 	// 色取得メソッド

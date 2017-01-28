@@ -100,6 +100,14 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 
 	string TARGET_CUBE = "TARGET_CUBE";
 
+	public GameObject colorCubeObj;
+	/// <summary>
+	/// 色制限状態の生成可能色数上限
+	/// </summary>
+	int colorRestrictionCount = 2;
+	float colorRestrictionTime = 5f;
+
+
 	void Awake () {
 		// MasterData取得
 		this.GetComponent<UserMasterDataCtrl> ().initMasterData ();
@@ -636,10 +644,6 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 		}
 	}
 
-	public GameObject colorCubeObj;
-	int colorRestrictionCount = 2;
-	float colorRestrictionTime = 5f;
-
 	// 新規ベリーの生成。
 	// pFadingColorには、ベリーを消す場合、消える色が入る。
 	// 特にない場合はColors.NUMを入れるとする。
@@ -679,7 +683,7 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 	}
 
 	// 色設定メソッド
-	public int decideColor (bool pIsColorRestrictionValid, List<Colors> pRestrictColors, Colors pBeforeColor) {
+	public int _decideColor (bool pIsColorRestrictionValid, List<Colors> pRestrictColors, Colors pBeforeColor) {
 		int aColor;
 		do {
 			aColor =
@@ -689,6 +693,28 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 		} while (aColor == (int)pBeforeColor); // beforeColorと同じ色だったら、やり直す
 		// Colors.NUMが入ってきた場合は、初回の生成時
 		
+		return aColor;
+	}
+
+	//
+	public int decideColor (bool pIsColorRestrictionValid, List<Colors> pRestrictColors, Colors pBeforeColor)
+	{
+		int aColor;
+
+		List<int> availableColors = new List<int> ();
+		for (int i = 0; i < (int)Colors.NUM; i++) {
+			if (i != (int)pBeforeColor) { // 前の色と同じでなければOK
+				if (pIsColorRestrictionValid) { // 色制限状態の場合
+					if (!pRestrictColors.Contains ((Colors)i)) { // 利用可能色でないならばスキップ
+						continue;
+					}
+				}
+				availableColors.Add (i);
+			}
+		}
+
+		aColor = availableColors [UnityEngine.Random.Range (0, availableColors.Count)];
+
 		return aColor;
 	}
 	
@@ -835,18 +861,58 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 	float colorRestrictionTimeLeft;
 	List<Colors> restrictColors = new List<Colors> ();
 
+	/// <summary>
+	/// 色制限状態スタート。
+	/// </summary>
+	/// <param name="pColorCount">色制限状態時の使用可能色数</param>
+	/// <param name="pTime">色制限状態の持続時間</param>
 	public void startColorRestriction (int pColorCount, float pTime) {
 		isColorRestrictionValid = true;
 		colorRestrictionTimeLeft = pTime;
 
 		restrictColors = new List<Colors> ();
-		do {
-			Colors aColor = (Colors)(int)UnityEngine.Random.Range (0, (int)Colors.NUM);
-			if (!restrictColors.Contains (aColor)) {
-				restrictColors.Add (aColor);		
-			}
-		} while (restrictColors.Count >= pColorCount);
+		restrictColors = getAvailableColors (pColorCount);
 	}
+
+	public List<Colors> getAvailableColors(int pColorCount) {
+		List<Colors> colors = new List<Colors> ();
+		int n = pColorCount;
+
+		// ランダムにいくつかの色を選ぶ処理
+		// 色リストを確保
+		List<int> availableColorNums = new List<int> ();
+		for (int i = 0; i < (int)Colors.NUM; i++) {
+			availableColorNums.Add (i);
+		}
+
+		for (int i = 0; i < n; i++) {
+			// 色を選ぶ
+			int colorNum = UnityEngine.Random.Range (0, availableColorNums.Count);
+			Debug.Log ("colorNum:"+colorNum);
+
+			// 選んだ色を利用可能リストに追加
+			colors.Add ((Colors)colorNum);
+
+			// 色リストから、該当の色を取り除く
+			availableColorNums.RemoveAll (s => s == colorNum);
+		}
+
+		return colors;
+	}
+
+	void logList (List<int> list) {
+		for (int i = 0; i < list.Count; i++) {
+			Debug.Log ("[" + i + "]:" + list [i]);
+		}
+	}
+
+	void logList (List<Colors> list)
+	{
+		for (int i = 0; i < list.Count; i++) {
+			Debug.Log ("[" + i + "]:" + list [i]);
+		}
+	}
+
 
 	void updateColorRestriction () {
 		colorRestrictionTimeLeft -= Time.deltaTime;
@@ -871,15 +937,16 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 	// 0 - 5	: BOMB
 	// 6 - 7	: COLOR
 	// 8		: TIME
-	float rate_vertical		= 2f;
-	float rate_horizontal	= 2f;
-	float rate_cross		= 50f;
-	float rate_plus			= 2f;
-	float rate_multiple		= 2f;
-	float rate_around		= 1f;
-	float rate_renewal		= 1f;
-	float rate_restrict		= 1f;
-	float rate_add_time		= 3f;
+
+	public float rate_vertical		= 2f;
+	public float rate_horizontal	= 2f;
+	public float rate_cross		= 50f;
+	public float rate_plus			= 2f;
+	public float rate_multiple		= 2f;
+	public float rate_around		= 1f;
+	public float rate_renewal		= 1f;
+	public float rate_restrict		= 1f;
+	public float rate_add_time		= 3f;
 	float [] ranges;
 
 	public bool isRateDebug = false;
