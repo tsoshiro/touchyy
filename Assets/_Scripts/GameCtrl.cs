@@ -702,6 +702,7 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 		int aColor;
 
 		List<int> availableColors = new List<int> ();
+
 		for (int i = 0; i < (int)Colors.NUM; i++) {
 			if (i != (int)pBeforeColor) { // 前の色と同じでなければOK
 				if (pIsColorRestrictionValid) { // 色制限状態の場合
@@ -887,8 +888,7 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 
 		for (int i = 0; i < n; i++) {
 			// 色を選ぶ
-			int colorNum = UnityEngine.Random.Range (0, availableColorNums.Count);
-			Debug.Log ("colorNum:"+colorNum);
+			int colorNum = availableColorNums[UnityEngine.Random.Range (0, availableColorNums.Count)];
 
 			// 選んだ色を利用可能リストに追加
 			colors.Add ((Colors)colorNum);
@@ -900,17 +900,28 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 		return colors;
 	}
 
-	void logList (List<int> list) {
-		for (int i = 0; i < list.Count; i++) {
-			Debug.Log ("[" + i + "]:" + list [i]);
+	void logList (List<int> list, string pName = "") {
+		string ls = "";
+		if (pName != "") {
+			ls += pName + ": ";
 		}
+
+		for (int i = 0; i < list.Count; i++) {
+			ls += "[" + i + "]:" + list [i] + "\n";
+		}
+		Debug.Log (ls);
 	}
 
-	void logList (List<Colors> list)
+	void logList (List<Colors> list, string pName = "")
 	{
-		for (int i = 0; i < list.Count; i++) {
-			Debug.Log ("[" + i + "]:" + list [i]);
+		string ls = "";
+		if (pName != "") {
+			ls += pName + ": ";
 		}
+		for (int i = 0; i < list.Count; i++) {
+			ls += "[" + i + "]:" + list [i] + "\n";
+		}
+		Debug.Log (ls);
 	}
 
 

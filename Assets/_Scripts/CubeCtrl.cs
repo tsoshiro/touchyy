@@ -10,6 +10,12 @@ public class CubeCtrl : MonoBehaviour {
 
 	Const.CubeType cubeType;
 
+	#region DEBUG
+	void logMe () {
+		Debug.Log ("cubeId:" + cubeId + " myColor:" + myColor + " cubeType:" + cubeType);
+	}
+	#endregion
+
 	public void init() {
 		setCollider();
 		setCubeType ();
@@ -72,7 +78,7 @@ public class CubeCtrl : MonoBehaviour {
 	void checkColor() {
 		if (_GameCtrl.targetColor == myColor) {
 			// CORRECT
-			if (cubeType == Const.CubeType.BOMB) {
+			if (cubeType == Const.CubeType.BOMB) {				
 				bombCheck ();
 			} else if (cubeType == Const.CubeType.TIME) {
 				addTime ();
