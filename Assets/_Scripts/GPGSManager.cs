@@ -3,8 +3,10 @@ using System.Collections;
 using System;
 using System.Collections.Generic;
 using UnityEngine.SocialPlatforms;
+#if UNITY_ANDROID
 using GooglePlayGames;
 using GooglePlayGames.BasicApi;
+#endif
 
 /// <summary>
 /// ランキング用便利クラス
