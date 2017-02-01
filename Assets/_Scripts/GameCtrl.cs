@@ -1047,9 +1047,14 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 	}
 
 	void QuitApplicationConfirm () {
-		//ゲームプレイ中ならポーズにする
+		//ゲームプレイ中ならポーズにして、終了確認ダイアログを出す
 		if (state == STATE.PLAYING) {
 			enablePause (true);
+		}
+		// SHOP画面なら、RESULT画面に戻る
+		else if (state == STATE.SHOP) {
+			backFromShop ();
+			return;
 		}
 
 		// 使う前に setlabel を呼んどく。
@@ -1059,7 +1064,7 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 			"Close");
 
 		// YES NO ダイアログ
-		//「楽しんでいただけていますか？」とのダイアログを出す。
+		//「終了しますか？」とのダイアログを出す。
 		DialogManager.Instance.ShowSelectDialog (
 			GameCtrl.GetInstance ()._languageCtrl.getMessageFromCode ("quit_confirm"),
 			(bool result) => {

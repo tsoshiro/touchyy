@@ -266,8 +266,6 @@ public class ResultCtrl : MonoBehaviour {
 									 LBL_SCORE.transform.rotation) as GameObject;
 		cp.name = "ScoreMoving";
 		// 演出用文字オブジェクトの数値を修正
-		// TODO thousand comma
-		//cp.GetComponent<TextMesh>().text = "+"+pAddCoinValue;
 		cp.GetComponent<TextMesh> ().text = "+" + new IntValueConverter ().FixBigInteger (pAddCoinValue);
 
 		// BESTアイコンが表示されている場合は、消しておく
