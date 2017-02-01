@@ -51,6 +51,13 @@ public class IntValueConverter {
 		return value;
 	}
 
+	/// <summary>
+	/// 数値を、最適な文字列に変換する処理
+	/// - 3桁ごとに「,」をつけたstringに変換
+	/// - Millionを越えたら「4.2M」というような表記に変える
+	/// </summary>
+	/// <returns>The big integer.</returns>
+	/// <param name="pBigInteger">P big integer.</param>
 	public string FixBigInteger(PBClass.BigInteger pBigInteger) {
 		string value = ""+pBigInteger;
 		char[] c = value.ToCharArray ();

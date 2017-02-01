@@ -163,6 +163,9 @@ public class ResultCtrl : MonoBehaviour {
 		yield return StartCoroutine(coinAddMotion(pCoinNow, pResult.score, LBL_SCORE.gameObject, LBL_COIN.gameObject, true));
 
 		yield return 0;
+
+		// 強調アニメーションチェック
+		_giftCtrl.animationFxCheck ();
 	}
 
 	// NO MISS BONUS + SCOREカウントアップ演出
@@ -263,8 +266,7 @@ public class ResultCtrl : MonoBehaviour {
 									 LBL_SCORE.transform.rotation) as GameObject;
 		cp.name = "ScoreMoving";
 		// 演出用文字オブジェクトの数値を修正
-		cp.GetComponent<TextMesh>().text = "+"+pAddCoinValue;
-
+		cp.GetComponent<TextMesh> ().text = "+" + new IntValueConverter ().FixBigInteger (pAddCoinValue);
 
 		// BESTアイコンが表示されている場合は、消しておく
 		if (cp.transform.childCount > 0) {
@@ -305,6 +307,7 @@ public class ResultCtrl : MonoBehaviour {
 		}
 		_gameCtrl.finishResultAnimation ();
 	}
+
 
 	// ベストレコードかチェック
 	// trueならBESTテキスト表示+結果テキストの色変更

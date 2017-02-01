@@ -21,6 +21,10 @@ public class GiftCtrl : MonoBehaviour {
 	}
 	GiftButtonStatus status;
 
+	// ボタンアイコンのイメージ画像
+	public Sprite spriteGift;
+	public Sprite spriteMovie;
+
 	public void Init() {
 		_resultCtrl = this.GetComponent<ResultCtrl>();
 
@@ -32,15 +36,15 @@ public class GiftCtrl : MonoBehaviour {
 		nextTimeFreeGift = DateTime.Parse(_resultCtrl._gameCtrl._userData.nextFreeGift);
 		isRewardMovieWatched = false;
 
-		statusCheck ();
+		//statusCheck ();
 	}
 
 	public void statusCheck() {
-		if (checkIsMovieRewardAvailable()) { // 動画広告
+		if (checkIsMovieRewardAvailable()) { 		// 動画広告
 			status = GiftButtonStatus.REWARD;
-		} else if (checkIsFreeGiftAvailable()) { // フリーギフト
+		} else if (checkIsFreeGiftAvailable()) { 	// フリーギフト
 			status = GiftButtonStatus.FREE_AVAILABLE;
-		} else { // 待機中
+		} else { 									// 待機中
 			status = GiftButtonStatus.FREE_AWAIT;
 		}
 		setButton (status);
@@ -127,6 +131,7 @@ public class GiftCtrl : MonoBehaviour {
 			pos = image.transform.localPosition;
 			pos.x = 0f;
 			image.transform.localPosition = pos;
+			image.GetComponent<SpriteRenderer> ().sprite = spriteGift;
 
 			new AnalyticsManager ().SendCounterEvent ("freeGiftOffer", 1);
 
@@ -138,6 +143,9 @@ public class GiftCtrl : MonoBehaviour {
 			pos = image.transform.localPosition;
 			pos.x = xPos;
 			image.transform.localPosition = pos;
+			image.GetComponent<SpriteRenderer> ().sprite = spriteGift;
+			animationFxCheck ();
+
 			leftTimeText.gameObject.SetActive (true);
 			break;
 		case GiftButtonStatus.REWARD:
@@ -149,11 +157,21 @@ public class GiftCtrl : MonoBehaviour {
 			pos = image.transform.localPosition;
 			pos.x = 0f;
 			image.transform.localPosition = pos;
+			image.GetComponent<SpriteRenderer> ().sprite = spriteMovie;
 
 			new AnalyticsManager ().SendCounterEvent ("movieRewardOffer", 1);
 
 			break;
 		}	
+	}
+
+	// 強調アニメーションスタート(FREE_AWAITでないなら)
+	public void animationFxCheck () {
+		if (status == GiftButtonStatus.FREE_AWAIT) {
+			_giftBtn.GetComponent<AppealAnimation> ().activate (false);
+		} else {
+			_giftBtn.GetComponent<AppealAnimation> ().activate (true);
+		}
 	}
 
 	#region movie reward
