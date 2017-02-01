@@ -36,7 +36,7 @@ public class GiftCtrl : MonoBehaviour {
 		nextTimeFreeGift = DateTime.Parse(_resultCtrl._gameCtrl._userData.nextFreeGift);
 		isRewardMovieWatched = false;
 
-		statusCheck ();
+		//statusCheck ();
 	}
 
 	public void statusCheck() {
@@ -144,6 +144,7 @@ public class GiftCtrl : MonoBehaviour {
 			pos.x = xPos;
 			image.transform.localPosition = pos;
 			image.GetComponent<SpriteRenderer> ().sprite = spriteGift;
+			animationFxCheck ();
 
 			leftTimeText.gameObject.SetActive (true);
 			break;
@@ -162,6 +163,15 @@ public class GiftCtrl : MonoBehaviour {
 
 			break;
 		}	
+	}
+
+	// 強調アニメーションスタート(FREE_AWAITでないなら)
+	public void animationFxCheck () {
+		if (status == GiftButtonStatus.FREE_AWAIT) {
+			_giftBtn.GetComponent<AppealAnimation> ().activate (false);
+		} else {
+			_giftBtn.GetComponent<AppealAnimation> ().activate (true);
+		}
 	}
 
 	#region movie reward

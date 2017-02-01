@@ -133,6 +133,7 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 
 		// 数値部分算出テスト
 		//DisplayTest ();
+		DEBUG_FinishBtn.SetActive (isPlayDebug);
 	}
 
 	public void LeaderboardLogin () {
@@ -336,6 +337,12 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 			pauseDiplay.SetActive (false);
 
 			replay ();
+		}
+	}
+
+	void actionDEBUG_FinishBtn () {
+		if (state == STATE.PLAYING) {
+			finishGame ();
 		}
 	}
 
@@ -960,7 +967,6 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 	public float rate_add_time		= 3f;
 	float [] ranges;
 
-	public bool isRateDebug = false;
 	void initRate () {
 		if (!isRateDebug) {
 			rate_vertical 	= _userParam.lineBombRate;
@@ -1068,7 +1074,15 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 	#endregion
 
 	#region DEBUG
+	[Header ("##### DEBUG Settings #####")]
+	public bool isRateDebug = false;
 	public bool isDebugParamSet = false;
 	public UserData CustomUserData;
+	public GameObject DEBUG_FinishBtn;
+	public bool isPlayDebug = false;
+
+	void finishGame () {
+		timeLeft = 0;
+	}
 	#endregion
 }
