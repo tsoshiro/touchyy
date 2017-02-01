@@ -50,6 +50,9 @@ public class ShopCtrl : MonoBehaviour
 			go.transform.parent = _lvCardsGroup.transform;
 			go.transform.localPosition = pos;
 
+			// Animation用Componentを追加
+			go.AddComponent<AppealAnimation> ();
+
 			itemCtrlList.Add (go.GetComponent<ItemCtrl>());
 		}
 	}
@@ -74,6 +77,9 @@ public class ShopCtrl : MonoBehaviour
 		if (coin >= cost) {
 			_gameCtrl.spendCoin (cost);
 			levelUp (item);
+
+			// 演出
+			obj.GetComponent<AppealAnimation> ().playOnece ();
 			_gameCtrl._audioMgr.play (Const.SE_UP);
 		} else {
 			Debug.Log ("CAN'T BUY");

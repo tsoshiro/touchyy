@@ -15,6 +15,10 @@ public class AppealAnimation : MonoBehaviour {
 		}
 	}
 
+	public void playOnece () {
+		blinkAnimation (objOrg);
+	}
+
 	public void activate (bool pFlg) {
 		flg = pFlg;
 		if (flg) {
