@@ -8,6 +8,14 @@ public class AppealAnimation : MonoBehaviour {
 	public float scaleTime = 0.6f;
 	public float fadeTime = 0.6f;
 
+	public float fadeTimeFast = 0.3f;
+	public float scaleTimeFast = 0.3f;
+
+	enum MotionSpeed {
+		SLOW,
+		FAST
+	}
+
 	// Use this for initialization
 	void Start () {
 		if (objOrg == null) {
@@ -15,8 +23,20 @@ public class AppealAnimation : MonoBehaviour {
 		}
 	}
 
-	public void playOnece () {
-		blinkAnimation (objOrg);
+	void setMotionSpeed (int speedType) {
+		if ((MotionSpeed)speedType == MotionSpeed.FAST) {
+			scaleTime = scaleTimeFast;
+			fadeTime = fadeTimeFast;
+		}
+	}
+
+	public void playOnce (GameObject obj = null, int speedType = 0) {
+		if (obj == null) {
+			obj = objOrg;
+		}
+
+		setMotionSpeed (speedType);
+		blinkAnimation (obj);
 	}
 
 	public void activate (bool pFlg) {
@@ -46,10 +66,34 @@ public class AppealAnimation : MonoBehaviour {
 		GameObject go = (GameObject)Instantiate (obj,
 												 pos,
 												 obj.transform.rotation);
-		Destroy (go.GetComponent<BoxCollider> ());
+
+		// 不要なコンポーネントを削除
+		DestroyCollider (go);
+		DestroyCubeCtrl (go);
+
+
+		//Destroy (go.GetComponent<BoxCollider> ());
 		iTween.ScaleTo (go, iTween.Hash ("scale", obj.transform.localScale * scaleRate, "time", scaleTime));
 		iTween.FadeTo (go, iTween.Hash ("alpha", 0, "time", fadeTime));
 
-		Destroy (go, 2f);
+		Destroy (go, 2f);	
+	}
+
+	void DestroyComponents (GameObject go) {
+		DestroyCollider (go);
+		DestroyCubeCtrl (go);
+	}
+
+	void DestroyCollider (GameObject go) {
+		Component [] components = go.GetComponents<Collider> ();
+		for (int i = 0; i < components.Length; i++) {
+			Destroy (components [i]);
+		}
+	}
+
+	void DestroyCubeCtrl (GameObject go) {
+		if (go.GetComponent<CubeCtrl> ()) {
+			Destroy (go.GetComponent<CubeCtrl> ());	
+		}
 	}
 }

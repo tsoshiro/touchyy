@@ -118,7 +118,16 @@ public class CubeCtrl : MonoBehaviour {
 
 	public void vanish() {
 		_GameCtrl.createNew(this.transform.position, cubeId, myColor);
+
+		// TODO TEST
+		vanishEffect ();
+
 		Destroy(this.gameObject);
+	}
+
+	void vanishEffect () {
+		AppealAnimation aa = this.gameObject.AddComponent<AppealAnimation> ();
+		aa.playOnce (this.gameObject, 1);
 	}
 
 	void wrong() {
