@@ -37,7 +37,7 @@ public class ColorEditor : MonoBehaviour {
 	}
 
 	public static Color getColorFromColorCode(string pColorCode) {
-		if (!pColorCode.StartsWith ("#")) {
+		if (!pColorCode.StartsWith ("#", StringComparison.CurrentCulture)) {
 			pColorCode = "#" + pColorCode;
 		}
 		Color aColor;
@@ -64,6 +64,11 @@ public class ColorEditor : MonoBehaviour {
 		if (child.GetComponent<SpriteRenderer> ()) {
 			SpriteRenderer sr = child.GetComponent<SpriteRenderer> ();
 			sr.color = pColor;
+
+			// Material Color
+			Color mColor = sr.material.color;
+			mColor.a = pColor.a;
+			sr.material.color = mColor;
 		} else if (child.GetComponent<TextMesh> ()) {
 			TextMesh tm = child.GetComponent<TextMesh> ();
 			tm.color = pColor;
