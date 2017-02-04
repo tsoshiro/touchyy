@@ -11,7 +11,7 @@ public class ReviewRequestCtrl : MonoBehaviour {
 	public void test ()
 	{
 		LanguageCtrl _lngCtrl = GameCtrl.GetInstance ()._languageCtrl;
-		Debug.Log (
+		DebugLogger.Log (
 			_lngCtrl.getMessageFromCode (Const.answer_01_n)	+ "\n" +
 			_lngCtrl.getMessageFromCode (Const.answer_01_y) + "\n" +
 			_lngCtrl.getMessageFromCode (Const.dialog_01) 	+ "\n" +
@@ -65,7 +65,7 @@ public class ReviewRequestCtrl : MonoBehaviour {
 
 	public bool CheckIsPlayCountUnderOrAlreadyReviewed (int playCount, int reviewDoneFlg)
 	{
-		Debug.Log ("CheckIsPlayCountUnderOrAlreadyReviewed\nplayCount:" + playCount + " reviewDoneFlg:" + reviewDoneFlg);
+		DebugLogger.Log ("CheckIsPlayCountUnderOrAlreadyReviewed\nplayCount:" + playCount + " reviewDoneFlg:" + reviewDoneFlg);
 		if (playCount < Const.INTERVAL_REVIEW_REQUEST || // 規定回以上プレイしていない
 			reviewDoneFlg == 1) // レビュー済み
 		{

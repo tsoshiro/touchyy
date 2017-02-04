@@ -17,14 +17,14 @@ public class AdvertisementCtrl : MonoBehaviour {
 		if (flg) {
 			_gameCtrl.gameObject.GetComponent<AdvertisementManager> ().showInterstitial ();
 		} else { 
-			Debug.Log ("Don't show Interstitial this time");
+			DebugLogger.Log("Don't show Interstitial this time");
 		}
 	}
 
 	// 判定処理を切り出し
 	public bool checkInterFlgFromValues (int pPlayCount, int pRestartCount) {
 		int inter_value = pPlayCount + pRestartCount;
-		Debug.Log ("playCount:" + pPlayCount + "\n"
+		DebugLogger.Log ("playCount:" + pPlayCount + "\n"
 				   + "restartCount:" + pRestartCount + "\n"
 				   + "inter_value:" + inter_value);
 

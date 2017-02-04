@@ -37,7 +37,7 @@ public class ResultCtrl : MonoBehaviour {
 
 		// スコアラベルには一時的に、NO MISS BONUS加算前の値を入れる
 		// _result.scoreの値はそのままで、見栄えだけ元に戻す
-		Debug.Log ("_result.score: " + _result.score + "\n_result.noMissBonusValue: "+_result.noMissBonusValue
+		DebugLogger.Log ("_result.score: " + _result.score + "\n_result.noMissBonusValue: "+_result.noMissBonusValue
 		          +"LBL_SCORE.text:" + new IntValueConverter ().FixBigInteger (_result.score - _result.noMissBonusValue));
 		LBL_SCORE.text = new IntValueConverter ().FixBigInteger (_result.score - _result.noMissBonusValue);
 
@@ -82,7 +82,7 @@ public class ResultCtrl : MonoBehaviour {
 			
 		// NO MISSなら「NO MISS」ラベルを付ける
 		if (_result.missCount == 0) {
-			Debug.Log ("NO MISS");
+			DebugLogger.Log ("NO MISS");
 			float noMissRate = 1 / (float)Const.NO_MISS_BONUS_RATE;
 			LBL_MISS.text = "NO MISS\n+"+noMissRate.ToString("P0");
 		} else {
@@ -149,7 +149,7 @@ public class ResultCtrl : MonoBehaviour {
 
 	// Resultアニメーション演出まとめ
 	IEnumerator resultAnimation (GameResult pResult, PBClass.BigInteger pCoinNow) {
-		Debug.Log ("resultAnimation Start");
+		DebugLogger.Log ("resultAnimation Start");
 
 		if (pResult.missCount == 0) {
 			// NO MISS BONUS 演出
@@ -173,7 +173,7 @@ public class ResultCtrl : MonoBehaviour {
 	                               TextMesh pScoreText, 
 	                               PBClass.BigInteger pScore)
 	{
-		Debug.Log ("NoMissBonusMotion start");
+		DebugLogger.Log ("NoMissBonusMotion start");
 
 		yield return StartCoroutine (addValueMotion (pBonusLabel, pScoreText, pScore));
 	}
@@ -244,7 +244,7 @@ public class ResultCtrl : MonoBehaviour {
 	                           GameObject pToPositionObj,
 	                           bool pIsCallback = true) 
 	{
-		Debug.Log ("CoinAddMotion starts");
+		DebugLogger.Log ("CoinAddMotion starts");
 
 		CoinValueChange (pCoinNow); // Change COIN Label's value to NOW COIN VALUE
 
@@ -370,12 +370,13 @@ public class ResultCtrl : MonoBehaviour {
 	}
 
 	void resultMotionCallback () {
-		Debug.Log ("resultMotionCallback");
+		DebugLogger.Log ("resultMotionCallback");
+
 		// REVIEW CHECK
 		// x回に一回レビューリクエストポップアップ表示
 		// レビュー依頼が無い時にインタースティシャル表示のチェック
 		if (_reviewCtrl.ReviewRequest () == false) {
-			Debug.Log ("No review request");
+			DebugLogger.Log ("No review request");
 			// INTERSTITIAL CHECK
 			_gameCtrl.gameObject.GetComponent<AdvertisementCtrl>().checkInterstitial ();
 		}

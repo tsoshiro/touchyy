@@ -920,7 +920,7 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 		for (int i = 0; i < list.Count; i++) {
 			ls += "[" + i + "]:" + list [i] + "\n";
 		}
-		Debug.Log (ls);
+		DebugLogger.Log (ls);
 	}
 
 	void logList (List<Colors> list, string pName = "")
@@ -932,7 +932,7 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 		for (int i = 0; i < list.Count; i++) {
 			ls += "[" + i + "]:" + list [i] + "\n";
 		}
-		Debug.Log (ls);
+		DebugLogger.Log (ls);
 	}
 
 

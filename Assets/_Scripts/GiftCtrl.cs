@@ -32,7 +32,7 @@ public class GiftCtrl : MonoBehaviour {
 		leftTimeText = _giftBtn.transform.FindChild ("leftTime").gameObject.GetComponent<TextMesh>();
 		button_small = _giftBtn.transform.FindChild ("button_small").gameObject;
 
-		Debug.Log (_resultCtrl._gameCtrl._userData.nextFreeGift);
+		DebugLogger.Log (_resultCtrl._gameCtrl._userData.nextFreeGift);
 		nextTimeFreeGift = DateTime.Parse(_resultCtrl._gameCtrl._userData.nextFreeGift);
 		isRewardMovieWatched = false;
 
