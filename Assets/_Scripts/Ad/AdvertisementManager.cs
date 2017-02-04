@@ -64,6 +64,7 @@ public class AdvertisementManager : MonoBehaviour {
 	// AdMob
 	public string Android_interstitial;
 	public string ios_interstitial;
+	public bool isAdMobInterTestMode = false; // 本番=false テスト=true
 
 	[SerializeField]
 	string adUnitId;
@@ -111,14 +112,23 @@ public class AdvertisementManager : MonoBehaviour {
 		// Init
 		_interstitial = new InterstitialAd(adUnitId);
 		// create an empty request
-		request = new AdRequest.Builder().
-		                       //AddTestDevice(TEST_DEVICE_ID). // TEST MODE
-		                       Build();
+		request = createRequest (isAdMobInterTestMode);
+			
 		// load inters
 		_interstitial.LoadAd(request);
 		_interstitial.OnAdClosed += HandleInterstitialClosed;
 
-		is_close_interstitial = false;	
+		is_close_interstitial = false;
+	}
+
+	AdRequest createRequest (bool isTest) {
+		if (isTest) {
+			return new AdRequest.Builder ().
+							   AddTestDevice(TEST_DEVICE_ID).
+							   Build ();
+		}
+		return new AdRequest.Builder ().
+						  Build ();
 	}
 
 	public void showInterstitial() {

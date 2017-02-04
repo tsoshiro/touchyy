@@ -58,12 +58,14 @@ public class ReviewRequestCtrl : MonoBehaviour {
 					}
 				}
 			);
+			return true;
 		}
-		return true;
+		return false;
 	}
 
 	public bool CheckIsPlayCountUnderOrAlreadyReviewed (int playCount, int reviewDoneFlg)
 	{
+		Debug.Log ("CheckIsPlayCountUnderOrAlreadyReviewed\nplayCount:" + playCount + " reviewDoneFlg:" + reviewDoneFlg);
 		if (playCount < Const.INTERVAL_REVIEW_REQUEST || // 規定回以上プレイしていない
 			reviewDoneFlg == 1) // レビュー済み
 		{
