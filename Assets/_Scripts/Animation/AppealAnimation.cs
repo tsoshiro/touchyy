@@ -93,7 +93,7 @@ public class AppealAnimation : MonoBehaviour {
 		iTween.ScaleTo (go, iTween.Hash ("scale", localScale * scaleRate, "time", scaleTime));
 		iTween.FadeTo (go, iTween.Hash ("alpha", 0, "time", fadeTime));
 
-		Destroy (go, 2f);		
+		Destroy (go, 2f);
 	}
 
 

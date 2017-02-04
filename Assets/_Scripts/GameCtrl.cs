@@ -15,6 +15,7 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 	public GameObject _readyCtrl;
 	public ResultCtrl _resultCtrl;
 	public ShopCtrl _shopCtrl;
+	public CubeAnimationManager _cubeAnimationManager;
 	#endregion
 
 	#region UI
@@ -128,6 +129,9 @@ public class GameCtrl : SingletonMonoBehaviour<GameCtrl> {
 
 		// SHOP初期化
 		_shopCtrl.initUserItems ();
+
+		// 演出用Cubeの初期化
+		_cubeAnimationManager.init ();
 
 		SetGame();
 

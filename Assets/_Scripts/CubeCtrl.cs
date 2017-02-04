@@ -7,6 +7,7 @@ public class CubeCtrl : MonoBehaviour {
 
 	GameCtrl.Colors myColor;
 	GameCtrl _GameCtrl;
+	CubeColorChanger _cubeColorChanger;
 
 	Const.CubeType cubeType;
 
@@ -15,6 +16,15 @@ public class CubeCtrl : MonoBehaviour {
 		Debug.Log ("cubeId:" + cubeId + " myColor:" + myColor + " cubeType:" + cubeType);
 	}
 	#endregion
+
+	public void Awake () {
+		if (_cubeColorChanger == null) {
+			if (this.GetComponent<CubeColorChanger> () == null) {
+				this.gameObject.AddComponent<CubeColorChanger> ();
+			}
+			_cubeColorChanger = this.GetComponent<CubeColorChanger> ();	
+		}
+	}
 
 	public void init() {
 		setCollider();
@@ -126,11 +136,7 @@ public class CubeCtrl : MonoBehaviour {
 	}
 
 	void vanishEffect () {
-
-
-
-		//AppealAnimation aa = this.gameObject.AddComponent<AppealAnimation> ();
-		//aa.playOnce (this.gameObject, 1);
+		_GameCtrl._cubeAnimationManager.playAnimation (transform.position, myColor);
 	}
 
 	void wrong() {
@@ -147,8 +153,7 @@ public class CubeCtrl : MonoBehaviour {
 	}
 
 	public void setColor(int pColor) {
-		Transform colorSprite = this.transform.FindChild("colorSprite");
-		ColorEditor.setColorFromColorCode (colorSprite.gameObject, _GameCtrl.colorCodes [pColor]);
+		_cubeColorChanger.setColor (pColor);
 		myColor = (GameCtrl.Colors)pColor;
 	}
 
