@@ -126,8 +126,11 @@ public class CubeCtrl : MonoBehaviour {
 	}
 
 	void vanishEffect () {
-		AppealAnimation aa = this.gameObject.AddComponent<AppealAnimation> ();
-		aa.playOnce (this.gameObject, 1);
+
+
+
+		//AppealAnimation aa = this.gameObject.AddComponent<AppealAnimation> ();
+		//aa.playOnce (this.gameObject, 1);
 	}
 
 	void wrong() {

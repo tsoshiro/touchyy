@@ -11,6 +11,8 @@ public class AppealAnimation : MonoBehaviour {
 	public float fadeTimeFast = 0.3f;
 	public float scaleTimeFast = 0.3f;
 
+	bool loopFlg;
+
 	enum MotionSpeed {
 		SLOW,
 		FAST
@@ -30,6 +32,18 @@ public class AppealAnimation : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// アニメーションさせるオブジェクトを引数に入れる
+	/// </summary>
+	/// <param name="obj">Object.</param>
+	/// <param name="localScale">Local scale.</param>
+	/// <param name="position">Position.</param>
+	/// <param name="speedType">Speed type.</param>
+	public void playOnceOriginal (GameObject obj, Vector3 localScale, Vector3 position, int speedType = 0) {
+		setMotionSpeed (speedType);
+		animateObject (obj, localScale, position);
+	}
+
 	public void playOnce (GameObject obj = null, int speedType = 0) {
 		if (obj == null) {
 			obj = objOrg;
@@ -40,15 +54,14 @@ public class AppealAnimation : MonoBehaviour {
 	}
 
 	public void activate (bool pFlg) {
-		flg = pFlg;
-		if (flg) {
+		loopFlg = pFlg;
+		if (loopFlg) {
 			StartCoroutine (loop ());
 		}
 	}
 
-	bool flg;
 	IEnumerator loop () {
-		while (flg) {
+		while (loopFlg) {
 			blinkAnimation (objOrg);
 			yield return new WaitForSeconds (1.5f);
 		}
@@ -71,13 +84,18 @@ public class AppealAnimation : MonoBehaviour {
 		DestroyCollider (go);
 		DestroyCubeCtrl (go);
 
+		animateObject (go, obj.transform.localScale, pos);
+	}
 
-		//Destroy (go.GetComponent<BoxCollider> ());
-		iTween.ScaleTo (go, iTween.Hash ("scale", obj.transform.localScale * scaleRate, "time", scaleTime));
+	void animateObject (GameObject go, Vector3 localScale, Vector3 pos) {
+		go.transform.position = pos;
+
+		iTween.ScaleTo (go, iTween.Hash ("scale", localScale * scaleRate, "time", scaleTime));
 		iTween.FadeTo (go, iTween.Hash ("alpha", 0, "time", fadeTime));
 
-		Destroy (go, 2f);	
+		Destroy (go, 2f);		
 	}
+
 
 	void DestroyComponents (GameObject go) {
 		DestroyCollider (go);
