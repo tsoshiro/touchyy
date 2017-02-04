@@ -15,8 +15,9 @@ public class AdvertisementCtrl : MonoBehaviour {
 	{
 		bool flg = checkInterFlgFromValues (_gameCtrl._userData.playCount, _gameCtrl._userData.restartCount);
 		if (flg) {
-			Debug.Log ("SHOW INTERSTITIAL!");
 			_gameCtrl.gameObject.GetComponent<AdvertisementManager> ().showInterstitial ();
+		} else { 
+			Debug.Log ("Don't show Interstitial this time");
 		}
 	}
 

@@ -302,6 +302,8 @@ public class ResultCtrl : MonoBehaviour {
 		yield return new WaitForSeconds (0.5f);
 
 		Destroy (cp);
+
+		// レビューとインタースティシャルチェック
 		if (pIsCallback) {
 			resultMotionCallback ();
 		}
@@ -368,10 +370,12 @@ public class ResultCtrl : MonoBehaviour {
 	}
 
 	void resultMotionCallback () {
+		Debug.Log ("resultMotionCallback");
 		// REVIEW CHECK
 		// x回に一回レビューリクエストポップアップ表示
 		// レビュー依頼が無い時にインタースティシャル表示のチェック
-		if (!_reviewCtrl.ReviewRequest ()) {
+		if (_reviewCtrl.ReviewRequest () == false) {
+			Debug.Log ("No review request");
 			// INTERSTITIAL CHECK
 			_gameCtrl.gameObject.GetComponent<AdvertisementCtrl>().checkInterstitial ();
 		}
