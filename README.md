@@ -5,4 +5,4 @@
   - リリースしていましたが、Google Play Storeのポリシー変更により取り下げられた。対応未定。
 
 ## ソースコード配置場所
-- [Assets/_Scripts](https://github.com/tsoshiro/touchyy/tree/master/Assets/_Scripts)
+- [Assets/_Scripts](Assets/_Scripts)
